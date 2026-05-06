@@ -1,0 +1,45 @@
+# Litsea Empleos
+
+> Bolsa de trabajo especializada que conecta terapeutas certificados de Litsea Centro de Capacitación con hoteles y spas de lujo en la Riviera Maya, México.
+
+URL: https://empleos.litseacc.edu.mx
+
+## ¿Qué es Litsea Empleos?
+
+Litsea Empleos es la plataforma oficial de empleo de Litsea Centro de Capacitación. Conecta a egresados certificados en terapias de bienestar y spa con los mejores empleadores de la industria hotelera y spa de la Riviera Maya.
+
+La plataforma está controlada por el equipo de Litsea, que verifica las credenciales de cada terapeuta y gestiona el proceso de conexión entre candidatos y empleadores.
+
+## Usuarios de la plataforma
+
+- **Terapeutas**: Egresados de Litsea que buscan empleo en spas y hoteles de lujo. Se registran, suben sus certificados y aplican a vacantes.
+- **Empleadores**: Hoteles y spas de la Riviera Maya que publican vacantes y contactan terapeutas verificados.
+- **Equipo Litsea (admin)**: Gestiona la plataforma, verifica terapeutas, aprueba certificados y habilita el contacto entre candidatos y empleadores.
+
+## Servicios
+
+- Directorio de terapeutas con certificaciones verificadas por Litsea
+- Publicación y gestión de vacantes para hoteles y spas
+- Sistema de aplicación a vacantes con seguimiento de estado
+- Chat moderado entre terapeutas y empleadores (habilitado por el equipo Litsea)
+- Verificación de certificados emitidos por Litsea Centro de Capacitación
+- Notificaciones por email para cada etapa del proceso
+
+## Especialidades cubiertos
+
+Masoterapia, reflexología, tratamientos faciales, aromaterapia, terapias con piedras calientes, técnica sueca, drenaje linfático, terapias ayurvédicas y otras disciplinas de bienestar y belleza impartidas por Litsea.
+
+## Zona geográfica
+
+Riviera Maya, Quintana Roo, México — incluyendo: Cancún, Playa del Carmen, Tulum, Cozumel, Akumal, Puerto Morelos, Bacalar.
+
+## Tecnología
+
+Plataforma web progresiva (PWA). Funciona en cualquier dispositivo con navegador. No requiere app móvil.
+
+## Contacto
+
+- Institución: Litsea Centro de Capacitación
+- Web principal: https://litseacc.edu.mx
+- Plataforma de empleo: https://empleos.litseacc.edu.mx
+- Email: empleos@litseacc.edu.mx

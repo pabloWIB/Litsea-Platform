@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\lib\\\\google\")",
+      "Bash(Remove-Item -Force \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\api\\\\reservations\\\\route.ts\")",
+      "Bash(rm -rf \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\lib\\\\google\")",
+      "Bash(rm -f \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\api\\\\reservations\\\\route.ts\")",
+      "Bash(npm run *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000/robots.txt)",
+      "Bash(curl -s -o /dev/null -w \"login: %{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(curl -s http://localhost:3000)"
+    ]
+  }
+}
