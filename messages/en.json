@@ -89,6 +89,18 @@
     "cardEmpleadorDesc": "Post vacancies and access certified therapists verified by Litsea, ready to work at your spa.",
     "cardEmpleadorCta": "Post a vacancy"
   },
+  "pageTitles": {
+    "login": "Sign in",
+    "loginDesc": "Sign in to Litsea Empleos to access your therapist, employer or administrator dashboard.",
+    "loginTerapeuta": "Sign in as therapist",
+    "loginEmpleador": "Sign in as employer",
+    "registroTerapeuta": "Therapist registration",
+    "registroTerapeutaDesc": "Create your account as a Litsea-certified therapist and access vacancies at luxury hotels and spas in the Riviera Maya.",
+    "registroEmpleador": "Employer registration",
+    "registroEmpleadorDesc": "Create your account as a hotel or spa and post vacancies for therapists certified by Litsea Centro de Capacitación.",
+    "recuperarContrasena": "Recover password",
+    "nuevaContrasena": "New password"
+  },
   "whatsapp": {
     "name": "Litsea Empleos",
     "bubble": "Hi! How can we help you? Send us a message on WhatsApp.",

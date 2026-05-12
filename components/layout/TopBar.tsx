@@ -53,13 +53,16 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
     ? 'bg-white shadow-sm border-b border-neutral-200'
     : 'bg-white/90 backdrop-blur-sm border-b border-neutral-100'
 
-  const NAV_LINKS: { label: string; href: string }[] = []
+  const NAV_LINKS = [
+    { label: t('vacantes'),     href: '/vacantes' },
+    { label: t('terapeutas'),   href: '/terapeutas' },
+    { label: t('comoFunciona'), href: '/#como-funciona' },
+  ]
 
   const isActive = (href: string) => pathname.startsWith(href)
 
-  // On home: show navbar only when banner is closed (scrolled)
-  // On other pages: always show navbar
-  const showNav = !isHome || !bannerOpen
+  // Desktop: hide on home while banner is open. Mobile: always visible.
+  const showNavDesktop = !isHome || !bannerOpen
 
   return (
     <BannerContext.Provider value={{ open: bannerOpen, topbarHeight }}>
@@ -99,24 +102,15 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
 
-        {/* Navbar row */}
-        <AnimatePresence>
-          {showNav && (
-            <motion.div
-              key="navbar"
-              className={`w-full transition-all duration-500 ${navBg}`}
-              initial={{ opacity: 0, y: -16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16 }}
-              transition={{ duration: 0.45, ease: EASE }}
-            >
+        {/* Navbar row — always visible on mobile, conditional on desktop */}
+        <div className={`w-full transition-all duration-300 ${navBg}${!showNavDesktop ? ' md:hidden' : ''}`}>
               <div className="w-full max-w-[1400px] mx-auto px-4 lg:px-6">
 
                 {/* Desktop */}
                 <div className="hidden md:flex items-center justify-between py-3">
                   <Link href="/" className="shrink-0">
-                    <Image src="/logo-litsea-principal.png" alt="Litsea Centro de Capacitación"
-                      width={100} height={38} className="object-contain" style={{ width: 'auto' }} priority loading="eager" />
+                    <Image src="/logo-litsea-principal-color.png" alt="Litsea Centro de Capacitación"
+                      width={100} height={38} className="h-9 w-auto object-contain" priority loading="eager" />
                   </Link>
 
                   <div className="flex items-center gap-0.5">
@@ -136,9 +130,9 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
                     <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
                     <Link href="/registro-empleador">
                       <HoverBorderGradient as="div"
-                        containerClassName="cursor-pointer border-neutral-200"
-                        backdropClassName="bg-white"
-                        className="px-4 py-1.5 text-[13px] font-medium text-neutral-700 hover:text-neutral-900">
+                        containerClassName="cursor-pointer"
+                        backdropClassName="bg-[#2FB7A3]"
+                        className="px-5 py-2 text-sm font-semibold text-white">
                         {t('soEmpleador')}
                       </HoverBorderGradient>
                     </Link>
@@ -149,8 +143,8 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
                 <div className="md:hidden">
                   <div className="flex items-center justify-between py-3">
                     <Link href="/" className="shrink-0">
-                      <Image src="/logo-litsea-principal.png" alt="Litsea Centro de Capacitación"
-                        width={88} height={34} className="object-contain" style={{ width: 'auto' }} priority loading="eager" />
+                      <Image src="/logo-litsea-principal-color.png" alt="Litsea Centro de Capacitación"
+                        width={88} height={34} className="h-8 w-auto object-contain" priority loading="eager" />
                     </Link>
                     <div className="flex items-center gap-2">
                       <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
@@ -167,47 +161,75 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
                     </div>
                   </div>
 
-                  <AnimatePresence>
-                    {mobileOpen && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -8, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -8, scale: 0.97 }}
-                        transition={{ duration: 0.2 }}
-                        className="pb-2 bg-white border-b border-neutral-200 flex flex-col gap-0.5 px-2"
-                      >
-                        {NAV_LINKS.map((link, i) => (
-                          <motion.div key={link.href} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
-                            <Link href={link.href}
-                              className={`block text-sm px-4 py-3 rounded-xl transition-colors ${
-                                isActive(link.href)
-                                  ? 'font-semibold text-[#2FB7A3] bg-[#2FB7A3]/8'
-                                  : 'text-neutral-700 hover:bg-neutral-100'
-                              }`}>
-                              {link.label}
-                            </Link>
-                          </motion.div>
-                        ))}
-                        <div className="mt-1 border-t border-neutral-100 pt-2 px-2 pb-1">
-                          <Link href="/registro-empleador">
-                            <HoverBorderGradient as="div"
-                              containerClassName="cursor-pointer border-neutral-200 w-full"
-                              backdropClassName="bg-white"
-                              className="w-full flex items-center justify-center px-4 py-2.5 text-sm font-medium text-neutral-700 hover:text-neutral-900">
-                              {t('soEmpleador')}
-                            </HoverBorderGradient>
-                          </Link>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </div>
 
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        </div>
       </div>
+
+      {/* Mobile full-screen menu — outside overflow-hidden container so it covers the full viewport */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            key="mobile-menu"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[210] bg-[#071210]/97 backdrop-blur-sm flex flex-col"
+          >
+            <div className="flex items-center justify-between px-6 py-5">
+              <Link href="/" onClick={() => setMobileOpen(false)}>
+                <Image
+                  src="/logo-litsea-principal.png"
+                  alt="Litsea Centro de Capacitación"
+                  width={120}
+                  height={46}
+                  className="h-10 w-auto object-contain"
+                  priority
+                />
+              </Link>
+              <button onClick={() => setMobileOpen(false)} aria-label="Cerrar menú"
+                className="flex items-center justify-center size-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white">
+                <X className="size-5" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-1 px-4 mt-4">
+              {NAV_LINKS.map((link, i) => (
+                <motion.div key={link.href}
+                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.07, duration: 0.3 }}>
+                  <Link href={link.href} onClick={() => setMobileOpen(false)}
+                    className="block text-2xl font-bold text-white hover:text-[#2FB7A3] transition-colors py-3 px-2 border-b border-white/10">
+                    {link.label}
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
+              <div className="flex justify-start py-2">
+                <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
+              </div>
+              <Link href="/vacantes" onClick={() => setMobileOpen(false)}>
+                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
+                  backdropClassName="bg-[#2FB7A3]"
+                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
+                  {t('vacantes')}
+                </HoverBorderGradient>
+              </Link>
+              <Link href="/registro-empleador" onClick={() => setMobileOpen(false)}>
+                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
+                  backdropClassName="bg-[#2FB7A3]"
+                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
+                  {t('soEmpleador')}
+                </HoverBorderGradient>
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {children}
     </BannerContext.Provider>

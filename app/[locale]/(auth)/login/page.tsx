@@ -1,14 +1,23 @@
 import type { Metadata } from 'next'
-import LoginClient from '@/components/login/LoginClient'
+import { getTranslations } from 'next-intl/server'
+import LoginSelectorClient from '@/components/login/LoginSelectorClient'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Iniciar sesión',
-  description: 'Inicia sesión en Litsea Empleos para acceder a tu panel de terapeuta, empleador o administrador.',
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'pageTitles' })
+  return {
+    title: t('login'),
+    description: t('loginDesc'),
+    robots: { index: false, follow: false },
+  }
 }
 
 export default function LoginPage() {
-  return <LoginClient />
+  return <LoginSelectorClient />
 }

@@ -1,12 +1,21 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { Suspense } from 'react'
 import ResetPasswordConfirmClient from '@/components/login/ResetPasswordConfirmClient'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Nueva contraseña',
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'pageTitles' })
+  return {
+    title: t('nuevaContrasena'),
+    robots: { index: false, follow: false },
+  }
 }
 
 export default function ResetPasswordConfirmPage() {

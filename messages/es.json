@@ -89,6 +89,18 @@
     "cardEmpleadorDesc": "Publica vacantes y accede a terapeutas certificados y verificados por Litsea, listos para trabajar en tu spa.",
     "cardEmpleadorCta": "Publicar vacante"
   },
+  "pageTitles": {
+    "login": "Iniciar sesión",
+    "loginDesc": "Inicia sesión en Litsea Empleos para acceder a tu panel de terapeuta, empleador o administrador.",
+    "loginTerapeuta": "Ingresar como terapeuta",
+    "loginEmpleador": "Ingresar como empresa",
+    "registroTerapeuta": "Registro de terapeuta",
+    "registroTerapeutaDesc": "Crea tu cuenta como terapeuta egresado de Litsea y accede a vacantes en hoteles y spas de lujo en la Riviera Maya.",
+    "registroEmpleador": "Registro de empleador",
+    "registroEmpleadorDesc": "Crea tu cuenta como hotel o spa y publica vacantes para terapeutas certificados por Litsea Centro de Capacitación.",
+    "recuperarContrasena": "Recuperar contraseña",
+    "nuevaContrasena": "Nueva contraseña"
+  },
   "whatsapp": {
     "name": "Litsea Empleos",
     "bubble": "¡Hola! ¿En qué podemos ayudarte? Escríbenos por WhatsApp.",

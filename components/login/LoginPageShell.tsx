@@ -18,7 +18,7 @@ export function LoginPageShell({
   imageAlt = 'Terapeuta certificada Litsea en spa de lujo',
 }: LoginPageShellProps) {
   return (
-    <section className="bg-[#071210] min-h-screen flex flex-col p-3 sm:p-4">
+    <section className="fixed inset-0 z-[300] bg-[#071210] flex flex-col p-3 sm:p-4 overflow-auto">
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}

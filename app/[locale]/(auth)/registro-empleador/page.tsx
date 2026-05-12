@@ -1,12 +1,21 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import RegisterEmpleadorClient from '@/components/login/RegisterEmpleadorClient'
 
 export const dynamic = 'force-dynamic'
 
-export const metadata: Metadata = {
-  title: 'Registro de empleador',
-  description: 'Crea tu cuenta como hotel o spa y publica vacantes para terapeutas certificados por Litsea Centro de Capacitación.',
-  robots: { index: false, follow: false },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'pageTitles' })
+  return {
+    title: t('registroEmpleador'),
+    description: t('registroEmpleadorDesc'),
+    robots: { index: false, follow: false },
+  }
 }
 
 export default function RegisterEmpleadorPage() {

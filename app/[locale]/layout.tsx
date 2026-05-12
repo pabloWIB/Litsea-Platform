@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-import { notFound } from 'next/navigation'
+import { redirect } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import TopBar from '@/components/layout/TopBar'
 import WhatsAppChat from '@/components/ui/WhatsAppChat'
@@ -49,21 +49,25 @@ export async function generateMetadata({
   const m = META[l]
   const url = l === 'es' ? APP_URL : `${APP_URL}/${l}`
 
+  const isSpanish = l === 'es'
+
   return {
     metadataBase: new URL(APP_URL),
     title: { default: m.title, template: '%s | Litsea Empleos' },
     description: m.description,
-    keywords: [
+    keywords: isSpanish ? [
       'bolsa de trabajo terapeutas',
       'empleo spa Riviera Maya',
       'terapeutas certificados Cancún',
       'Litsea Centro de Capacitación',
       'empleo wellness México',
-      'spa therapist jobs Mexico',
-    ],
-    robots: { index: true, follow: true },
+      'vacantes terapeuta certificado',
+    ] : undefined,
+    robots: isSpanish
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
     alternates: {
-      canonical: url,
+      canonical: APP_URL,
       languages: { es: APP_URL, en: `${APP_URL}/en`, fr: `${APP_URL}/fr` },
     },
     openGraph: {
@@ -101,7 +105,7 @@ export default async function LocaleLayout({
   const { locale } = await params
 
   if (!routing.locales.includes(locale as Locale)) {
-    notFound()
+    redirect('/')
   }
 
   const messages = await getMessages()

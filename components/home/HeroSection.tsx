@@ -44,10 +44,9 @@ export default function HeroSection() {
                 <Image
                   src="/logo-litsea-principal.png"
                   alt="Litsea Centro de Capacitación"
-                  width={100}
-                  height={38}
-                  className="object-contain"
-                  style={{ width: 'auto' }}
+                  width={120}
+                  height={46}
+                  className="h-10 w-auto object-contain"
                   priority
                 />
               </Link>
@@ -71,13 +70,13 @@ export default function HeroSection() {
             </div>
 
             <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
-              <div className="flex justify-center py-2">
+              <div className="flex justify-start py-2">
                 <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
               </div>
               <Link href="/login" onClick={() => setOpen(false)}>
-                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer border-neutral-200"
-                  backdropClassName="bg-white"
-                  className="w-full flex items-center justify-center px-6 py-3 text-sm font-medium text-neutral-700">
+                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
+                  backdropClassName="bg-[#2FB7A3]"
+                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
                   {t('ingresar')}
                 </HoverBorderGradient>
               </Link>
@@ -112,7 +111,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 z-10 flex flex-col">
 
           {/* Nav */}
-          <motion.nav className="flex items-center justify-between px-6 md:px-10 py-5 md:py-6" {...fadeDown(0.3)}>
+          <motion.nav className="hidden md:flex items-center justify-between px-6 md:px-10 py-5 md:py-6" {...fadeDown(0.3)}>
             <Link href="/" className="shrink-0">
               <Image
                 src="/logo-litsea-principal.png"
@@ -151,16 +150,16 @@ export default function HeroSection() {
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.62, ease: 'backOut' }}>
                 <Link href="/registro-empleador">
-                  <HoverBorderGradient as="div" containerClassName="cursor-pointer border-neutral-200"
-                    backdropClassName="bg-white"
-                    className="px-5 py-2 text-sm font-medium text-neutral-700 hover:text-neutral-900">
+                  <HoverBorderGradient as="div" containerClassName="cursor-pointer"
+                    backdropClassName="bg-[#2FB7A3]"
+                    className="px-7 py-3 text-sm font-semibold text-white">
                     {t('soEmpleador')}
                   </HoverBorderGradient>
                 </Link>
               </motion.div>
 
               <button onClick={() => setOpen(true)} aria-label="Abrir menú"
-                className="md:hidden flex items-center justify-center size-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white">
+                className="hidden flex items-center justify-center size-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white">
                 <Menu className="size-5" />
               </button>
             </div>

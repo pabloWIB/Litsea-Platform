@@ -19,7 +19,8 @@
       "PowerShell(cd \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^reservador/\" } | Select-Object -First 30)",
       "PowerShell(cd \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"^\\(app|components|i18n|lib|types|messages\\)\" } | Select-Object -First 30)",
       "PowerShell(Get-Content *)",
-      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\" -Recurse)"
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\" -Recurse)",
+      "Bash(Remove-Item *)"
     ]
   }
 }

@@ -89,6 +89,24 @@
     "cardEmpleadorDesc": "Publiez des offres et accédez à des thérapeutes certifiés et vérifiés par Litsea, prêts à travailler dans votre spa.",
     "cardEmpleadorCta": "Publier une offre"
   },
+  "pageTitles": {
+    "login": "Connexion",
+    "loginDesc": "Connectez-vous à Litsea Empleos pour accéder à votre tableau de bord thérapeute, employeur ou administrateur.",
+    "loginTerapeuta": "Connexion thérapeute",
+    "loginEmpleador": "Connexion employeur",
+    "registroTerapeuta": "Inscription thérapeute",
+    "registroTerapeutaDesc": "Créez votre compte en tant que thérapeute diplômé de Litsea et accédez à des offres dans les hôtels et spas de luxe de la Riviera Maya.",
+    "registroEmpleador": "Inscription employeur",
+    "registroEmpleadorDesc": "Créez votre compte en tant qu'hôtel ou spa et publiez des offres pour des thérapeutes certifiés par Litsea Centro de Capacitación.",
+    "recuperarContrasena": "Récupérer le mot de passe",
+    "nuevaContrasena": "Nouveau mot de passe"
+  },
+  "whatsapp": {
+    "name": "Litsea Empleos",
+    "bubble": "Bonjour ! Comment pouvons-nous vous aider ? Écrivez-nous sur WhatsApp.",
+    "startChat": "Ouvrir le chat",
+    "defaultMessage": "Bonjour, j'aimerais en savoir plus sur Litsea Bolsa de Trabajo."
+  },
   "footer": {
     "tagline": "Talent certifié pour les meilleurs spas et hôtels de la Riviera Maya.",
     "platformLabel": "Plateforme",

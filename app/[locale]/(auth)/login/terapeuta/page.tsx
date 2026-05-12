@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { getTranslations } from 'next-intl/server'
-import RegisterTerapeutaClient from '@/components/login/RegisterTerapeutaClient'
+import LoginClient from '@/components/login/LoginClient'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,12 +12,11 @@ export async function generateMetadata({
   const { locale } = await params
   const t = await getTranslations({ locale, namespace: 'pageTitles' })
   return {
-    title: t('registroTerapeuta'),
-    description: t('registroTerapeutaDesc'),
+    title: t('loginTerapeuta'),
     robots: { index: false, follow: false },
   }
 }
 
-export default function RegisterTerapeutaPage() {
-  return <RegisterTerapeutaClient />
+export default function LoginTerapeutaPage() {
+  return <LoginClient variant="terapeuta" />
 }

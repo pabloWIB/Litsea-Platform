@@ -20,6 +20,35 @@ const fadeUp = (delay = 0) => ({
 const inputClass =
   'w-full rounded-xl border border-white/10 bg-white/6 px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-[#2FB7A3]/40 focus:border-[#2FB7A3]/50 transition-all duration-200'
 
+const VARIANTS = {
+  terapeuta: {
+    title:        'Bienvenido, terapeuta',
+    subtitle:     'Accede a tu panel y gestiona tus aplicaciones',
+    image:        '/wellness-login-ilustracion-terapeuta-certificacion-spa.png',
+    imageAlt:     'Terapeuta certificada Litsea',
+    registerHref: '/registro-terapeuta',
+    registerText: '¿Aún no tienes cuenta?',
+    registerCta:  'Crea tu perfil gratis',
+    switchHref:   '/login/empleador',
+    switchText:   '¿Representas un hotel o spa?',
+    switchCta:    'Ingresar como empresa',
+  },
+  empleador: {
+    title:        'Bienvenido, empresa',
+    subtitle:     'Accede a tu panel y gestiona tus vacantes',
+    image:        '/ilustracion-bienestar-aprobacion-documentos-ui.png',
+    imageAlt:     'Panel de empleador Litsea',
+    registerHref: '/registro-empleador',
+    registerText: '¿Aún no tienes cuenta?',
+    registerCta:  'Registra tu empresa',
+    switchHref:   '/login/terapeuta',
+    switchText:   '¿Eres terapeuta egresado?',
+    switchCta:    'Ingresar como terapeuta',
+  },
+} as const
+
+type Variant = keyof typeof VARIANTS
+
 async function getRoleRedirect(
   supabase: ReturnType<typeof createClient>,
   userId: string
@@ -29,19 +58,20 @@ async function getRoleRedirect(
     .select('role')
     .eq('id', userId)
     .single()
-  if (data?.role === 'admin') return '/admin'
+  if (data?.role === 'admin')    return '/admin'
   if (data?.role === 'employer') return '/empleador/dashboard'
   return '/terapeuta/dashboard'
 }
 
-export default function LoginClient() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+export default function LoginClient({ variant = 'terapeuta' }: { variant?: Variant }) {
+  const cfg = VARIANTS[variant]
+  const [email, setEmail]               = useState('')
+  const [password, setPassword]         = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading]           = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [error, setError] = useState('')
-  const router = useRouter()
+  const [error, setError]               = useState('')
+  const router   = useRouter()
   const supabase = createClient()
 
   useEffect(() => {
@@ -85,18 +115,18 @@ export default function LoginClient() {
   }
 
   return (
-    <LoginPageShell>
-      {/* Title */}
+    <LoginPageShell image={cfg.image} imageAlt={cfg.imageAlt}>
+
       <motion.div {...fadeUp(0.45)}>
         <h1 className="text-[1.7rem] font-semibold tracking-tight text-white leading-tight">
-          Bienvenido
+          {cfg.title}
         </h1>
         <p className="mt-1.5 text-[0.88rem] text-white/45 leading-relaxed">
-          Inicia sesión para continuar
+          {cfg.subtitle}
         </p>
       </motion.div>
 
-      {/* Google button */}
+      {/* Google */}
       <motion.div {...fadeUp(0.55)} className="mt-6">
         <HoverBorderGradient
           as="button"
@@ -124,14 +154,12 @@ export default function LoginClient() {
         </HoverBorderGradient>
       </motion.div>
 
-      {/* Divider */}
       <motion.div {...fadeUp(0.62)} className="my-5 flex items-center gap-3">
         <div className="h-px flex-1 bg-white/8" />
         <span className="text-[11px] text-white/25">o con correo</span>
         <div className="h-px flex-1 bg-white/8" />
       </motion.div>
 
-      {/* Error */}
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -8 }}
@@ -145,20 +173,15 @@ export default function LoginClient() {
         </motion.div>
       )}
 
-      {/* Form */}
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
         <motion.div {...fadeUp(0.67)} className="flex flex-col gap-1.5">
           <label htmlFor="email" className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
             Correo electrónico
           </label>
           <input
-            id="email"
-            type="email"
-            value={email}
+            id="email" type="email" value={email}
             onChange={e => setEmail(e.target.value)}
-            required
-            placeholder="tu@correo.com"
-            autoComplete="email"
+            required placeholder="tu@correo.com" autoComplete="email"
             className={inputClass}
           />
         </motion.div>
@@ -178,9 +201,7 @@ export default function LoginClient() {
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-              autoComplete="current-password"
+              required placeholder="••••••••" autoComplete="current-password"
               className={`${inputClass} pr-10`}
             />
             <button
@@ -194,11 +215,9 @@ export default function LoginClient() {
           </div>
         </motion.div>
 
-        {/* Submit */}
         <motion.div {...fadeUp(0.82)}>
           <HoverBorderGradient
-            as="button"
-            type="submit"
+            as="button" type="submit"
             disabled={loading || googleLoading}
             containerClassName="w-full cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
             backdropClassName="bg-[#2FB7A3]"
@@ -215,21 +234,21 @@ export default function LoginClient() {
         </motion.div>
       </form>
 
-      {/* Sign-up links */}
       <motion.div {...fadeUp(0.9)} className="mt-7 flex flex-col gap-2 text-center">
         <p className="text-[12px] text-white/30">
-          ¿Eres terapeuta egresado?{' '}
-          <Link href="/registro-terapeuta" className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">
-            Crea tu cuenta
+          {cfg.registerText}{' '}
+          <Link href={cfg.registerHref} className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">
+            {cfg.registerCta}
           </Link>
         </p>
         <p className="text-[12px] text-white/30">
-          ¿Representas un hotel o spa?{' '}
-          <Link href="/registro-empleador" className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">
-            Publica vacantes
+          {cfg.switchText}{' '}
+          <Link href={cfg.switchHref} className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">
+            {cfg.switchCta}
           </Link>
         </p>
       </motion.div>
+
     </LoginPageShell>
   )
 }

@@ -242,7 +242,7 @@ export default function RegisterEmpleadorClient() {
       <motion.div {...fadeUp(0.94)} className="mt-6 flex flex-col gap-2 text-center">
         <p className="text-[12px] text-white/30">
           ¿Ya tienes cuenta?{' '}
-          <Link href="/login" className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">Inicia sesión</Link>
+          <Link href="/login/empleador" className="text-[#2FB7A3] hover:text-[#3ecfbb] transition-colors font-medium">Inicia sesión</Link>
         </p>
         <p className="text-[12px] text-white/30">
           ¿Eres terapeuta?{' '}
