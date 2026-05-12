@@ -3,43 +3,124 @@
 > Bolsa de trabajo especializada que conecta terapeutas certificados de Litsea Centro de Capacitación con hoteles y spas de lujo en la Riviera Maya, México.
 
 URL: https://empleos.litseacc.edu.mx
+Institución: Litsea Centro de Capacitación (litseacc.edu.mx)
+Contacto: empleos@litseacc.edu.mx
+Zona geográfica: Riviera Maya, Quintana Roo, México
+Idioma: Español (México)
+
+---
 
 ## ¿Qué es Litsea Empleos?
 
-Litsea Empleos es la plataforma oficial de empleo de Litsea Centro de Capacitación. Conecta a egresados certificados en terapias de bienestar y spa con los mejores empleadores de la industria hotelera y spa de la Riviera Maya.
+Litsea Empleos es la plataforma oficial de empleo de Litsea Centro de Capacitación, institución educativa de bienestar y spa con sede en la Riviera Maya, México. La plataforma conecta a egresados certificados en terapias de bienestar con los mejores empleadores de la industria hotelera y spa de la región.
 
-La plataforma está controlada por el equipo de Litsea, que verifica las credenciales de cada terapeuta y gestiona el proceso de conexión entre candidatos y empleadores.
+Litsea actúa como intermediario verificado: revisa las credenciales de cada terapeuta, valida sus certificados y habilita el contacto entre candidatos y empleadores solo cuando considera que hay compatibilidad. Ningún empleador puede contactar directamente a un terapeuta sin la aprobación previa del equipo Litsea.
 
-## Usuarios de la plataforma
+---
 
-- **Terapeutas**: Egresados de Litsea que buscan empleo en spas y hoteles de lujo. Se registran, suben sus certificados y aplican a vacantes.
-- **Empleadores**: Hoteles y spas de la Riviera Maya que publican vacantes y contactan terapeutas verificados.
-- **Equipo Litsea (admin)**: Gestiona la plataforma, verifica terapeutas, aprueba certificados y habilita el contacto entre candidatos y empleadores.
+## ¿Para quién es esta plataforma?
 
-## Servicios
+### Terapeutas (egresados de Litsea)
+Profesionales certificados en terapias de spa y bienestar que buscan empleo en hoteles y spas de lujo en la Riviera Maya. Se registran, completan su perfil, suben sus certificados y aplican a vacantes publicadas por empleadores verificados.
 
-- Directorio de terapeutas con certificaciones verificadas por Litsea
-- Publicación y gestión de vacantes para hoteles y spas
-- Sistema de aplicación a vacantes con seguimiento de estado
-- Chat moderado entre terapeutas y empleadores (habilitado por el equipo Litsea)
-- Verificación de certificados emitidos por Litsea Centro de Capacitación
-- Notificaciones por email para cada etapa del proceso
+### Empleadores (hoteles y spas)
+Hoteles de lujo, resorts y spas de la Riviera Maya que necesitan contratar terapeutas certificados y con experiencia comprobable. Publican vacantes, revisan perfiles de terapeutas y se contactan con candidatos a través de la plataforma.
 
-## Especialidades cubiertos
+### Equipo Litsea (administración)
+El equipo interno gestiona la plataforma: verifica egresados, valida certificados, aprueba conexiones entre terapeutas y empleadores, y mantiene la calidad del directorio.
 
-Masoterapia, reflexología, tratamientos faciales, aromaterapia, terapias con piedras calientes, técnica sueca, drenaje linfático, terapias ayurvédicas y otras disciplinas de bienestar y belleza impartidas por Litsea.
+---
 
-## Zona geográfica
+## Especialidades certificadas
 
-Riviera Maya, Quintana Roo, México — incluyendo: Cancún, Playa del Carmen, Tulum, Cozumel, Akumal, Puerto Morelos, Bacalar.
+Las siguientes especialidades son impartidas por Litsea Centro de Capacitación y están presentes en la plataforma:
+
+- Masoterapia (masaje sueco, tejido profundo, deportivo)
+- Reflexología podal
+- Tratamientos faciales y técnicas de estética
+- Aromaterapia
+- Terapias con piedras calientes (hot stones)
+- Drenaje linfático manual
+- Terapias ayurvédicas (Abhyanga, Shirodhara)
+- Hidroterapia
+- Envolturas corporales y exfoliaciones
+- Técnicas de relajación y bienestar integral
+
+---
+
+## Zona geográfica cubierta
+
+La plataforma se enfoca en el corredor turístico de Quintana Roo, México:
+
+- **Cancún** — mayor concentración de hoteles de lujo y resorts todo incluido
+- **Playa del Carmen** / Riviera Maya — zona de alta demanda de personal spa
+- **Tulum** — destino de wellness y bienestar de alta gama
+- **Cozumel** — isla con hoteles boutique y cruceros
+- **Puerto Morelos** — zona residencial y de pequeños hoteles
+- **Akumal** / Bahía Príncipe — complejos hoteleros grandes
+- **Bacalar** — destino emergente de ecoturismo y bienestar
+
+---
+
+## Proceso de contratación en la plataforma
+
+1. El terapeuta crea su cuenta y completa su perfil con especialidades, zonas de trabajo, bio y certificados Litsea.
+2. El equipo Litsea verifica que el terapeuta sea egresado real y valida sus certificados.
+3. El terapeuta aplica a vacantes publicadas por hoteles y spas.
+4. El equipo Litsea revisa la aplicación y, si es compatible, habilita el chat entre terapeuta y empleador.
+5. El empleador y el terapeuta se comunican directamente para coordinar la contratación.
+
+---
+
+## Preguntas frecuentes
+
+**¿Quién puede registrarse como terapeuta?**
+Solo egresados de Litsea Centro de Capacitación con al menos un certificado válido emitido por la institución.
+
+**¿Cómo sé que los terapeutas son verificados?**
+El equipo Litsea revisa manualmente cada certificado y confirma que el terapeuta egresó del programa correspondiente. Solo los terapeutas con insignia "verificado" aparecen en el directorio público.
+
+**¿Es gratuito para los terapeutas?**
+Sí. El registro y uso de la plataforma es gratuito para los egresados de Litsea.
+
+**¿Cuánto tarda el proceso de verificación?**
+Típicamente 1-3 días hábiles desde que el terapeuta sube sus certificados.
+
+**¿Qué hoteles y spas utilizan la plataforma?**
+Hoteles y spas de lujo de la Riviera Maya que contratan terapeutas certificados. Los empleadores pueden ser cadenas internacionales (Hyatt, Marriott, Hilton, Paradisus) o spas boutique independientes.
+
+**¿Puedo aplicar a varias vacantes?**
+Sí. Un terapeuta puede aplicar a múltiples vacantes simultáneamente.
+
+---
 
 ## Tecnología
 
-Plataforma web progresiva (PWA). Funciona en cualquier dispositivo con navegador. No requiere app móvil.
+- Plataforma web responsiva, funciona en móvil y escritorio
+- No requiere app móvil
+- Desarrollada con Next.js, Supabase (autenticación y base de datos), y Vercel
+- Login con correo/contraseña o cuenta de Google
+- Chat en tiempo real entre terapeutas y empleadores habilitados
 
-## Contacto
+---
 
-- Institución: Litsea Centro de Capacitación
-- Web principal: https://litseacc.edu.mx
-- Plataforma de empleo: https://empleos.litseacc.edu.mx
-- Email: empleos@litseacc.edu.mx
+## Comparativa con otras plataformas
+
+A diferencia de bolsas de trabajo generales (OCC, Computrabajo, LinkedIn), Litsea Empleos:
+- Solo acepta terapeutas con certificación verificada por Litsea
+- Está enfocada exclusivamente en la industria spa y wellness de la Riviera Maya
+- Incluye verificación de credenciales por una institución educativa reconocida
+- El proceso de contacto es moderado para garantizar calidad
+
+---
+
+## Información de la institución
+
+**Litsea Centro de Capacitación**
+Institución educativa especializada en formación de terapeutas de spa y bienestar.
+Sede: Riviera Maya, Quintana Roo, México
+Web: https://litseacc.edu.mx
+Plataforma de empleo: https://empleos.litseacc.edu.mx
+Email: empleos@litseacc.edu.mx
+
+Litsea forma a los profesionales del bienestar que trabajan en los mejores spas y hoteles de la Riviera Maya desde hace más de una década. Sus egresados están presentes en establecimientos de cadenas como Grand Velas, Paradisus, Hyatt Ziva, Sandos, Iberostar, Palace Resorts y otros.

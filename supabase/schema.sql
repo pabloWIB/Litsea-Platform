@@ -1,251 +1,211 @@
-CREATE TYPE user_role         AS ENUM ('admin', 'manager', 'employee');
-CREATE TYPE employment_type   AS ENUM ('full_time', 'part_time', 'contractor');
-CREATE TYPE employee_status   AS ENUM ('active', 'inactive');
-CREATE TYPE project_status    AS ENUM ('active', 'inactive');
-CREATE TYPE report_status     AS ENUM ('draft', 'submitted', 'approved', 'revision_requested');
-CREATE TYPE leave_type        AS ENUM ('annual', 'sick_paid', 'sick_unpaid', 'unpaid', 'other');
-CREATE TYPE leave_status      AS ENUM ('pending', 'approved', 'rejected');
-CREATE TYPE asset_status      AS ENUM ('in_warehouse', 'assigned_to_project', 'assigned_to_employee', 'under_maintenance', 'retired');
-CREATE TYPE asset_location    AS ENUM ('warehouse', 'project', 'employee', 'maintenance', 'retired');
-CREATE TYPE crm_stage         AS ENUM ('lead', 'qualified', 'proposal_sent', 'negotiation', 'won', 'lost');
-CREATE TYPE activity_type     AS ENUM ('note', 'call', 'meeting', 'email');
+-- =====================================================
+-- Litsea Empleos — Schema completo
+-- Aplicar en Supabase SQL Editor
+-- =====================================================
 
-CREATE TABLE users (
+-- Extensiones
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- =====================================================
+-- ENUMS
+-- =====================================================
+
+CREATE TYPE user_role AS ENUM ('therapist', 'employer', 'admin');
+
+CREATE TYPE application_status AS ENUM (
+  'new',
+  'reviewing',
+  'chat_enabled',
+  'hired',
+  'rejected'
+);
+
+-- =====================================================
+-- TABLA: profiles
+-- Extiende auth.users. Un usuario = un perfil.
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  role        user_role NOT NULL DEFAULT 'therapist',
+  full_name   TEXT NOT NULL DEFAULT '',
+  email       TEXT NOT NULL DEFAULT '',
+  phone       TEXT,
+  avatar_url  TEXT,
+  is_active   BOOLEAN NOT NULL DEFAULT true,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- =====================================================
+-- TABLA: therapist_profiles
+-- Datos adicionales del terapeuta
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.therapist_profiles (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  email            TEXT NOT NULL UNIQUE,
-  password_hash    TEXT,                          
-  name             TEXT NOT NULL,
-  role             user_role NOT NULL DEFAULT 'employee',
-  avatar_url       TEXT,
-  is_active        BOOLEAN NOT NULL DEFAULT true,
+  user_id          UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+  specialties      TEXT[] NOT NULL DEFAULT '{}',
+  zones            TEXT[] NOT NULL DEFAULT '{}',
+  bio              TEXT,
+  experience_years INT DEFAULT 0,
+  is_litsea_grad   BOOLEAN NOT NULL DEFAULT false,
+  is_verified      BOOLEAN NOT NULL DEFAULT false,
+  slug             TEXT UNIQUE,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- =====================================================
+-- TABLA: employer_profiles
+-- Datos adicionales del empleador (hotel/spa)
+-- =====================================================
 
-CREATE TABLE employees (
-  id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id                 UUID REFERENCES users(id) ON DELETE SET NULL,
-
-  first_name              TEXT NOT NULL,
-  last_name               TEXT NOT NULL,
-  email                   TEXT NOT NULL UNIQUE,
-  phone                   TEXT,
-  profile_photo_url       TEXT,
-
-  nationality             TEXT,
-  passport_number         TEXT,
-  resident_id_type        TEXT,                  
-  resident_id_number      TEXT,
-
-  department              TEXT,
-  job_title               TEXT,
-  employment_type         employment_type NOT NULL DEFAULT 'full_time',
-  hire_date               DATE,
-  office_location         TEXT,
-  salary                  NUMERIC(12, 2),
-  manager_id              UUID REFERENCES employees(id) ON DELETE SET NULL,
-  status                  employee_status NOT NULL DEFAULT 'active',
-
-  annual_leave_allowance  INT NOT NULL DEFAULT 25,
-  vacation_days_used      INT NOT NULL DEFAULT 0,
-
-  created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE IF NOT EXISTS public.employer_profiles (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id      UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
+  company_name TEXT NOT NULL DEFAULT '',
+  website      TEXT,
+  description  TEXT,
+  logo_url     TEXT,
+  slug         TEXT UNIQUE,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE employee_documents (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id   UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
-  name          TEXT NOT NULL,
-  file_url      TEXT NOT NULL,
-  uploaded_by   UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- =====================================================
+-- TABLA: vacancies
+-- Vacantes publicadas por empleadores
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.vacancies (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  employer_id    UUID NOT NULL REFERENCES public.employer_profiles(id) ON DELETE CASCADE,
+  title          TEXT NOT NULL,
+  description    TEXT NOT NULL,
+  location       TEXT NOT NULL,
+  position_type  TEXT NOT NULL DEFAULT '',
+  contract_type  TEXT NOT NULL DEFAULT '',
+  specialties    TEXT[] NOT NULL DEFAULT '{}',
+  is_featured    BOOLEAN NOT NULL DEFAULT false,
+  is_active      BOOLEAN NOT NULL DEFAULT true,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- =====================================================
+-- TABLA: applications
+-- Aplicaciones de terapeutas a vacantes
+-- =====================================================
 
-
-CREATE TABLE projects (
-  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name              TEXT NOT NULL,
-  contractor_name   TEXT,
-  description       TEXT,
-  item_description  TEXT,
-  status            project_status NOT NULL DEFAULT 'active',
-  created_by        UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE IF NOT EXISTS public.applications (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  vacancy_id   UUID NOT NULL REFERENCES public.vacancies(id) ON DELETE CASCADE,
+  therapist_id UUID NOT NULL REFERENCES public.therapist_profiles(id) ON DELETE CASCADE,
+  status       application_status NOT NULL DEFAULT 'new',
+  notes        TEXT,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(vacancy_id, therapist_id)
 );
 
+-- =====================================================
+-- TABLA: certificates
+-- Certificados subidos por los terapeutas
+-- =====================================================
 
-
-CREATE TABLE time_logs (
-  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  date              DATE NOT NULL,
-  start_time        TIME NOT NULL,
-  end_time          TIME NOT NULL,
-  break_minutes     INT NOT NULL DEFAULT 0,
-  project_id        UUID REFERENCES projects(id) ON DELETE SET NULL,
-  item_description  TEXT,
-  is_contractor     BOOLEAN NOT NULL DEFAULT false,
-  created_by        UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-  created_at        TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
+CREATE TABLE IF NOT EXISTS public.certificates (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  therapist_id UUID NOT NULL REFERENCES public.therapist_profiles(id) ON DELETE CASCADE,
+  title        TEXT NOT NULL,
+  issued_by    TEXT NOT NULL DEFAULT 'Litsea Centro de Capacitación',
+  issued_at    DATE,
+  file_url     TEXT NOT NULL,
+  verified     BOOLEAN NOT NULL DEFAULT false,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE time_log_employees (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  time_log_id   UUID NOT NULL REFERENCES time_logs(id) ON DELETE CASCADE,
-  employee_id   UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
-  UNIQUE (time_log_id, employee_id)
+-- =====================================================
+-- TABLA: conversations
+-- Una conversación por aplicación habilitada
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.conversations (
+  id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  application_id UUID NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE UNIQUE,
+  therapist_id   UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  employer_id    UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  is_active      BOOLEAN NOT NULL DEFAULT false,
+  created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- =====================================================
+-- TABLA: messages
+-- Mensajes dentro de conversaciones
+-- =====================================================
 
-
-CREATE TABLE daily_reports (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id         UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
-  time_log_id         UUID REFERENCES time_logs(id) ON DELETE SET NULL,
-  project_id          UUID REFERENCES projects(id) ON DELETE SET NULL,
-
-  activities_done     TEXT,
-  achievements        TEXT,
-  blockers            TEXT,
-  next_steps          TEXT,
-  additional_notes    TEXT,
-
-  status              report_status NOT NULL DEFAULT 'draft',
-  submitted_at        TIMESTAMPTZ,
-  reviewed_by         UUID REFERENCES users(id) ON DELETE SET NULL,
-  reviewer_comment    TEXT,
-  reviewed_at         TIMESTAMPTZ,
-
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-
-
-CREATE TABLE leave_requests (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  employee_id         UUID NOT NULL REFERENCES employees(id) ON DELETE CASCADE,
-  leave_type          leave_type NOT NULL,
-  start_date          DATE NOT NULL,
-  end_date            DATE NOT NULL,
-  reason              TEXT,
-  status              leave_status NOT NULL DEFAULT 'pending',
-  reviewed_by         UUID REFERENCES users(id) ON DELETE SET NULL,
-  reviewer_comment    TEXT,
-  reviewed_at         TIMESTAMPTZ,
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE leave_documents (
-  id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  leave_request_id    UUID NOT NULL REFERENCES leave_requests(id) ON DELETE CASCADE,
-  name                TEXT NOT NULL,
-  file_url            TEXT NOT NULL,
-  uploaded_by         UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at          TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-
-
-CREATE TABLE assets (
-  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name                  TEXT NOT NULL,
-  serial_number         TEXT NOT NULL UNIQUE,
-  category              TEXT,
-  purchase_date         DATE,
-  status                asset_status NOT NULL DEFAULT 'in_warehouse',
-  current_project_id    UUID REFERENCES projects(id) ON DELETE SET NULL,
-  current_employee_id   UUID REFERENCES employees(id) ON DELETE SET NULL,
-  created_by            UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at            TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at            TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE asset_transfers (
-  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  asset_id              UUID NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-  from_location         asset_location NOT NULL,
-  from_project_id       UUID REFERENCES projects(id) ON DELETE SET NULL,
-  from_employee_id      UUID REFERENCES employees(id) ON DELETE SET NULL,
-  to_location           asset_location NOT NULL,
-  to_project_id         UUID REFERENCES projects(id) ON DELETE SET NULL,
-  to_employee_id        UUID REFERENCES employees(id) ON DELETE SET NULL,
-  delivery_note_url     TEXT,
-  notes                 TEXT,
-  transferred_by        UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-  transferred_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-CREATE TABLE asset_maintenance_logs (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  asset_id      UUID NOT NULL REFERENCES assets(id) ON DELETE CASCADE,
-  date          DATE NOT NULL,
-  cost          NUMERIC(10, 2),
-  description   TEXT NOT NULL,
-  technician    TEXT,
-  document_url  TEXT,
-  created_by    UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-
-
-
-CREATE TABLE crm_contacts (
+CREATE TABLE IF NOT EXISTS public.messages (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name            TEXT NOT NULL,
-  company         TEXT,
-  email           TEXT,
-  phone           TEXT,
-  country         TEXT,
-  pipeline_stage  crm_stage NOT NULL DEFAULT 'lead',
-  assigned_to     UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_by      UUID REFERENCES users(id) ON DELETE SET NULL,
-  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  conversation_id UUID NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,
+  sender_id       UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
+  body            TEXT NOT NULL,
+  read_at         TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE TABLE crm_activities (
-  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  contact_id    UUID NOT NULL REFERENCES crm_contacts(id) ON DELETE CASCADE,
-  type          activity_type NOT NULL,
-  content       TEXT NOT NULL,
-  created_by    UUID NOT NULL REFERENCES users(id) ON DELETE RESTRICT,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
+-- =====================================================
+-- TABLA: audit_logs
+-- Historial de acciones del equipo admin
+-- =====================================================
+
+CREATE TABLE IF NOT EXISTS public.audit_logs (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  admin_id   UUID NOT NULL REFERENCES public.profiles(id) ON DELETE SET NULL,
+  action     TEXT NOT NULL,
+  module     TEXT NOT NULL,
+  record_id  TEXT,
+  details    JSONB,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- =====================================================
+-- TABLA: settings
+-- Configuración dinámica del sitio
+-- =====================================================
 
+CREATE TABLE IF NOT EXISTS public.settings (
+  key        TEXT PRIMARY KEY,
+  value      JSONB NOT NULL,
+  updated_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
-CREATE INDEX idx_employees_user_id      ON employees(user_id);
-CREATE INDEX idx_employees_manager_id   ON employees(manager_id);
-CREATE INDEX idx_employees_department   ON employees(department);
-CREATE INDEX idx_employees_status       ON employees(status);
+-- Valores iniciales de settings
+INSERT INTO public.settings (key, value) VALUES
+  ('allow_registrations', 'true'),
+  ('home_title',    '"Conectamos terapeutas con el lujo"'),
+  ('home_subtitle', '"Encuentra tu lugar en los mejores spas y hoteles de la Riviera Maya"')
+ON CONFLICT (key) DO NOTHING;
 
-CREATE INDEX idx_time_logs_date         ON time_logs(date);
-CREATE INDEX idx_time_logs_project_id   ON time_logs(project_id);
-CREATE INDEX idx_time_log_employees_emp ON time_log_employees(employee_id);
+-- =====================================================
+-- ÍNDICES
+-- =====================================================
 
-CREATE INDEX idx_daily_reports_employee ON daily_reports(employee_id);
-CREATE INDEX idx_daily_reports_status   ON daily_reports(status);
+CREATE INDEX IF NOT EXISTS idx_vacancies_employer   ON public.vacancies(employer_id);
+CREATE INDEX IF NOT EXISTS idx_vacancies_active     ON public.vacancies(is_active, is_featured);
+CREATE INDEX IF NOT EXISTS idx_applications_vacancy  ON public.applications(vacancy_id);
+CREATE INDEX IF NOT EXISTS idx_applications_therapist ON public.applications(therapist_id);
+CREATE INDEX IF NOT EXISTS idx_applications_status   ON public.applications(status);
+CREATE INDEX IF NOT EXISTS idx_certificates_therapist ON public.certificates(therapist_id);
+CREATE INDEX IF NOT EXISTS idx_messages_conversation ON public.messages(conversation_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_admin      ON public.audit_logs(admin_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_therapist_verified    ON public.therapist_profiles(is_verified);
 
-CREATE INDEX idx_leave_employee_id      ON leave_requests(employee_id);
-CREATE INDEX idx_leave_status           ON leave_requests(status);
+-- =====================================================
+-- TRIGGER: updated_at automático
+-- =====================================================
 
-CREATE INDEX idx_assets_serial          ON assets(serial_number);
-CREATE INDEX idx_assets_status          ON assets(status);
-CREATE INDEX idx_asset_transfers_asset  ON asset_transfers(asset_id);
-
-CREATE INDEX idx_crm_contacts_assigned  ON crm_contacts(assigned_to);
-CREATE INDEX idx_crm_contacts_stage     ON crm_contacts(pipeline_stage);
-CREATE INDEX idx_crm_activities_contact ON crm_activities(contact_id);
-
-
-
-CREATE OR REPLACE FUNCTION update_updated_at()
+CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = NOW();
@@ -253,34 +213,60 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trg_users_updated_at
-  BEFORE UPDATE ON users
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE TRIGGER trg_profiles_updated_at
+  BEFORE UPDATE ON public.profiles
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
-CREATE TRIGGER trg_employees_updated_at
-  BEFORE UPDATE ON employees
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE TRIGGER trg_therapist_profiles_updated_at
+  BEFORE UPDATE ON public.therapist_profiles
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
-CREATE TRIGGER trg_projects_updated_at
-  BEFORE UPDATE ON projects
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE TRIGGER trg_employer_profiles_updated_at
+  BEFORE UPDATE ON public.employer_profiles
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
-CREATE TRIGGER trg_time_logs_updated_at
-  BEFORE UPDATE ON time_logs
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE TRIGGER trg_vacancies_updated_at
+  BEFORE UPDATE ON public.vacancies
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
-CREATE TRIGGER trg_daily_reports_updated_at
-  BEFORE UPDATE ON daily_reports
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE TRIGGER trg_applications_updated_at
+  BEFORE UPDATE ON public.applications
+  FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
-CREATE TRIGGER trg_leave_requests_updated_at
-  BEFORE UPDATE ON leave_requests
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+-- =====================================================
+-- TRIGGER: crear perfil al registrar usuario
+-- =====================================================
 
-CREATE TRIGGER trg_assets_updated_at
-  BEFORE UPDATE ON assets
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, role, full_name)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE((NEW.raw_user_meta_data->>'role')::user_role, 'therapist'),
+    COALESCE(NEW.raw_user_meta_data->>'full_name', '')
+  );
 
-CREATE TRIGGER trg_crm_contacts_updated_at
-  BEFORE UPDATE ON crm_contacts
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at();
+  -- Si es terapeuta, crear therapist_profile vacío
+  IF COALESCE(NEW.raw_user_meta_data->>'role', 'therapist') = 'therapist' THEN
+    INSERT INTO public.therapist_profiles (user_id)
+    VALUES (NEW.id);
+  END IF;
+
+  -- Si es empleador, crear employer_profile con company_name si viene en metadata
+  IF NEW.raw_user_meta_data->>'role' = 'employer' THEN
+    INSERT INTO public.employer_profiles (user_id, company_name)
+    VALUES (
+      NEW.id,
+      COALESCE(NEW.raw_user_meta_data->>'company_name', '')
+    );
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+CREATE OR REPLACE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();

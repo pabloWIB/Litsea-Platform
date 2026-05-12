@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import { LoginPageShell } from './LoginPageShell'
 
 const inputClass =
-  'w-full rounded-lg border border-white/10 bg-white/6 px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/50 transition-all duration-200'
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 transition-all duration-200'
 
 export default function ResetPasswordClient() {
   const [email, setEmail] = useState('')
@@ -35,9 +35,9 @@ export default function ResetPasswordClient() {
   return (
     <LoginPageShell>
       {sent ? (
-        <div className="flex flex-col items-center text-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-green-500/15 border border-green-500/20 flex items-center justify-center">
-            <CheckCircle className="h-7 w-7 text-green-400" />
+        <div className="flex flex-col items-center text-center gap-5">
+          <div className="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
+            <CheckCircle className="h-7 w-7 text-emerald-400" />
           </div>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-white">Revisa tu correo</h1>
@@ -47,7 +47,7 @@ export default function ResetPasswordClient() {
           </div>
           <p className="text-xs text-white/30">
             ¿No lo recibiste?{' '}
-            <button onClick={() => setSent(false)} className="text-white/50 underline underline-offset-2 hover:text-white transition-colors">
+            <button onClick={() => setSent(false)} className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2 transition-colors">
               Intentar de nuevo
             </button>
           </p>
@@ -91,7 +91,7 @@ export default function ResetPasswordClient() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-purple-700 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-purple-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-emerald-700 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading && (
                 <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">

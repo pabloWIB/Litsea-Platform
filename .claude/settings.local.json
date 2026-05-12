@@ -1,16 +1,25 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install *)",
-      "Bash(Remove-Item -Recurse -Force \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\lib\\\\google\")",
-      "Bash(Remove-Item -Force \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\api\\\\reservations\\\\route.ts\")",
-      "Bash(rm -rf \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\lib\\\\google\")",
-      "Bash(rm -f \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\api\\\\reservations\\\\route.ts\")",
-      "Bash(npm run *)",
-      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(npx tsc *)",
+      "Bash(npm rebuild *)",
+      "Bash(Select-String -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\node_modules\\\\lightningcss\\\\node\\\\index.js\" -Pattern \"win32\")",
+      "Bash(Select-Object -First 10)",
+      "Bash(node -e \"require\\('lightningcss-win32-x64-msvc'\\)\")",
+      "Bash(node *)",
       "Bash(curl -s http://localhost:3000/robots.txt)",
-      "Bash(curl -s -o /dev/null -w \"login: %{http_code}\\\\n\" http://localhost:3000/login)",
-      "Bash(curl -s http://localhost:3000)"
+      "Bash(npm install *)",
+      "Bash(Get-ChildItem -Recurse -File \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Reservador\")",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "Bash(Format-Table -AutoSize)",
+      "Bash(rm \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\\\(public\\)\\\\vacantes\\\\[id]\\\\page.tsx\")",
+      "Bash(rm \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\\\(public\\)\\\\terapeutas\\\\[id]\\\\page.tsx\")",
+      "Bash(rm \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\\\(dashboard\\)\\\\empleador\\\\vacantes\\\\[id]\\\\editar\\\\page.tsx\")",
+      "PowerShell(cd \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -notmatch \"^reservador/\" } | Select-Object -First 30)",
+      "PowerShell(cd \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"^\\(app|components|i18n|lib|types|messages\\)\" } | Select-Object -First 30)",
+      "PowerShell(Get-Content *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\" -Recurse)"
     ]
   }
 }

@@ -9,7 +9,7 @@ import { createClient } from '@/lib/supabase/client'
 import { LoginPageShell } from './LoginPageShell'
 
 const inputClass =
-  'w-full rounded-lg border border-white/10 bg-white/6 px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500/50 transition-all duration-200'
+  'w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/50 transition-all duration-200'
 
 export default function ResetPasswordConfirmClient() {
   const [password, setPassword] = useState('')
@@ -31,7 +31,8 @@ export default function ResetPasswordConfirmClient() {
     const type = hashParams.get('type')
 
     if (accessToken && type === 'recovery') {
-      supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
+      supabase.auth
+        .setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
         .then(({ error: sessionError }) => {
           if (sessionError) setError('El enlace ha expirado. Solicita uno nuevo.')
         })
@@ -66,7 +67,7 @@ export default function ResetPasswordConfirmClient() {
     if (password.length < 6) return { label: 'Muy corta', color: 'bg-red-500', width: 'w-1/4' }
     if (password.length < 8) return { label: 'Débil', color: 'bg-orange-400', width: 'w-2/4' }
     if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) return { label: 'Regular', color: 'bg-yellow-400', width: 'w-3/4' }
-    return { label: 'Fuerte', color: 'bg-green-500', width: 'w-full' }
+    return { label: 'Fuerte', color: 'bg-emerald-500', width: 'w-full' }
   })()
 
   const isLinkError = !done && error && password === '' && passwordConfirm === ''
@@ -74,9 +75,9 @@ export default function ResetPasswordConfirmClient() {
   return (
     <LoginPageShell>
       {done && (
-        <div className="flex flex-col items-center text-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-green-500/15 border border-green-500/20 flex items-center justify-center">
-            <CheckCircle className="h-7 w-7 text-green-400" />
+        <div className="flex flex-col items-center text-center gap-5">
+          <div className="w-14 h-14 rounded-full bg-emerald-500/15 border border-emerald-500/25 flex items-center justify-center">
+            <CheckCircle className="h-7 w-7 text-emerald-400" />
           </div>
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-white">¡Contraseña actualizada!</h1>
@@ -98,7 +99,7 @@ export default function ResetPasswordConfirmClient() {
             <p className="text-xs text-red-400 leading-relaxed">{error}</p>
           </div>
           <div className="mt-5 flex flex-col gap-2">
-            <Link href="/reset-password" className="flex w-full items-center justify-center rounded-lg bg-purple-700 px-6 py-2.5 text-sm font-semibold text-white hover:bg-purple-600 transition-all">
+            <Link href="/reset-password" className="flex w-full items-center justify-center rounded-lg bg-emerald-700 px-6 py-2.5 text-sm font-semibold text-white hover:bg-emerald-600 transition-all">
               Solicitar nuevo enlace
             </Link>
             <Link href="/login" className="flex items-center justify-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors mt-1">
@@ -180,7 +181,7 @@ export default function ResetPasswordConfirmClient() {
             <button
               type="submit"
               disabled={loading || !password || !passwordConfirm}
-              className="mt-1 flex w-full items-center justify-center gap-2 rounded-lg bg-purple-700 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-purple-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-1 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-emerald-700 px-6 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading && (
                 <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">

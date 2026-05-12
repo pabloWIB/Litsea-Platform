@@ -1,0 +1,112 @@
+{
+  "nav": {
+    "vacantes": "Offres",
+    "terapeutas": "Thérapeutes",
+    "comoFunciona": "Comment ça marche",
+    "ingresar": "Connexion",
+    "soTerapeuta": "Je suis thérapeute",
+    "soEmpleador": "Je suis employeur"
+  },
+  "banner": {
+    "text": "La bourse d'emploi officielle de Litsea est maintenant en ligne.",
+    "textShort": "Litsea Empleos est maintenant en ligne.",
+    "cta": "Créer votre profil gratuitement →"
+  },
+  "hero": {
+    "badge": "Bourse d'emploi · Riviera Maya",
+    "title1": "Nous connectons",
+    "title2": "les thérapeutes",
+    "title3": "avec le luxe.",
+    "subtitle": "La plateforme d'emploi officielle de Litsea Centro de Capacitación. Thérapeutes vérifiés pour hôtels et spas de luxe à Cancún, Playa del Carmen et Tulum.",
+    "ctaVacantes": "Voir les offres",
+    "ctaEmpleador": "Je suis employeur"
+  },
+  "vacantesDestacadas": {
+    "label": "Opportunités",
+    "title1": "Offres",
+    "title2": "à la une.",
+    "verTodas": "Voir toutes les offres →",
+    "verVacante": "Voir l'offre"
+  },
+  "terapeutasDestacados": {
+    "label": "Talents certifiés",
+    "title1": "Thérapeutes",
+    "title2": "à la une.",
+    "verDirectorio": "Voir l'annuaire →",
+    "verPerfil": "Voir le profil →"
+  },
+  "redEmpleadores": {
+    "label": "Réseau d'employeurs",
+    "title1": "Hôtels et spas",
+    "title2": "participants.",
+    "subtitle": "Les meilleurs établissements de bien-être de la Riviera Maya font confiance à Litsea pour trouver des talents certifiés."
+  },
+  "howItWorks": {
+    "label": "Le processus",
+    "title1": "Comment ça",
+    "title2": "marche.",
+    "step1Title": "Créez votre profil",
+    "step1Desc": "Les thérapeutes enregistrent leur profil professionnel, leurs techniques certifiées et les zones où ils peuvent travailler.",
+    "step2Title": "Postulez aux offres",
+    "step2Desc": "Les hôtels publient des opportunités d'emploi et les thérapeutes peuvent postuler directement depuis la plateforme.",
+    "step3Title": "Litsea connecte",
+    "step3Desc": "L'équipe Litsea examine les candidatures et active le chat entre le thérapeute et l'employeur.",
+    "step4Title": "Opportunité d'emploi",
+    "step4Desc": "L'hôtel interviewe le thérapeute et le recrutement est finalisé.",
+    "stat1Value": "100%",
+    "stat1Label": "Thérapeutes vérifiés",
+    "stat2Value": "Gratuit",
+    "stat2Label": "Pour les diplômés Litsea",
+    "stat3Value": "Riviera Maya",
+    "stat3Label": "Cancún · PDC · Tulum"
+  },
+  "paraEmpleadores": {
+    "label": "Pour les employeurs",
+    "title1": "Trouvez le",
+    "title2": "thérapeute idéal.",
+    "subtitle": "Accédez à un réseau exclusif de professionnels du bien-être, prêts à élever l'expérience de votre spa ou hôtel.",
+    "cta": "Publier une offre",
+    "benefit1Title": "Talent Certifié",
+    "benefit1Desc": "Tous les thérapeutes sont des diplômés vérifiés de Litsea Centro de Capacitación. Zéro risque de faux profils.",
+    "benefit2Title": "Profils Sélectionnés",
+    "benefit2Desc": "Nous examinons et validons chaque profil pour garantir la qualité et le professionnalisme avant de le montrer aux employeurs.",
+    "benefit3Title": "Recrutement Agile",
+    "benefit3Desc": "Publiez des offres et connectez-vous avec des candidats qualifiés en un temps record, sans intermédiaires inutiles."
+  },
+  "ctaFinal": {
+    "label": "Rejoignez-nous",
+    "title1": "Le bien-être de luxe",
+    "title2": "a besoin de talents exceptionnels.",
+    "subtitle": "Rejoignez la plateforme qui transforme la façon dont les meilleurs spas et hôtels trouvent leurs thérapeutes.",
+    "cardTerapeutaLabel": "Pour les thérapeutes",
+    "cardTerapeutaTitle1": "Votre carrière dans",
+    "cardTerapeutaTitle2": "le meilleur spa.",
+    "cardTerapeutaDesc": "Inscrivez-vous, téléchargez votre certificat Litsea et postulez aux offres des hôtels les plus exclusifs de la Riviera Maya.",
+    "cardTerapeutaCta": "Créer un compte gratuit",
+    "cardEmpleadorLabel": "Pour les employeurs",
+    "cardEmpleadorTitle1": "Le talent que",
+    "cardEmpleadorTitle2": "vous cherchiez.",
+    "cardEmpleadorDesc": "Publiez des offres et accédez à des thérapeutes certifiés et vérifiés par Litsea, prêts à travailler dans votre spa.",
+    "cardEmpleadorCta": "Publier une offre"
+  },
+  "footer": {
+    "tagline": "Talent certifié pour les meilleurs spas et hôtels de la Riviera Maya.",
+    "platformLabel": "Plateforme",
+    "terapeutasLabel": "Thérapeutes",
+    "empleadoresLabel": "Employeurs",
+    "verVacantes": "Voir les offres",
+    "directorioTerapeutas": "Annuaire des thérapeutes",
+    "comoFunciona": "Comment ça marche",
+    "crearCuentaGratis": "Créer un compte gratuit",
+    "iniciarSesion": "Connexion",
+    "miPerfil": "Mon profil",
+    "misCertificados": "Mes certificats",
+    "publicarVacante": "Publier une offre",
+    "crearCuenta": "Créer un compte",
+    "verAplicaciones": "Voir les candidatures",
+    "copyright": "© {year} Litsea Centro de Capacitación · Riviera Maya, Quintana Roo, Mexique",
+    "privacidad": "Confidentialité",
+    "terminos": "Conditions",
+    "cookies": "Cookies"
+  }
+}

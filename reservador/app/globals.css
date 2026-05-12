@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background: #fff;
+  color: rgb(var(--foreground-rgb));
+  display: flex;
+  flex-direction: column;
+}
+
+#__next {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Estilos para react-big-calendar en dispositivos móviles */
+@media (max-width: 768px) {
+  .rbc-calendar {
+    font-size: 12px;
+  }
+
+  .rbc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .rbc-toolbar-label {
+    margin: 10px 0;
+  }
+
+  .rbc-btn-group {
+    margin-bottom: 10px;
+  }
+
+  .rbc-event {
+    padding: 2px;
+  }
+}
+
+/* Estilos para inputs y selects */
+input, select, textarea {
+  color: #1a202c;
+  background-color: #ffffff !important;
+}
+
+/* Estilos para placeholders */
+input::placeholder, textarea::placeholder {
+  color: #000000;
+  opacity: 0.7;
+}
+

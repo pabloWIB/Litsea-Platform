@@ -1,239 +1,213 @@
-CREATE OR REPLACE FUNCTION current_user_role()
+-- =====================================================
+-- Litsea Empleos — Row Level Security
+-- Aplicar DESPUÉS de schema.sql
+-- =====================================================
+
+-- =====================================================
+-- HABILITAR RLS
+-- =====================================================
+
+ALTER TABLE public.profiles           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.therapist_profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.employer_profiles  ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.vacancies          ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.applications       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.certificates       ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.conversations      ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.messages           ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.audit_logs         ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.settings           ENABLE ROW LEVEL SECURITY;
+
+-- Helper: rol del usuario actual
+CREATE OR REPLACE FUNCTION public.current_user_role()
 RETURNS TEXT AS $$
-  SELECT role::TEXT FROM users WHERE id = auth.uid()
+  SELECT role::TEXT FROM public.profiles WHERE id = auth.uid()
 $$ LANGUAGE sql SECURITY DEFINER STABLE;
 
-CREATE OR REPLACE FUNCTION current_employee_id()
-RETURNS UUID AS $$
-  SELECT id FROM employees WHERE user_id = auth.uid()
-$$ LANGUAGE sql SECURITY DEFINER STABLE;
+-- =====================================================
+-- POLÍTICAS: profiles
+-- =====================================================
 
-ALTER TABLE users                  ENABLE ROW LEVEL SECURITY;
-ALTER TABLE employees              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE employee_documents     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE projects               ENABLE ROW LEVEL SECURITY;
-ALTER TABLE time_logs              ENABLE ROW LEVEL SECURITY;
-ALTER TABLE time_log_employees     ENABLE ROW LEVEL SECURITY;
-ALTER TABLE daily_reports          ENABLE ROW LEVEL SECURITY;
-ALTER TABLE leave_requests         ENABLE ROW LEVEL SECURITY;
-ALTER TABLE leave_documents        ENABLE ROW LEVEL SECURITY;
-ALTER TABLE assets                 ENABLE ROW LEVEL SECURITY;
-ALTER TABLE asset_transfers        ENABLE ROW LEVEL SECURITY;
-ALTER TABLE asset_maintenance_logs ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crm_contacts           ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crm_activities         ENABLE ROW LEVEL SECURITY;
+-- Cualquiera puede leer perfiles públicos activos
+CREATE POLICY "profiles: lectura pública"
+  ON public.profiles FOR SELECT
+  USING (is_active = true);
 
-CREATE POLICY "users: read own row"
-  ON users FOR SELECT
+-- Usuario solo edita su propio perfil
+CREATE POLICY "profiles: editar propio"
+  ON public.profiles FOR UPDATE
   USING (id = auth.uid());
 
-CREATE POLICY "users: admin full access"
-  ON users FOR ALL
-  USING (current_user_role() = 'admin');
+-- Admin lee y edita todos
+CREATE POLICY "profiles: admin acceso total"
+  ON public.profiles FOR ALL
+  USING (public.current_user_role() = 'admin');
 
-CREATE POLICY "employees: read own record"
-  ON employees FOR SELECT
+-- =====================================================
+-- POLÍTICAS: therapist_profiles
+-- =====================================================
+
+-- Lectura pública de terapeutas verificados
+CREATE POLICY "therapist_profiles: lectura pública verificados"
+  ON public.therapist_profiles FOR SELECT
+  USING (is_verified = true);
+
+-- Terapeuta lee y edita su propio perfil
+CREATE POLICY "therapist_profiles: propietario"
+  ON public.therapist_profiles FOR ALL
   USING (user_id = auth.uid());
 
-CREATE POLICY "employees: manager and admin read all"
-  ON employees FOR SELECT
-  USING (current_user_role() IN ('manager', 'admin'));
+-- Admin acceso total
+CREATE POLICY "therapist_profiles: admin"
+  ON public.therapist_profiles FOR ALL
+  USING (public.current_user_role() = 'admin');
 
-CREATE POLICY "employees: admin write"
-  ON employees FOR INSERT
-  WITH CHECK (current_user_role() = 'admin');
+-- =====================================================
+-- POLÍTICAS: employer_profiles
+-- =====================================================
 
-CREATE POLICY "employees: admin update"
-  ON employees FOR UPDATE
-  USING (current_user_role() = 'admin');
+-- Lectura pública de empleadores
+CREATE POLICY "employer_profiles: lectura pública"
+  ON public.employer_profiles FOR SELECT
+  USING (true);
 
-CREATE POLICY "employees: admin delete"
-  ON employees FOR DELETE
-  USING (current_user_role() = 'admin');
+-- Empleador edita su propio perfil
+CREATE POLICY "employer_profiles: propietario"
+  ON public.employer_profiles FOR ALL
+  USING (user_id = auth.uid());
 
+-- Admin acceso total
+CREATE POLICY "employer_profiles: admin"
+  ON public.employer_profiles FOR ALL
+  USING (public.current_user_role() = 'admin');
 
-CREATE POLICY "employee_documents: read own"
-  ON employee_documents FOR SELECT
+-- =====================================================
+-- POLÍTICAS: vacancies
+-- =====================================================
+
+-- Lectura pública de vacantes activas
+CREATE POLICY "vacancies: lectura pública activas"
+  ON public.vacancies FOR SELECT
+  USING (is_active = true);
+
+-- Empleador crea y edita sus propias vacantes
+CREATE POLICY "vacancies: empleador propietario"
+  ON public.vacancies FOR ALL
   USING (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "employee_documents: manager and admin write"
-  ON employee_documents FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
-
-
-CREATE POLICY "projects: all authenticated users can read"
-  ON projects FOR SELECT
-  USING (auth.uid() IS NOT NULL);
-
-CREATE POLICY "projects: admin write"
-  ON projects FOR INSERT
-  WITH CHECK (current_user_role() = 'admin');
-
-CREATE POLICY "projects: admin update"
-  ON projects FOR UPDATE
-  USING (current_user_role() = 'admin');
-
-CREATE POLICY "projects: admin delete"
-  ON projects FOR DELETE
-  USING (current_user_role() = 'admin');
-
-
-CREATE POLICY "time_logs: employee reads own entries"
-  ON time_logs FOR SELECT
-  USING (
-    current_user_role() IN ('manager', 'admin')
-    OR EXISTS (
-      SELECT 1 FROM time_log_employees tle
-      WHERE tle.time_log_id = id
-        AND tle.employee_id = current_employee_id()
+    employer_id IN (
+      SELECT id FROM public.employer_profiles WHERE user_id = auth.uid()
     )
   );
 
-CREATE POLICY "time_logs: manager and admin write"
-  ON time_logs FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
+-- Admin acceso total
+CREATE POLICY "vacancies: admin"
+  ON public.vacancies FOR ALL
+  USING (public.current_user_role() = 'admin');
 
+-- =====================================================
+-- POLÍTICAS: applications
+-- =====================================================
 
-CREATE POLICY "time_log_employees: read"
-  ON time_log_employees FOR SELECT
+-- Terapeuta ve sus propias aplicaciones
+CREATE POLICY "applications: terapeuta propietario"
+  ON public.applications FOR ALL
   USING (
-    current_user_role() IN ('manager', 'admin')
-    OR employee_id = current_employee_id()
-  );
-
-CREATE POLICY "time_log_employees: manager and admin write"
-  ON time_log_employees FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
-
-
-CREATE POLICY "daily_reports: employee reads and writes own"
-  ON daily_reports FOR SELECT
-  USING (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "daily_reports: employee insert"
-  ON daily_reports FOR INSERT
-  WITH CHECK (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "daily_reports: update own or manager review"
-  ON daily_reports FOR UPDATE
-  USING (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-
-CREATE POLICY "leave_requests: employee reads own"
-  ON leave_requests FOR SELECT
-  USING (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "leave_requests: employee submits own"
-  ON leave_requests FOR INSERT
-  WITH CHECK (
-    employee_id = current_employee_id()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "leave_requests: manager and admin update"
-  ON leave_requests FOR UPDATE
-  USING (current_user_role() IN ('manager', 'admin'));
-
-
-CREATE POLICY "leave_documents: read own or manager"
-  ON leave_documents FOR SELECT
-  USING (
-    current_user_role() IN ('manager', 'admin')
-    OR EXISTS (
-      SELECT 1 FROM leave_requests lr
-      WHERE lr.id = leave_request_id
-        AND lr.employee_id = current_employee_id()
+    therapist_id IN (
+      SELECT id FROM public.therapist_profiles WHERE user_id = auth.uid()
     )
   );
 
-CREATE POLICY "leave_documents: write own or manager"
-  ON leave_documents FOR ALL
+-- Empleador ve aplicaciones a sus vacantes
+CREATE POLICY "applications: empleador ve sus vacantes"
+  ON public.applications FOR SELECT
   USING (
-    current_user_role() IN ('manager', 'admin')
-    OR EXISTS (
-      SELECT 1 FROM leave_requests lr
-      WHERE lr.id = leave_request_id
-        AND lr.employee_id = current_employee_id()
+    vacancy_id IN (
+      SELECT v.id FROM public.vacancies v
+      JOIN public.employer_profiles ep ON ep.id = v.employer_id
+      WHERE ep.user_id = auth.uid()
     )
   );
 
+-- Admin acceso total
+CREATE POLICY "applications: admin"
+  ON public.applications FOR ALL
+  USING (public.current_user_role() = 'admin');
 
-CREATE POLICY "assets: manager and admin read"
-  ON assets FOR SELECT
-  USING (current_user_role() IN ('manager', 'admin'));
+-- =====================================================
+-- POLÍTICAS: certificates
+-- =====================================================
 
-CREATE POLICY "assets: manager and admin write"
-  ON assets FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
-
-
-CREATE POLICY "asset_transfers: manager and admin"
-  ON asset_transfers FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
-
--- ─── asset_maintenance_logs ──────────────────────────────────────────────────
-
-CREATE POLICY "asset_maintenance_logs: manager and admin"
-  ON asset_maintenance_logs FOR ALL
-  USING (current_user_role() IN ('manager', 'admin'));
-
-
-CREATE POLICY "crm_contacts: rep sees own, manager sees all"
-  ON crm_contacts FOR SELECT
+-- Propietario gestiona sus certificados
+CREATE POLICY "certificates: propietario"
+  ON public.certificates FOR ALL
   USING (
-    assigned_to = auth.uid()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "crm_contacts: manager and admin insert"
-  ON crm_contacts FOR INSERT
-  WITH CHECK (current_user_role() IN ('manager', 'admin'));
-
-CREATE POLICY "crm_contacts: rep updates own, manager updates all"
-  ON crm_contacts FOR UPDATE
-  USING (
-    assigned_to = auth.uid()
-    OR current_user_role() IN ('manager', 'admin')
-  );
-
-CREATE POLICY "crm_contacts: admin delete only"
-  ON crm_contacts FOR DELETE
-  USING (current_user_role() = 'admin');
-
-
-CREATE POLICY "crm_activities: read if contact is accessible"
-  ON crm_activities FOR SELECT
-  USING (
-    current_user_role() IN ('manager', 'admin')
-    OR EXISTS (
-      SELECT 1 FROM crm_contacts c
-      WHERE c.id = contact_id
-        AND c.assigned_to = auth.uid()
+    therapist_id IN (
+      SELECT id FROM public.therapist_profiles WHERE user_id = auth.uid()
     )
   );
 
-CREATE POLICY "crm_activities: insert if contact is accessible"
-  ON crm_activities FOR INSERT
-  WITH CHECK (
-    current_user_role() IN ('manager', 'admin')
-    OR EXISTS (
-      SELECT 1 FROM crm_contacts c
-      WHERE c.id = contact_id
-        AND c.assigned_to = auth.uid()
-    )
+-- Admin acceso total (para verificar)
+CREATE POLICY "certificates: admin"
+  ON public.certificates FOR ALL
+  USING (public.current_user_role() = 'admin');
+
+-- =====================================================
+-- POLÍTICAS: conversations
+-- =====================================================
+
+-- Solo participantes y admin
+CREATE POLICY "conversations: participantes"
+  ON public.conversations FOR SELECT
+  USING (
+    therapist_id = auth.uid()
+    OR employer_id = auth.uid()
+    OR public.current_user_role() = 'admin'
   );
+
+-- Solo admin activa conversaciones
+CREATE POLICY "conversations: admin activa"
+  ON public.conversations FOR UPDATE
+  USING (public.current_user_role() = 'admin');
+
+CREATE POLICY "conversations: admin crea"
+  ON public.conversations FOR INSERT
+  WITH CHECK (public.current_user_role() = 'admin');
+
+-- =====================================================
+-- POLÍTICAS: messages
+-- =====================================================
+
+-- Participantes leen y escriben en sus conversaciones
+CREATE POLICY "messages: participantes"
+  ON public.messages FOR ALL
+  USING (
+    conversation_id IN (
+      SELECT id FROM public.conversations
+      WHERE therapist_id = auth.uid()
+         OR employer_id  = auth.uid()
+    )
+    OR public.current_user_role() = 'admin'
+  );
+
+-- =====================================================
+-- POLÍTICAS: audit_logs
+-- =====================================================
+
+-- Solo admin
+CREATE POLICY "audit_logs: solo admin"
+  ON public.audit_logs FOR ALL
+  USING (public.current_user_role() = 'admin');
+
+-- =====================================================
+-- POLÍTICAS: settings
+-- =====================================================
+
+-- Lectura pública (home_title, home_subtitle, allow_registrations)
+CREATE POLICY "settings: lectura pública"
+  ON public.settings FOR SELECT
+  USING (true);
+
+-- Solo admin puede modificar
+CREATE POLICY "settings: solo admin modifica"
+  ON public.settings FOR ALL
+  USING (public.current_user_role() = 'admin');
