@@ -25,12 +25,10 @@ export function LoginPageShell({ children, hideLocaleSwitcher = false }: { child
   return (
     <div className="flex min-h-screen bg-white" style={{ padding: 16, gap: 16 }}>
 
-      {/* ── LEFT — form panel ────────────────────────────────────── */}
       <div
         className="flex flex-1 flex-col bg-white overflow-y-auto"
         style={{ borderRadius: 20 }}
       >
-        {/* Top row: mobile logo + locale switcher */}
         <div className="flex items-center justify-between px-8 pt-7 shrink-0">
           <div className="lg:hidden">
             <Image
@@ -44,7 +42,6 @@ export function LoginPageShell({ children, hideLocaleSwitcher = false }: { child
           </div>
           <div className="hidden lg:block" />
 
-          {/* Locale pill */}
           {!hideLocaleSwitcher && (
             <div
               className="flex items-center gap-0.5 p-0.5"
@@ -70,14 +67,12 @@ export function LoginPageShell({ children, hideLocaleSwitcher = false }: { child
           )}
         </div>
 
-        {/* Centered form */}
         <div className="flex flex-1 items-center justify-center px-6 py-8">
           <div className="w-full max-w-[400px]">
             {children}
           </div>
         </div>
 
-        {/* Footer */}
         <div className="shrink-0 flex flex-col items-center gap-3 px-6 pb-6">
           <Link
             href="/"
@@ -92,7 +87,6 @@ export function LoginPageShell({ children, hideLocaleSwitcher = false }: { child
         </div>
       </div>
 
-      {/* ── RIGHT — video panel ───────────────────────────────────── */}
       <div
         className="hidden lg:flex relative flex-col flex-none overflow-hidden"
         style={{ width: '68%', borderRadius: 20 }}
@@ -105,24 +99,14 @@ export function LoginPageShell({ children, hideLocaleSwitcher = false }: { child
           priority
         />
 
-        {/* Gradient overlay */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to top, rgba(10,40,36,0.92) 0%, rgba(10,40,36,0.48) 40%, rgba(0,0,0,0.08) 100%)',
+              'linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.5) 40%, rgba(0, 0, 0, 0.5) 100%)',
           }}
         />
 
-        {/* Bottom text */}
-        <div className="absolute bottom-0 left-0 right-0 z-10 px-9 pb-10">
-          <h1 className="text-white font-bold leading-[1.25] mb-3" style={{ fontSize: 'clamp(22px,2.4vw,34px)' }}>
-            {t('videoTitle')}
-          </h1>
-          <p className="text-white/70 leading-relaxed max-w-sm" style={{ fontSize: 13.5 }}>
-            {t('videoSubtitle')}
-          </p>
-        </div>
       </div>
 
     </div>

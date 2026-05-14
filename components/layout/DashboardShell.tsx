@@ -30,7 +30,6 @@ export default function DashboardShell({
 
   return (
     <>
-      {/* Mobile: topnav + full-width content */}
       <div className="flex flex-col h-screen md:hidden">
         <MobileTopNav
           role={role}
@@ -43,7 +42,6 @@ export default function DashboardShell({
         </main>
       </div>
 
-      {/* Desktop: sidebar + content */}
       <div className="hidden md:flex h-screen overflow-hidden bg-[#071210]">
         <SidebarNavigation
           role={role}

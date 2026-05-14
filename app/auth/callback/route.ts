@@ -13,16 +13,13 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error) {
-      // Password reset flow — redirect to the confirm page
       if (next) {
         return NextResponse.redirect(`${origin}${next}`)
       }
 
-      // Get user to determine where to redirect
       const { data: { user } } = await supabase.auth.getUser()
 
       if (user) {
-        // If this is a Google OAuth signup with a specific role, update it
         if (signupRole && ['therapist', 'employer'].includes(signupRole)) {
           try {
             const serviceClient = createServiceClient()
@@ -31,11 +28,9 @@ export async function GET(request: NextRequest) {
               .update({ role: signupRole })
               .eq('id', user.id)
           } catch {
-            // Non-fatal: DB might not be set up yet in dev
           }
         }
 
-        // Read the role from profiles for the redirect
         const { data: profile } = await supabase
           .from('profiles')
           .select('role')

@@ -48,7 +48,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
   const [savingAdd, setSavingAdd] = useState(false)
   const [deleteId,  setDeleteId]  = useState<string | null>(null)
 
-  // ── Helpers ────────────────────────────────────────────────────
   async function patchPlan(id: string, fields: Partial<Plan>) {
     const r = await fetch(`/api/plans/${id}`, {
       method:  'PATCH',
@@ -64,7 +63,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
     setPlans(prev => prev.map(p => p.id === id ? { ...p, ...fields } : p))
   }
 
-  // ── Toggle active ──────────────────────────────────────────────
   async function toggleActive(plan: Plan) {
     setLoadingId(plan.id)
     try {
@@ -75,7 +73,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
     finally { setLoadingId(null) }
   }
 
-  // ── Reorder ────────────────────────────────────────────────────
   async function move(plan: Plan, dir: 'up' | 'down') {
     const sorted  = [...plans].sort((a, b) => a.sort_order - b.sort_order)
     const idx     = sorted.findIndex(p => p.id === plan.id)
@@ -98,13 +95,11 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
     finally { setLoadingId(null) }
   }
 
-  // ── Start edit ─────────────────────────────────────────────────
   function startEdit(plan: Plan) {
     setEditId(plan.id)
     setEditForm({ name: plan.name, price: String(plan.price), is_flat: plan.is_flat })
   }
 
-  // ── Save edit ──────────────────────────────────────────────────
   async function saveEdit(plan: Plan) {
     if (!editForm.name.trim()) { toast.error('El nombre es obligatorio'); return }
     const price = Number(editForm.price)
@@ -120,7 +115,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
     finally { setLoadingId(null) }
   }
 
-  // ── Delete ─────────────────────────────────────────────────────
   async function deletePlan(id: string) {
     setLoadingId(id)
     try {
@@ -133,7 +127,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
     finally { setLoadingId(null) }
   }
 
-  // ── Add new plan ───────────────────────────────────────────────
   async function createPlan() {
     if (!addForm.name.trim()) { toast.error('El nombre es obligatorio'); return }
     const price = Number(addForm.price)
@@ -168,7 +161,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
   return (
     <div className="space-y-3">
 
-      {/* Add new plan form */}
       {showAdd ? (
         <div className="bg-white rounded-xl border border-orange-200 shadow-sm p-5 space-y-4">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-orange-500">Nuevo plan</p>
@@ -253,7 +245,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
         </button>
       )}
 
-      {/* Plans list */}
       <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
 
         {sorted.length === 0 ? (
@@ -263,7 +254,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
           </div>
         ) : (
           <>
-            {/* Header */}
             <div className="hidden sm:grid grid-cols-[2fr_1fr_1fr_auto] gap-4 px-5 py-3 border-b border-neutral-100">
               <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">Plan</p>
               <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">Precio</p>
@@ -281,7 +271,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                   <div key={plan.id} className={`px-5 py-3.5 transition-colors ${isEditing ? 'bg-orange-50/40' : 'hover:bg-neutral-50'}`}>
 
                     {isEditing ? (
-                      /* ── Edit row ── */
                       <div className="space-y-3">
                         <div className="grid grid-cols-1 sm:grid-cols-[2fr_1fr_1fr] gap-3">
                           <input
@@ -330,10 +319,8 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                         </div>
                       </div>
                     ) : (
-                      /* ── View row ── */
                       <div className="flex items-center gap-3">
 
-                        {/* Reorder arrows */}
                         <div className="flex flex-col gap-0.5 shrink-0">
                           <button onClick={() => move(plan, 'up')} disabled={idx === 0 || isLoading}
                             className="p-0.5 rounded text-neutral-300 hover:text-neutral-600 disabled:opacity-20 transition-colors">
@@ -345,10 +332,8 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                           </button>
                         </div>
 
-                        {/* Active indicator */}
                         <div className={`w-1.5 h-8 rounded-full shrink-0 ${plan.active ? 'bg-green-400' : 'bg-neutral-200'}`} />
 
-                        {/* Name */}
                         <div className="flex-1 min-w-0">
                           <p className={`text-sm font-semibold truncate ${plan.active ? 'text-neutral-900' : 'text-neutral-400'}`}>
                             {plan.name}
@@ -358,12 +343,10 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                           </p>
                         </div>
 
-                        {/* Price — desktop */}
                         <p className="hidden sm:block text-sm font-semibold text-neutral-900 w-28 text-right shrink-0">
                           {fmt(plan.price)}
                         </p>
 
-                        {/* Type — desktop */}
                         <div className="hidden sm:flex items-center gap-1.5 w-28 shrink-0">
                           {plan.is_flat
                             ? <><Sun size={12} className="text-amber-500" /><span className="text-xs text-neutral-500">Tarifa plana</span></>
@@ -371,10 +354,8 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                           }
                         </div>
 
-                        {/* Actions */}
                         <div className="flex items-center gap-1 shrink-0">
 
-                          {/* Active toggle */}
                           <button
                             onClick={() => toggleActive(plan)}
                             disabled={isLoading}
@@ -384,7 +365,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                             <span className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${plan.active ? 'translate-x-4' : ''}`} />
                           </button>
 
-                          {/* Edit */}
                           <button
                             onClick={() => startEdit(plan)}
                             className="p-1.5 rounded-lg text-neutral-400 hover:text-orange-600 hover:bg-orange-50 transition-colors"
@@ -393,7 +373,6 @@ export default function PlansList({ plans: initial }: { plans: Plan[] }) {
                             <Pencil size={13} />
                           </button>
 
-                          {/* Delete */}
                           {isDeleting ? (
                             <div className="flex items-center gap-1">
                               <button onClick={() => deletePlan(plan.id)} disabled={isLoading}

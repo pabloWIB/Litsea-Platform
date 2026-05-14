@@ -35,7 +35,6 @@ function fmtDate(iso: string) {
   return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
-// Build list of past months (up to 24) for the selector
 function pastMonths() {
   const now    = new Date()
   const result: { label: string; year: number; month: number }[] = []
@@ -70,7 +69,6 @@ export default function ReportsList({ reports: initial }: { reports: ReportFile[
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Error al generar el reporte')
       setGenerated(data)
-      // Add to list if it has a Drive link
       if (data.driveLink) {
         const newFile: ReportFile = {
           id:          crypto.randomUUID(),
@@ -90,7 +88,6 @@ export default function ReportsList({ reports: initial }: { reports: ReportFile[
   return (
     <div className="space-y-6">
 
-      {/* ── Generar reporte manual ───────────────────────── */}
       <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm p-5 space-y-4">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-widest text-orange-500 mb-1">
@@ -129,7 +126,6 @@ export default function ReportsList({ reports: initial }: { reports: ReportFile[
           </p>
         )}
 
-        {/* Generated result */}
         {generated && (
           <div className="bg-stone-50 rounded-xl border border-neutral-100 p-4 space-y-3">
             <div className="flex items-center justify-between">
@@ -167,7 +163,6 @@ export default function ReportsList({ reports: initial }: { reports: ReportFile[
         )}
       </div>
 
-      {/* ── Historial de reportes ────────────────────────── */}
       <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm overflow-hidden">
         <div className="px-5 py-4 border-b border-neutral-100">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">

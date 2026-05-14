@@ -24,7 +24,6 @@ export default function robots(): MetadataRoute.Robots {
           "/reset-password/",
         ],
       },
-      // Allow all major AI crawlers full access to public content
       {
         userAgent: "GPTBot",
         allow: ["/", "/vacantes", "/terapeutas", "/como-funciona"],

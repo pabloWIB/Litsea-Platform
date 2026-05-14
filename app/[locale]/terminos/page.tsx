@@ -12,8 +12,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/* ─── Content by locale ─── */
-
 type SectionData = { number: string; title: string; content: React.ReactNode }
 type PageContent = { intro: React.ReactNode; sections: SectionData[]; closingNote: string }
 
@@ -140,7 +138,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 
-  // Español
   return {
     intro: <p>Al registrarte en <strong>Litsea Bolsa de Trabajo</strong> o utilizar cualquiera de sus funciones, aceptas estar sujeto a los siguientes Términos y Condiciones. Te pedimos que los leas detenidamente antes de continuar.</p>,
     closingNote: 'Al registrarte en Litsea Bolsa de Trabajo o utilizar sus funciones, confirmas haber leído, comprendido y aceptado estos Términos y Condiciones en su totalidad.',
@@ -202,8 +199,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 }
-
-/* ─── Page ─── */
 
 export default async function TerminosPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params

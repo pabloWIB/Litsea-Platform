@@ -97,7 +97,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
 
   const badge = STATUS_CONFIG[res.status]
 
-  // ── Register payment ─────────────────────────────────────────
   const handlePayment = async () => {
     const amount = Number(paymentInput)
     if (!amount || amount <= 0) { toast.error('Ingresa un monto válido'); return }
@@ -126,7 +125,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
     }
   }
 
-  // ── Change status ─────────────────────────────────────────────
   const handleStatus = async (status: Status) => {
     if (status === res.status) return
     setChangingStatus(true)
@@ -150,10 +148,8 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 
-      {/* ── Left column ──────────────────────────────────────── */}
       <div className="lg:col-span-2 space-y-4">
 
-        {/* Status bar */}
         <div className="flex items-center gap-3 flex-wrap">
           <span className={`text-xs font-semibold px-3 py-1.5 rounded-full ${badge.badge}`}>
             {badge.label}
@@ -184,7 +180,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </a>
         </div>
 
-        {/* Client info */}
         <Card>
           <CardHeader icon={<Phone size={14} />} title="Datos del cliente" />
           <div className="px-5 py-1">
@@ -194,7 +189,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </div>
         </Card>
 
-        {/* Plan & dates */}
         <Card>
           <CardHeader icon={<Tent size={14} />} title="Plan y fechas" />
           <div className="px-5 py-1">
@@ -215,7 +209,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </div>
         </Card>
 
-        {/* Guests */}
         {res.guests_info && (
           <Card>
             <CardHeader icon={<Users size={14} />} title="Huéspedes" />
@@ -225,7 +218,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </Card>
         )}
 
-        {/* Financial summary */}
         <Card>
           <CardHeader icon={<CreditCard size={14} />} title="Resumen financiero" />
           <div className="px-5 py-1">
@@ -252,7 +244,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </div>
         </Card>
 
-        {/* Notes */}
         {res.notes && (
           <Card>
             <CardHeader icon={<FileText size={14} />} title="Notas internas" />
@@ -263,10 +254,8 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
         )}
       </div>
 
-      {/* ── Right column ─────────────────────────────────────── */}
       <div className="space-y-4">
 
-        {/* Register payment */}
         <Card>
           <CardHeader icon={<CreditCard size={14} />} title="Registrar pago" />
           <div className="px-5 py-4 space-y-3">
@@ -316,7 +305,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </div>
         </Card>
 
-        {/* Change status */}
         <Card>
           <CardHeader icon={<FileText size={14} />} title="Estado" />
           <div className="px-5 py-4 grid grid-cols-2 gap-2">
@@ -337,7 +325,6 @@ export default function ReservationDetail({ reservation: initial }: { reservatio
           </div>
         </Card>
 
-        {/* Metadata */}
         <Card>
           <CardHeader icon={<FileText size={14} />} title="Información" />
           <div className="px-5 py-1">

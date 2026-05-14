@@ -98,7 +98,6 @@ export default function RegisterTerapeutaClient() {
     }
   }
 
-  /* ── Success ──────────────────────────────────────────────────────── */
   if (success) {
     return (
       <LoginPageShell>
@@ -128,7 +127,6 @@ export default function RegisterTerapeutaClient() {
     )
   }
 
-  /* ── Form ─────────────────────────────────────────────────────────── */
   return (
     <LoginPageShell>
 
@@ -138,7 +136,6 @@ export default function RegisterTerapeutaClient() {
         <p className="text-[13.5px] text-[#8a8a8a] leading-snug">{t('registerTerapeutaSubtitle')}</p>
       </div>
 
-      {/* Google */}
       <button type="button" onClick={handleGoogle} disabled={googleLoading || loading}
         className="w-full flex items-center justify-center gap-2.5 text-[13.5px] font-medium text-[#4a4a4a] transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#f3f4f6]"
         style={{ padding: '11px 14px', border: '1.5px solid #e5e7eb', borderRadius: 10, background: '#f9fafb' }}>
@@ -207,7 +204,6 @@ export default function RegisterTerapeutaClient() {
           )}
         </div>
 
-        {/* Hero-style submit button */}
         <button type="submit" disabled={loading || googleLoading}
           className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 ring-offset-white transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3] disabled:opacity-50 disabled:cursor-not-allowed disabled:ring-0">
           {loading && <Spinner />}

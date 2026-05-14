@@ -1,11 +1,11 @@
 # Plan de desarrollo — Litsea Bolsa de Trabajo
 
-**Última actualización:** 2026-05-13
+**Última actualización:** 2026-05-14  
 **Fuentes:** `docs/PRD-TECNICO.md` · `docs/PRD-CLIENTE.md` · `docs/ejecucion.md`
 
 ---
 
-## Estado actual
+## Estado actual — 2026-05-14
 
 | Área | Estado |
 |---|---|
@@ -14,178 +14,166 @@
 | Auth UI completo — login, registro, reset password | ✅ Listo |
 | Login admin (`/login/admin`) con verificación de rol | ✅ Listo |
 | `proxy.ts` — i18n + Supabase auth guard + error handling | ✅ Listo |
-| `schema.sql` + `rls.sql` + `seed.sql` en `/supabase` | ✅ Listo |
+| `schema.sql` + `rls.sql` + `seed.sql` — aplicados en Supabase | ✅ Listo |
 | Páginas de error (`error.tsx`, `not-found.tsx`) | ✅ Listo |
 | Plantillas email Supabase (`public/tamplates/`) | ✅ Listo |
-| Favicon completo (`public/favicon/`) | ✅ Listo |
+| Favicon completo | ✅ Listo |
 | `.env.local` con todas las variables | ✅ Listo |
-| Messages i18n — 17 namespaces (es/en/fr) | ✅ Listo |
-| Home page — hero + sections | ✅ Listo |
+| Messages i18n — 20 namespaces, 343 claves (es/en/fr) | ✅ Listo |
+| Home page — todas las secciones | ✅ Listo |
 | Páginas legales (privacidad, términos, cookies) — ES/EN/FR | ✅ Listo |
-| `LegalShell` + `LegalNavbar` | ✅ Listo |
-| README.md completo | ✅ Listo |
-| Todas las rutas del PRD (26 pantallas) | ❌ Pendiente |
-| Header público | ❌ Pendiente |
-| `(public)/layout.tsx` | ❌ Pendiente |
-| Dashboard layout + Sidebar | ❌ Pendiente |
-| `types/database.ts` | ❌ Pendiente |
-| Integración Resend | ❌ Pendiente |
-| Chat en tiempo real (Supabase Realtime) | ❌ Pendiente |
+| Todas las rutas del PRD (26 pantallas) | ✅ Listo |
+| Páginas públicas — vacantes, terapeutas, como-funciona | ✅ Listo |
+| Dashboard terapeuta — 7 páginas | ✅ Listo |
+| Dashboard empleador — 6 páginas | ✅ Listo |
+| Panel admin — 10 páginas | ✅ Listo |
+| `types/database.ts` | ✅ Listo |
+| `lib/audit.ts` — `logAudit()` en todas las acciones admin | ✅ Listo |
+| `lib/email.ts` + templates Resend | ✅ Listo |
+| `api/auth/callback` — ruta correcta en `/api/auth/callback` | ✅ Listo |
+| `api/opiniones` — GET + POST + PATCH [id] | ✅ Listo |
+| Sistema de opiniones — modal público + moderación admin | ✅ Listo |
+| Chat en tiempo real (Supabase Realtime) | ✅ Listo |
+| Google OAuth — código implementado | ✅ Listo (falta config Supabase) |
+| Google OAuth — configurado en Supabase Dashboard | ✅ Listo |
+| Storage buckets — avatars, certificates, logos | ❌ Pendiente |
+| SMTP Resend en Supabase Auth | ❌ Pendiente |
+| Deploy en EasyPanel | ❌ Pendiente |
 
 ---
 
-## Fase 0 — Base de datos y entorno
-> Fuente: `docs/PRD-TECNICO.md` §4, §7, §9
+## Fase 0 — Base de datos y entorno ✅ COMPLETA
 
 - [x] **0.1** Variables de entorno en `.env.local` completas
-- [ ] **0.2** Aplicar `schema.sql` y `rls.sql` en Supabase (SQL editor o CLI)
-- [ ] **0.3** Ejecutar `seed.sql` para datos de prueba
-- [ ] **0.4** Crear trigger `handle_new_user()` en Supabase
-- [ ] **0.5** Configurar Storage: bucket `certificates` (privado) y `avatars` (público)
-- [x] **0.6** Configurar Auth Settings en Supabase:
-  - Site URL: `https://empleos.litseacc.edu.mx`
-  - Redirect URLs: `localhost:3000/api/auth/callback` + producción
-- [x] **0.7** Configurar plantillas de email Supabase (usar `public/tamplates/`)
+- [x] **0.2** Aplicar `schema.sql` y `rls.sql` en Supabase
+- [x] **0.3** Ejecutar `seed.sql` para datos de prueba
+- [x] **0.4** Trigger `handle_new_user()` en Supabase (incluido en schema.sql)
+- [ ] **0.5** Storage: crear buckets `avatars` (público), `certificates` (privado), `logos` (público)
+- [x] **0.6** Auth Settings: Site URL + Redirect URLs
+- [x] **0.7** Plantillas email Supabase configuradas
 
 ---
 
 ## Fase 1 — Middleware y routing ✅ COMPLETA
-> `proxy.ts` implementado con:
+
 - i18n routing (next-intl, `localePrefix: as-needed`)
 - Supabase auth guard → protege `/(dashboard)/**`
 - Try-catch en `getUser()` → manejo seguro de cookies corruptas
-- Matcher actualizado → excluye mp4, mp3, webm, pdf, etc.
-- Skip automático si env vars no están (dev sin `.env`)
-- TopBar suprime banner/navbar en rutas auth y legales
+- Matcher excluye estáticos, api/, auth/
 
 ---
 
 ## Fase 2 — Auth UI ✅ COMPLETA
 
-- [x] `LoginPageShell` — imagen fija derecha (68%), form izquierda, locale pill ES/EN/FR, back button
-- [x] `LoginClient` — terapeuta + empleador variants, Google OAuth, light theme, fully i18n'd
-- [x] `AdminLoginClient` — sin Google, verifica `role === 'admin'`, sin selector de idioma
-- [x] `/login/admin` — acceso interno Litsea, `robots: noindex`
-- [x] `RegisterTerapeutaClient` — light theme, strength bar, sin campo de confirmación
-- [x] `RegisterEmpleadorClient` — light theme, sin campo de confirmación
-- [x] `ResetPasswordClient` — i18n `resetPassword` namespace, light theme
-- [x] `ResetPasswordConfirmClient` — i18n, strength bar, 3 estados
-- [x] `/login` redirige a `/login/terapeuta`
-- [x] Favicon wired en root layout
-- [x] Todos los componentes auth 100% i18n (namespace `auth`)
+- [x] `LoginPageShell` — imagen fija derecha, locale pill ES/EN/FR, back button
+- [x] `LoginClient` — terapeuta + empleador, Google OAuth, i18n completo
+- [x] `AdminLoginClient` — sin Google, verifica `role === 'admin'`
+- [x] `RegisterTerapeutaClient` / `RegisterEmpleadorClient` — strength bar
+- [x] `ResetPasswordClient` / `ResetPasswordConfirmClient` — 3 estados, i18n
+- [x] Google OAuth → `signInWithOAuth({ provider: 'google' })` implementado
 
 ---
 
 ## Fase 2b — Páginas legales ✅ COMPLETA
 
-- [x] `components/legales/LegalShell.tsx` — wrapper con `#FDFAF5` bg + Footer
-- [x] `components/legales/LegalNavbar.tsx` — fijo, blanco, logo + locale pill + back link
-- [x] `app/(locale)/privacidad/page.tsx` — contenido ES/EN/FR completo
-- [x] `app/(locale)/terminos/page.tsx` — contenido ES/EN/FR completo (12 secciones)
-- [x] `app/(locale)/cookies/page.tsx` — contenido ES/EN/FR completo + cookie type cards
-- [x] `generateMetadata` con `getTranslations` en las 3 páginas
-- [x] Footer link "Admin" → `/login/admin`
+- [x] `LegalShell` + `LegalNavbar`
+- [x] `privacidad`, `terminos`, `cookies` — ES/EN/FR completo
 
 ---
 
-## Fase 3 — Páginas públicas ← SIGUIENTE BLOQUE
-> Fuente: `docs/PRD-CLIENTE.md` §"Pantallas del sistema — Parte pública"
+## Fase 3 — Páginas públicas ✅ COMPLETA
 
-- [ ] **3.1** `components/layout/Header.tsx` — nav público sticky, logo color, links, locale switcher
-- [ ] **3.2** `app/(public)/layout.tsx` — ensambla Header + Footer
-- [ ] **3.3** `app/(public)/vacantes/page.tsx` — listado con filtros (zona, especialidad)
-- [ ] **3.4** `components/vacantes/VacanteCard.tsx`
-- [ ] **3.5** `components/vacantes/VacanteFiltros.tsx`
-- [ ] **3.6** `app/(public)/vacantes/[id]/page.tsx` — detalle + botón aplicar
-- [ ] **3.7** `app/(public)/terapeutas/page.tsx` — directorio verificados
-- [ ] **3.8** `components/terapeutas/TerapeutaCard.tsx`
-- [ ] **3.9** `app/(public)/terapeutas/[id]/page.tsx` — perfil público
-- [ ] **3.10** `app/(public)/como-funciona/page.tsx` — landing SEO
-- [ ] **3.11** Completar home — `FeaturedVacanciesSection` + `FeaturedTherapistsSection`
+- [x] `app/(public)/vacantes/page.tsx` — filtros zona/especialidad/contrato
+- [x] `app/(public)/vacantes/[id]/page.tsx` — detalle + Server Action aplicar
+- [x] `app/(public)/terapeutas/page.tsx` — directorio verificados
+- [x] `app/(public)/terapeutas/[slug]/page.tsx` — perfil público, JSON-LD Person
+- [x] `app/(public)/como-funciona/page.tsx` — landing SEO, JSON-LD HowTo
+- [x] Home completo — Hero, VacantesDestacadas, TerapeutasDestacados, RedEmpleadores, ParaEmpleadores, HowItWorks, Opiniones, CTA
+- [x] `components/vacantes/VacanteCard`, `VacanteFiltros`, `AplicarButton`
+- [x] `components/terapeutas/TerapeutaCard`
 
 ---
 
-## Fase 4 — Dashboard terapeuta
+## Fase 4 — Dashboard terapeuta ✅ COMPLETA
 
-- [ ] **4.1** `types/database.ts` — tipos generados de Supabase (bloqueante para todo el dashboard)
-- [ ] **4.2** `components/dashboard/Sidebar.tsx` — role-aware, dark theme
-- [ ] **4.3** `components/dashboard/Topbar.tsx` — avatar, notificaciones
-- [ ] **4.4** `app/(dashboard)/layout.tsx` — Sidebar + Topbar + auth guard
-- [ ] **4.5** `app/(dashboard)/terapeuta/dashboard/page.tsx` — cards + alerta perfil incompleto
-- [ ] **4.6** `app/(dashboard)/terapeuta/perfil/page.tsx` — bio, foto, especialidades, zonas
-- [ ] **4.7** `components/terapeutas/TerapeutaPerfilForm.tsx`
-- [ ] **4.8** `app/(dashboard)/terapeuta/aplicaciones/page.tsx` — lista con status badges
-- [ ] **4.9** `app/(dashboard)/terapeuta/certificados/page.tsx` — upload a Storage
-- [ ] **4.10** `app/(dashboard)/terapeuta/mensajes/page.tsx` — chat Realtime
-
----
-
-## Fase 5 — Dashboard empleador
-
-- [ ] **5.1** `app/(dashboard)/empleador/dashboard/page.tsx`
-- [ ] **5.2** `app/(dashboard)/empleador/vacantes/page.tsx`
-- [ ] **5.3** `app/(dashboard)/empleador/vacantes/nueva/page.tsx`
-- [ ] **5.4** `components/vacantes/VacanteForm.tsx`
-- [ ] **5.5** `app/(dashboard)/empleador/vacantes/[id]/editar/page.tsx`
-- [ ] **5.6** `app/(dashboard)/empleador/aplicaciones/page.tsx`
-- [ ] **5.7** `app/(dashboard)/empleador/mensajes/page.tsx`
+- [x] `DashboardShell` + `Sidebar` (role-aware) + `TopBar` dashboard
+- [x] `(dashboard)/layout.tsx` — auth guard + shell
+- [x] `terapeuta/dashboard` — métricas, progreso perfil, aplicaciones recientes
+- [x] `terapeuta/perfil` — `PerfilWizard` 4 pasos, upload avatar a Storage
+- [x] `terapeuta/vacantes` — listado con filtros
+- [x] `terapeuta/aplicaciones` — badges de estado
+- [x] `terapeuta/certificados` — `CertificadoForm`, upload PDF a Storage
+- [x] `terapeuta/mensajes` — `ChatContainer`, Supabase Realtime
+- [x] `terapeuta/configuracion` — cambiar pwd, email, eliminar cuenta
 
 ---
 
-## Fase 6 — Panel admin
+## Fase 5 — Dashboard empleador ✅ COMPLETA
 
-- [ ] **6.1** `app/(dashboard)/admin/page.tsx` — métricas globales
-- [ ] **6.2** `components/admin/MetricsCards.tsx`
-- [ ] **6.3** `app/(dashboard)/admin/terapeutas/page.tsx` — verificar/suspender
-- [ ] **6.4** `app/(dashboard)/admin/empleadores/page.tsx`
-- [ ] **6.5** `app/(dashboard)/admin/vacantes/page.tsx` — destacar/desactivar
-- [ ] **6.6** `app/(dashboard)/admin/aplicaciones/page.tsx` — habilitar chat
-- [ ] **6.7** `app/(dashboard)/admin/certificados/page.tsx` — verificar PDFs
-- [ ] **6.8** `app/(dashboard)/admin/mensajes/page.tsx` — lectura
-- [ ] **6.9** `app/(dashboard)/admin/auditoria/page.tsx`
-- [ ] **6.10** `app/(dashboard)/admin/configuracion/page.tsx`
+- [x] `empleador/dashboard` — métricas vacantes/aplicaciones/contratados
+- [x] `empleador/vacantes` — lista + activar/desactivar + eliminar
+- [x] `empleador/vacantes/nueva` — Server Action crear vacante
+- [x] `empleador/vacantes/[id]/editar` — Server Action actualizar
+- [x] `empleador/candidatos` — aplicaciones de sus vacantes
+- [x] `empleador/mensajes` — chat con terapeutas
+- [x] `empleador/configuracion` — datos empresa, logo, seguridad
 
 ---
 
-## Fase 7 — API Routes
+## Fase 6 — Panel admin ✅ COMPLETA
 
-- [ ] **7.1** `api/vacantes/route.ts` — GET público + POST empleador
-- [ ] **7.2** `api/vacantes/[id]/route.ts` — GET + PATCH + DELETE
-- [ ] **7.3** `api/aplicaciones/route.ts` — POST terapeuta
-- [ ] **7.4** `api/aplicaciones/[id]/route.ts` — PATCH estado (admin)
-- [ ] **7.5** `api/certificados/route.ts` — POST upload + GET lista
-- [ ] **7.6** `api/mensajes/route.ts` — GET conversaciones
-- [ ] **7.7** `api/email/route.ts` — POST Resend
-
----
-
-## Fase 8 — Emails Resend
-
-- [ ] **8.1** Instalar `resend` + `@react-email/components`
-- [ ] **8.2** `lib/email.ts` — helpers Resend
-- [ ] **8.3** `emails/WelcomeEmail.tsx` — bienvenida terapeuta/empleador
-- [ ] **8.4** `emails/NewApplicationEmail.tsx` — notif admin
-- [ ] **8.5** `emails/ChatEnabledEmail.tsx` — chat habilitado
-- [ ] **8.6** `emails/ApplicationStatusEmail.tsx` — cambio de estado
+- [x] `admin/` — 5 métricas globales + accesos rápidos
+- [x] `admin/terapeutas` — verificar/revocar/suspender/reactivar + logAudit
+- [x] `admin/empleadores` — suspender/reactivar
+- [x] `admin/vacantes` — destacar/desactivar + logAudit
+- [x] `admin/aplicaciones` — cambiar estado + habilitar chat + crear conversación + enviar emails
+- [x] `admin/certificados` — verificar PDFs (signed URL) + logAudit
+- [x] `admin/mensajes` — lectura + toggle activar/desactivar conversación
+- [x] `admin/opiniones` — moderar (aprobar/rechazar) con logAudit
+- [x] `admin/auditoria` — historial completo con filtros
+- [x] `admin/configuracion` — toggle registros + textos home
 
 ---
 
-## Fase 9 — Audit + Legales
+## Fase 7 — API Routes ✅ COMPLETA (arquitectura Server Actions)
 
-- [x] **9.1** Páginas legales completas (privacidad, términos, cookies) — ES/EN/FR
-- [ ] **9.2** `lib/audit.ts` — helper `logAudit(adminId, action, module, recordId)`
-- [ ] **9.3** Llamar `logAudit` en cada acción crítica del panel admin
+Las mutaciones usan Server Actions inline en las pages — no requieren API routes REST separadas.
+
+- [x] `api/auth/callback` — OAuth + email confirm handler
+- [x] `api/opiniones` — GET aprobadas (público) + POST nueva (público)
+- [x] `api/opiniones/[id]` — PATCH aprobar/rechazar (admin)
 
 ---
 
-## Fase 10 — Deploy y pulido
+## Fase 8 — Emails Resend ✅ COMPLETA
 
-- [ ] **10.1** Revisar RLS: ninguna tabla expone datos sin política
-- [ ] **10.2** `SUPABASE_SERVICE_ROLE_KEY` solo en Server Actions/Route Handlers
-- [ ] **10.3** Pruebas flujo completo: registro → aplicar → admin habilita chat → chat funciona
-- [ ] **10.4** Pruebas de roles: terapeuta no accede a rutas empleador/admin
-- [ ] **10.5** Configurar variables de entorno en Easypanel
-- [ ] **10.6** Deploy a producción
+- [x] `resend` + `@react-email/components` instalados
+- [x] `lib/email.ts` — `sendChatEnabledEmails()` + `sendApplicationStatusEmail()`
+- [x] `emails/ChatEnabledEmail.tsx` — terapeuta + empleador, variante `isTherapist`
+- [x] `emails/ApplicationStatusEmail.tsx` — hired/rejected con CTA
+
+---
+
+## Fase 9 — Audit + Legales ✅ COMPLETA
+
+- [x] Páginas legales — ES/EN/FR
+- [x] `lib/audit.ts` — `logAudit()` implementado
+- [x] `logAudit` en todas las acciones admin críticas
+
+---
+
+## Fase 10 — Deploy y configuración final ← PENDIENTE
+
+Ver `docs/PENDIENTES.md` para instrucciones detalladas.
+
+- [x] **10.1** Google OAuth — configurado en Supabase Dashboard + Google Cloud Console
+- [ ] **10.2** Storage buckets — `avatars` (público), `certificates` (privado), `logos` (público)
+- [ ] **10.3** SMTP Resend en Supabase Auth Settings
+- [ ] **10.4** Verificar dominio `litseacc.edu.mx` en Resend Dashboard
+- [ ] **10.5** Confirmar número de WhatsApp en `components/ui/WhatsAppChat.tsx`
+- [ ] **10.6** Variables de entorno en EasyPanel
+- [ ] **10.7** Pruebas flujo completo: registro → aplicar → admin habilita chat → chat funciona
+- [ ] **10.8** Deploy a producción
 
 ---
 
@@ -199,9 +187,9 @@
 | ¿Reset compartido o separado? | Compartido con i18n |
 | ¿Selector de login? | Eliminado — /login redirige directo a /terapeuta |
 | ¿Middleware o proxy? | proxy.ts (Next.js 16 convención) |
-| ¿Video o imagen en auth? | Imagen estática (`fondo-login-litsea-centro-capacitacion-bienestar`) |
-| ¿Chat Realtime o polling? | Pendiente decisión |
-| ¿Empleadores se registran solos? | Pendiente decisión |
-| ¿Confirmar contraseña en registro? | No — eliminado de ambos formularios |
-| ¿Páginas legales traducidas? | Sí — contenido completo ES/EN/FR en las 3 páginas |
-| ¿Navbar en páginas legales? | Sí — LegalNavbar propio (sin banner, solo logo + locale + back) |
+| ¿API Routes o Server Actions? | Server Actions — más simple, mismo resultado |
+| ¿Video o imagen en auth? | Imagen estática |
+| ¿Chat Realtime o polling? | Supabase Realtime (ChatContainer.tsx) |
+| ¿Confirmar contraseña en registro? | No — eliminado |
+| ¿Páginas legales traducidas? | Sí — ES/EN/FR completo |
+| ¿Auth callback path? | `/api/auth/callback` (no `/auth/callback`) |

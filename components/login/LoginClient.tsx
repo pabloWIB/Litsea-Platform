@@ -136,7 +136,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
   return (
     <LoginPageShell>
 
-      {/* Header */}
       <div className="mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#2FB7A3] mb-1">
           {t(keys.eyebrow)}
@@ -149,7 +148,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
         </p>
       </div>
 
-      {/* Google */}
       <button type="button" onClick={handleGoogle} disabled={googleLoading || loading}
         className="w-full flex items-center justify-center gap-2.5 text-[13.5px] font-medium text-[#4a4a4a] transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#f3f4f6]"
         style={{ padding: '11px 14px', border: '1.5px solid #e5e7eb', borderRadius: 10, background: '#f9fafb' }}>
@@ -174,7 +172,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
 
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
 
-        {/* Email */}
         <div>
           <label htmlFor="email" className={labelClass}>{t('emailLabel')}</label>
           <div className="relative">
@@ -185,7 +182,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
           </div>
         </div>
 
-        {/* Password */}
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label htmlFor="password" className="text-[13px] font-medium text-[#4a4a4a]">{t('passwordLabel')}</label>
@@ -207,7 +203,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
           </div>
         </div>
 
-        {/* Hero-style submit button */}
         <button type="submit" disabled={loading || googleLoading}
           className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 ring-offset-white transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3] disabled:opacity-50 disabled:cursor-not-allowed disabled:ring-0">
           {loading && <Spinner />}
@@ -215,7 +210,6 @@ export default function LoginClient({ variant = 'terapeuta' }: { variant?: Varia
         </button>
       </form>
 
-      {/* Bottom links */}
       <div className="mt-5 flex flex-col gap-1.5 text-center">
         <p className="text-[13px] text-[#8a8a8a]">
           {t(keys.regText)}{' '}

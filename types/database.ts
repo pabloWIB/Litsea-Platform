@@ -1,10 +1,3 @@
-// =====================================================
-// Litsea Empleos — Database Types
-// Refleja exactamente supabase/schema.sql
-// =====================================================
-
-// ------ Enums ----------------------------------------
-
 export type UserRole = 'therapist' | 'employer' | 'admin'
 
 export type ApplicationStatus =
@@ -14,7 +7,7 @@ export type ApplicationStatus =
   | 'hired'
   | 'rejected'
 
-// ------ Raw table rows (1:1 con columnas de DB) ------
+export type OpinionStatus = 'pending' | 'approved' | 'rejected'
 
 export interface ProfileRow {
   id: string
@@ -110,7 +103,7 @@ export interface MessageRow {
 
 export interface AuditLogRow {
   id: string
-  admin_id: string
+  admin_id: string | null
   action: string
   module: string
   record_id: string | null
@@ -125,7 +118,19 @@ export interface SettingRow {
   updated_at: string
 }
 
-// ------ Insert types (omit server-generated fields) --
+export interface OpinionRow {
+  id: string
+  nombre: string
+  email: string
+  cargo: string | null
+  empresa: string | null
+  contenido: string
+  rating: number
+  status: OpinionStatus
+  revisado_by: string | null
+  revisado_at: string | null
+  created_at: string
+}
 
 export type ProfileInsert = Omit<ProfileRow, 'created_at' | 'updated_at'>
 
@@ -153,7 +158,8 @@ export type AuditLogInsert = Omit<AuditLogRow, 'id' | 'created_at'>
 
 export type SettingUpsert = Pick<SettingRow, 'key' | 'value' | 'updated_by'>
 
-// ------ Update types (todo opcional) -----------------
+export type OpinionInsert = Omit<OpinionRow, 'id' | 'created_at'>
+export type OpinionUpdate = Partial<Pick<OpinionRow, 'status' | 'revisado_by' | 'revisado_at'>>
 
 export type ProfileUpdate = Partial<
   Omit<ProfileRow, 'id' | 'created_at' | 'updated_at'>
@@ -175,30 +181,23 @@ export type ApplicationUpdate = Partial<
   Omit<ApplicationRow, 'id' | 'vacancy_id' | 'therapist_id' | 'created_at' | 'updated_at'>
 >
 
-// ------ Tipos enriquecidos (joins frecuentes) ---------
-
-/** Terapeuta con su perfil de usuario */
 export interface Therapist extends TherapistProfileRow {
   profile: ProfileRow
 }
 
-/** Empleador con su perfil de usuario */
 export interface Employer extends EmployerProfileRow {
   profile: ProfileRow
 }
 
-/** Vacante con info del empleador */
 export interface VacancyWithEmployer extends VacancyRow {
   employer: EmployerProfileRow & { profile: Pick<ProfileRow, 'full_name' | 'email'> }
 }
 
-/** Aplicación con vacante y terapeuta */
 export interface ApplicationWithDetails extends ApplicationRow {
   vacancy: Pick<VacancyRow, 'title' | 'location' | 'position_type' | 'contract_type'>
   therapist: TherapistProfileRow & { profile: Pick<ProfileRow, 'full_name' | 'avatar_url' | 'email'> }
 }
 
-/** Conversación con participantes */
 export interface ConversationWithParticipants extends ConversationRow {
   therapist_profile: Pick<ProfileRow, 'full_name' | 'avatar_url'>
   employer_profile: Pick<ProfileRow, 'full_name'> & { company_name?: string }
@@ -206,23 +205,17 @@ export interface ConversationWithParticipants extends ConversationRow {
   unread_count?: number
 }
 
-/** Mensaje con info del remitente */
 export interface MessageWithSender extends MessageRow {
   sender: Pick<ProfileRow, 'full_name' | 'avatar_url' | 'role'>
 }
 
-/** Certificado con info del terapeuta (para panel admin) */
 export interface CertificateWithTherapist extends CertificateRow {
   therapist: TherapistProfileRow & { profile: Pick<ProfileRow, 'full_name' | 'email'> }
 }
 
-/** Audit log con info del admin */
 export interface AuditLogWithAdmin extends AuditLogRow {
   admin: Pick<ProfileRow, 'full_name' | 'email'>
 }
-
-// ------ Supabase Database interface ------------------
-// Formato compatible con el cliente de Supabase para tipado de .from()
 
 export interface Database {
   public: {
@@ -277,15 +270,19 @@ export interface Database {
         Insert: SettingUpsert
         Update: Partial<SettingUpsert>
       }
+      opiniones: {
+        Row: OpinionRow
+        Insert: OpinionInsert
+        Update: OpinionUpdate
+      }
     }
     Enums: {
       user_role: UserRole
       application_status: ApplicationStatus
+      opinion_status: OpinionStatus
     }
   }
 }
-
-// ------ Labels para UI --------------------------------
 
 export const APPLICATION_STATUS_LABEL: Record<ApplicationStatus, string> = {
   new:          'Nueva',
@@ -303,19 +300,29 @@ export const APPLICATION_STATUS_COLOR: Record<ApplicationStatus, string> = {
   rejected:     'bg-red-500/10 text-red-400 border-red-500/20',
 }
 
+export const OPINION_STATUS_LABEL: Record<OpinionStatus, string> = {
+  pending:  'Pendiente',
+  approved: 'Aprobada',
+  rejected: 'Rechazada',
+}
+
+export const OPINION_STATUS_COLOR: Record<OpinionStatus, string> = {
+  pending:  'bg-yellow-500/10 text-yellow-600 border-yellow-500/20',
+  approved: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+  rejected: 'bg-red-500/10 text-red-600 border-red-500/20',
+}
+
 export const SPECIALTIES = [
-  'Masaje Sueco',
-  'Tejido Profundo',
-  'Masaje Deportivo',
+  'Masoterapia Sueca',
   'Reflexología',
-  'Tratamientos Faciales',
   'Aromaterapia',
-  'Piedras Calientes',
+  'Masaje con Piedras Calientes',
   'Drenaje Linfático',
-  'Terapias Ayurvédicas',
+  'Faciales y Tratamientos',
+  'Manicura y Pedicura',
   'Hidroterapia',
-  'Envolturas Corporales',
-  'Exfoliaciones',
+  'Reiki',
+  'Otra',
 ] as const
 
 export type Specialty = typeof SPECIALTIES[number]
@@ -325,27 +332,26 @@ export const ZONES = [
   'Playa del Carmen',
   'Tulum',
   'Cozumel',
+  'Holbox',
   'Puerto Morelos',
-  'Akumal',
   'Bacalar',
-  'Riviera Maya (general)',
+  'Mérida',
+  'Otra',
 ] as const
 
 export type Zone = typeof ZONES[number]
 
 export const CONTRACT_TYPES = [
   'Tiempo completo',
-  'Tiempo parcial',
   'Por temporada',
-  'Por proyecto',
   'Freelance',
 ] as const
 
 export const POSITION_TYPES = [
   'Terapeuta',
+  'Estilista',
   'Esteticista',
-  'Masajista',
-  'Instructor de bienestar',
-  'Coordinador de spa',
-  'Recepcionista de spa',
+  'Recepcionista Spa',
+  'Coordinador Spa',
+  'Otro',
 ] as const

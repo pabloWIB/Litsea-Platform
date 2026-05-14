@@ -40,7 +40,6 @@ export default function LegalNavbar() {
         </Link>
 
         <div className="flex items-center gap-4">
-          {/* Locale pill */}
           <div
             className="flex items-center gap-0.5 p-0.5"
             style={{ background: '#f9fafb', border: '1.5px solid #e5e7eb', borderRadius: 10 }}
@@ -63,7 +62,6 @@ export default function LegalNavbar() {
             ))}
           </div>
 
-          {/* Back */}
           <Link
             href="/"
             className="hidden sm:inline-flex items-center gap-1.5 text-[13px] font-medium text-[#8a8a8a] hover:text-[#2FB7A3] transition-colors duration-150"

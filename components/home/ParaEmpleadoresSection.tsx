@@ -34,7 +34,6 @@ export default function ParaEmpleadoresSection() {
       <div className="max-w-5xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
 
-          {/* Left */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -63,7 +62,6 @@ export default function ParaEmpleadoresSection() {
             </Link>
           </motion.div>
 
-          {/* Right */}
           <div className="flex flex-col gap-px bg-white/6 rounded-2xl overflow-hidden">
             {BENEFICIOS.map((b, i) => (
               <motion.div

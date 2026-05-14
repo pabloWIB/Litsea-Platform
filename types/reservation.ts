@@ -1,8 +1,8 @@
 export interface ReservationFormData {
   clientName: string
   phone: string
-  planType: string          // format: "name|defaultPrice|flat|night"
-  planPrice: number         // editable, auto-filled from plan
+  planType: string          
+  planPrice: number         
   checkIn: string
   checkOut: string
   datos: string

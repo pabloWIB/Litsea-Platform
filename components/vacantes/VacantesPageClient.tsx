@@ -113,7 +113,6 @@ export default function VacantesPageClient() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 md:py-16">
 
-      {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -132,14 +131,12 @@ export default function VacantesPageClient() {
         </p>
       </motion.div>
 
-      {/* Filters */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: EASE, delay: 0.15 }}
         className="mb-8 flex flex-col sm:flex-row gap-3"
       >
-        {/* Search */}
         <div className="flex-1 relative">
           <input
             type="text"
@@ -156,7 +153,6 @@ export default function VacantesPageClient() {
           )}
         </div>
 
-        {/* Zona select */}
         <div className="relative">
           <select
             value={zona}
@@ -168,7 +164,6 @@ export default function VacantesPageClient() {
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 size-3.5 text-[#00372c]/40 pointer-events-none" />
         </div>
 
-        {/* Contrato select */}
         <div className="relative">
           <select
             value={contrato}
@@ -181,7 +176,6 @@ export default function VacantesPageClient() {
         </div>
       </motion.div>
 
-      {/* Results count + clear */}
       <div className="flex items-center justify-between mb-5">
         <p className="text-[12px] text-[#00372c]/40">
           {filtered.length} {filtered.length === 1 ? 'vacante' : 'vacantes'} encontradas
@@ -194,7 +188,6 @@ export default function VacantesPageClient() {
         )}
       </div>
 
-      {/* Cards grid */}
       {filtered.length === 0 ? (
         <motion.div
           initial={{ opacity: 0 }}
@@ -259,7 +252,6 @@ export default function VacantesPageClient() {
         </div>
       )}
 
-      {/* CTA */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

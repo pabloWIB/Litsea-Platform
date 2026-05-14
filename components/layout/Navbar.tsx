@@ -35,13 +35,16 @@ export default function Navbar() {
   const linkColor   = scrolled ? 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-100' : 'text-white/70 hover:text-white hover:bg-white/10'
   const activeColor = 'text-[#2FB7A3] font-semibold'
 
-  const NAV_LINKS: { label: string; href: string }[] = []
-
-  const SECTION_LINKS = [
-    { label: t('vacantes'),     href: '/#vacantes' },
-    { label: t('terapeutas'),   href: '/#terapeutas' },
-    { label: t('comoFunciona'), href: '/#como-funciona' },
+  const NAV_LINKS = [
+    { label: t('vacantes'),     href: '/vacantes' },
+    { label: t('terapeutas'),   href: '/terapeutas' },
+    { label: t('comoFunciona'), href: '/como-funciona' },
   ]
+
+  const SECTION_LINKS = NAV_LINKS
+
+  const isActive = (href: string) =>
+    pathname === href || pathname.startsWith(href + '/')
 
   return (
     <motion.nav
@@ -68,7 +71,7 @@ export default function Navbar() {
         <div className="flex items-center gap-0.5">
           {NAV_LINKS.map(link => (
             <Link key={link.href} href={link.href}
-              className={`text-sm px-4 py-2 rounded-lg font-medium transition-colors duration-150 ${pathname.startsWith(link.href) ? activeColor : linkColor}`}>
+              className={`text-sm px-4 py-2 rounded-lg font-medium transition-colors duration-150 ${isActive(link.href) ? activeColor : linkColor}`}>
               {link.label}
             </Link>
           ))}

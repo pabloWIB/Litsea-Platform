@@ -26,14 +26,12 @@ export default function HeroSection() {
   return (
     <section className="bg-[#FDFAF5] min-h-[95vh] flex flex-col items-center p-4 md:p-6">
 
-      {/* Hero card */}
       <motion.div
         initial={{ opacity: 0, scale: 0.97 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, ease: EASE }}
         className="relative flex-1 overflow-hidden rounded-3xl min-h-[567px] md:min-h-[662px] w-full max-w-[1400px]"
       >
-        {/* Background */}
         <motion.div className="absolute inset-0"
           initial={{ scale: 1.06 }} animate={{ scale: 1 }}
           transition={{ duration: 1.4, ease: EASE }}>
@@ -44,14 +42,12 @@ export default function HeroSection() {
           />
         </motion.div>
 
-        {/* Overlays */}
         <div className="absolute inset-0 bg-black/62" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071210]/90 via-[#071210]/20 to-transparent" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#071210]/35 via-transparent to-transparent" />
 
         <div className="absolute inset-0 z-10 flex flex-col">
 
-          {/* Desktop nav — only while TopBar is not showing its own nav */}
           <AnimatePresence>
           {bannerOpen && (
           <motion.nav
@@ -109,7 +105,6 @@ export default function HeroSection() {
 
           <div className="flex-1" />
 
-          {/* Content */}
           <div className="px-6 md:px-12 pb-12 md:pb-16 max-w-2xl">
             <motion.p {...fadeUp(0.55)}
               className="text-[11px] uppercase tracking-[0.25em] text-[#2FB7A3] font-bold mb-5">

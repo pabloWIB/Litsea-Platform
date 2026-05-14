@@ -12,8 +12,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/* ─── Cookie type card ─── */
-
 type CookieTypeData = { name: string; purpose: string; examples: string; duration: string; optional: boolean }
 type LocaleLabels = { essential: string; optional: string; examplesLabel: string; durationLabel: string }
 
@@ -35,8 +33,6 @@ function CookieCard({ ct, labels }: { ct: CookieTypeData; labels: LocaleLabels }
     </div>
   )
 }
-
-/* ─── Content by locale ─── */
 
 type SectionData = { title: string; content: React.ReactNode }
 type PageContent = { intro: React.ReactNode; sections: SectionData[]; labels: LocaleLabels; cookieTypes: CookieTypeData[] }
@@ -108,7 +104,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 
-  // Español
   return {
     intro: <p>Esta Política de Cookies explica qué son las cookies, cómo las utiliza <strong>Litsea Bolsa de Trabajo</strong> en la plataforma <em>empleos.litseacc.edu.mx</em> y cómo puedes controlar su uso.</p>,
     labels: { essential: 'Esencial', optional: 'Opcional', examplesLabel: 'Ejemplos', durationLabel: 'Duración' },
@@ -142,8 +137,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 }
-
-/* ─── Page ─── */
 
 export default async function CookiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params

@@ -13,7 +13,6 @@ export default async function DashboardLayout({
 
   if (!user) redirect('/login')
 
-  // Fetch profile — graceful fallback if DB not set up yet
   let role: UserRole = 'therapist'
   let fullName = ''
   let email = user.email ?? ''
@@ -31,7 +30,6 @@ export default async function DashboardLayout({
       email = profile.email ?? email
     }
   } catch {
-    // DB not available — render with defaults
   }
 
   return (

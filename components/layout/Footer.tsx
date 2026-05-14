@@ -41,10 +41,9 @@ export default function Footer() {
   const tn = useTranslations('nav')
 
   const NAV_LINKS = [
-    { label: tn('vacantes'),    href: '/#vacantes' },
-    { label: tn('terapeutas'),  href: '/#terapeutas' },
-    { label: tn('empleadores'), href: '/#empleadores' },
-    { label: tn('comoFunciona'), href: '/#como-funciona' },
+    { label: tn('vacantes'),     href: '/vacantes' },
+    { label: tn('terapeutas'),   href: '/terapeutas' },
+    { label: tn('comoFunciona'), href: '/como-funciona' },
   ]
 
   const LEGAL = [
@@ -99,7 +98,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Map — full width */}
         <div className="mt-10 overflow-hidden rounded-xl border border-neutral-200">
           <iframe
             frameBorder="0"
@@ -115,7 +113,6 @@ export default function Footer() {
           />
         </div>
 
-        {/* Copyright + Legal */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-8">
           <p className="text-sm text-neutral-500">
             © {new Date().getFullYear()} Litsea Centro de Capacitación. Todos los derechos reservados.

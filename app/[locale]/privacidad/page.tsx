@@ -12,8 +12,6 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 }
 
-/* ─── Content by locale ─── */
-
 type SectionData = { title: string; content: React.ReactNode }
 type PageContent = { intro: React.ReactNode; sections: SectionData[] }
 
@@ -176,7 +174,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 
-  // Español (default)
   return {
     intro: <p>Con fundamento en lo establecido por la Ley Federal de Protección de Datos Personales en Posesión de los Particulares, su Reglamento y demás disposiciones aplicables, le informamos nuestra Política de Privacidad y Manejo de Datos Personales correspondiente a la plataforma <strong>Litsea Bolsa de Trabajo</strong>.</p>,
     sections: [
@@ -256,8 +253,6 @@ function getContent(locale: string): PageContent {
     ]
   }
 }
-
-/* ─── Page ─── */
 
 export default async function PrivacidadPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params

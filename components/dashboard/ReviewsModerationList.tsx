@@ -48,7 +48,6 @@ export default function ReviewsModerationList({ reviews: initial }: { reviews: R
 
   return (
     <div>
-      {/* Tabs */}
       <div className="flex gap-1 bg-neutral-100 rounded-xl p-1 w-fit mb-6">
         {([
           ['pending',  'Pendientes', pending.length,  'text-orange-600 bg-orange-100'],

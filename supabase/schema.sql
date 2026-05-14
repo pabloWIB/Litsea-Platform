@@ -105,7 +105,7 @@ CREATE TABLE IF NOT EXISTS public.messages (
 
 CREATE TABLE IF NOT EXISTS public.audit_logs (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  admin_id   UUID NOT NULL REFERENCES public.profiles(id) ON DELETE SET NULL,
+  admin_id   UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   action     TEXT NOT NULL,
   module     TEXT NOT NULL,
   record_id  TEXT,
@@ -126,6 +126,21 @@ INSERT INTO public.settings (key, value) VALUES
   ('home_subtitle', '"Encuentra tu lugar en los mejores spas y hoteles de la Riviera Maya"')
 ON CONFLICT (key) DO NOTHING;
 
+CREATE TABLE IF NOT EXISTS public.opiniones (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  nombre      TEXT NOT NULL,
+  email       TEXT NOT NULL,
+  cargo       TEXT,
+  empresa     TEXT,
+  contenido   TEXT NOT NULL CHECK (char_length(contenido) BETWEEN 20 AND 300),
+  rating      INT CHECK (rating BETWEEN 1 AND 5),
+  status      TEXT NOT NULL DEFAULT 'pending'
+              CHECK (status IN ('pending', 'approved', 'rejected')),
+  revisado_by UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
+  revisado_at TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE INDEX IF NOT EXISTS idx_vacancies_employer   ON public.vacancies(employer_id);
 CREATE INDEX IF NOT EXISTS idx_vacancies_active     ON public.vacancies(is_active, is_featured);
 CREATE INDEX IF NOT EXISTS idx_applications_vacancy  ON public.applications(vacancy_id);
@@ -135,6 +150,8 @@ CREATE INDEX IF NOT EXISTS idx_certificates_therapist ON public.certificates(the
 CREATE INDEX IF NOT EXISTS idx_messages_conversation ON public.messages(conversation_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_admin      ON public.audit_logs(admin_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_therapist_verified    ON public.therapist_profiles(is_verified);
+CREATE INDEX IF NOT EXISTS idx_opiniones_status      ON public.opiniones(status);
+CREATE INDEX IF NOT EXISTS idx_opiniones_created     ON public.opiniones(created_at DESC);
 
 CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER AS $$
@@ -190,7 +207,7 @@ BEGIN
 
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE OR REPLACE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users

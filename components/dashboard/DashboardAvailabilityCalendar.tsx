@@ -34,7 +34,6 @@ function labelDate(iso: string) {
   return `${parseInt(d)} de ${MONTHS[parseInt(m) - 1]}`
 }
 
-// Build occupancy map: date → reservations active on that night
 function buildOccupiedMap(reservations: Reservation[]): Record<string, Reservation[]> {
   const map: Record<string, Reservation[]> = {}
   for (const r of reservations) {
@@ -72,7 +71,6 @@ export default function DashboardAvailabilityCalendar({
   const occupiedMap = buildOccupiedMap(reservations)
   const blockedMap  = Object.fromEntries(blocked.map(b => [b.date, b]))
 
-  // ── Navigation ────────────────────────────────────────────
   function prevMonth() {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(y => y - 1) }
     else setViewMonth(m => m - 1)
@@ -84,7 +82,6 @@ export default function DashboardAvailabilityCalendar({
     setSelected(null)
   }
 
-  // ── Day color ─────────────────────────────────────────────
   function dayBg(date: string): string {
     if (blockedMap[date]) return 'bg-neutral-100 text-neutral-400'
     const count = occupiedMap[date]?.length ?? 0
@@ -104,7 +101,6 @@ export default function DashboardAvailabilityCalendar({
     return 'bg-orange-400'
   }
 
-  // ── Block a date ──────────────────────────────────────────
   async function block() {
     if (!selected || busy) return
     setBusy(true)
@@ -125,7 +121,6 @@ export default function DashboardAvailabilityCalendar({
     }
   }
 
-  // ── Unblock a date ────────────────────────────────────────
   async function unblock(date: string) {
     if (busy) return
     setBusy(true)
@@ -141,12 +136,10 @@ export default function DashboardAvailabilityCalendar({
     }
   }
 
-  // ── Detail panel content ──────────────────────────────────
   const selReservations = selected ? (occupiedMap[selected] ?? []) : []
   const selBlocked      = selected ? blockedMap[selected] : null
   const isPast          = selected ? selected < todayStr : false
 
-  // ── Upcoming reservations (next 30 days) ──────────────────
   const upcoming = reservations
     .filter(r => r.status !== 'cancelled' && dateKey(r.check_in) >= todayStr)
     .sort((a, b) => a.check_in.localeCompare(b.check_in))
@@ -156,10 +149,8 @@ export default function DashboardAvailabilityCalendar({
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-5">
 
-        {/* ── Calendar ──────────────────────────────────────── */}
         <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm p-5">
 
-          {/* Month navigation */}
           <div className="flex items-center justify-between mb-5">
             <button
               onClick={prevMonth}
@@ -178,14 +169,12 @@ export default function DashboardAvailabilityCalendar({
             </button>
           </div>
 
-          {/* Day headers */}
           <div className="grid grid-cols-7 mb-1">
             {DAYS.map(d => (
               <p key={d} className="text-center text-[10px] font-semibold text-neutral-400">{d}</p>
             ))}
           </div>
 
-          {/* Day grid */}
           <div className="grid grid-cols-7 gap-0.5">
             {Array.from({ length: firstDay(viewYear, viewMonth) }).map((_, i) => (
               <div key={`e${i}`} />
@@ -206,17 +195,14 @@ export default function DashboardAvailabilityCalendar({
                   `}
                 >
                   {day}
-                  {/* occupancy label */}
                   {!isBlocked && count > 0 && !isSelected && (
                     <span className="absolute top-0.5 right-0.5 text-[9px] font-bold opacity-60">
                       {count}
                     </span>
                   )}
-                  {/* dot indicator */}
                   {!isSelected && (
                     <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${dotColor(date)}`} />
                   )}
-                  {/* blocked lock icon */}
                   {isBlocked && !isSelected && (
                     <span className="absolute top-0.5 right-0.5">
                       <Lock size={8} className="text-neutral-400" />
@@ -227,7 +213,6 @@ export default function DashboardAvailabilityCalendar({
             })}
           </div>
 
-          {/* Legend */}
           <div className="flex flex-wrap items-center gap-3 mt-5 pt-4 border-t border-neutral-100 text-xs text-neutral-500">
             {[
               { color: 'bg-green-400',   label: 'Libre' },
@@ -243,7 +228,6 @@ export default function DashboardAvailabilityCalendar({
           </div>
         </div>
 
-        {/* ── Detail panel ──────────────────────────────────── */}
         <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm p-5 flex flex-col gap-4">
           {!selected ? (
             <div className="flex flex-col items-center justify-center h-full text-center py-10 text-neutral-400">
@@ -259,7 +243,6 @@ export default function DashboardAvailabilityCalendar({
                 </button>
               </div>
 
-              {/* Occupancy summary */}
               <div className="flex items-center gap-2">
                 {[...Array(4)].map((_, i) => {
                   const filled = i < (occupiedMap[selected]?.length ?? 0)
@@ -272,7 +255,6 @@ export default function DashboardAvailabilityCalendar({
                 </span>
               </div>
 
-              {/* Reservations that day */}
               {selReservations.length > 0 && (
                 <div className="space-y-2">
                   <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wide">Reservas</p>
@@ -289,7 +271,6 @@ export default function DashboardAvailabilityCalendar({
                 </div>
               )}
 
-              {/* Block / unblock */}
               {selBlocked ? (
                 <div className="space-y-3">
                   <div className="bg-neutral-50 rounded-xl px-3 py-2.5 border border-neutral-200">
@@ -339,7 +320,6 @@ export default function DashboardAvailabilityCalendar({
         </div>
       </div>
 
-      {/* ── Próximas reservas ─────────────────────────────── */}
       {upcoming.length > 0 && (
         <div className="bg-white rounded-2xl border border-neutral-100 shadow-sm p-5">
           <p className="text-xs font-semibold text-neutral-400 uppercase tracking-wide mb-4">

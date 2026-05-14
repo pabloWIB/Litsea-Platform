@@ -84,7 +84,6 @@ export default function AdminLoginClient() {
   return (
     <LoginPageShell hideLocaleSwitcher>
 
-      {/* Header */}
       <div className="mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#2FB7A3] mb-1">
           {t('loginAdminEyebrow')}

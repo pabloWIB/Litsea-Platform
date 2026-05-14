@@ -48,7 +48,6 @@ export default function HowItWorksSection() {
     <section id="como-funciona" className="bg-[#071210] py-20 md:py-28 px-4">
       <div className="max-w-5xl mx-auto">
 
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -65,7 +64,6 @@ export default function HowItWorksSection() {
           </h2>
         </motion.div>
 
-        {/* Steps */}
         <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-px bg-white/6 rounded-2xl overflow-hidden">
           {STEPS.map((step, i) => (
             <motion.div
@@ -90,7 +88,6 @@ export default function HowItWorksSection() {
           ))}
         </div>
 
-        {/* Stats row */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -15,7 +15,6 @@ export default function CtaSectionHome() {
     <section className="bg-[#071210] pb-20 md:pb-28 px-3 sm:px-4">
       <div className="max-w-5xl mx-auto">
 
-        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -38,7 +37,6 @@ export default function CtaSectionHome() {
       </div>
       <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-px bg-white/6 rounded-3xl overflow-hidden">
 
-        {/* Card — Terapeuta */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -82,7 +80,6 @@ export default function CtaSectionHome() {
           </div>
         </motion.div>
 
-        {/* Card — Empleador */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}

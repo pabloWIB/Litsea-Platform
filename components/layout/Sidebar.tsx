@@ -20,10 +20,9 @@ import {
   LogOut,
   Menu,
   X,
+  Star,
 } from 'lucide-react'
 import type { UserRole } from '@/types/database'
-
-// ─── Types ────────────────────────────────────────────
 
 interface NavItem {
   label: string
@@ -41,8 +40,6 @@ interface SidebarContextProps {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>
   animate: boolean
 }
-
-// ─── Context ──────────────────────────────────────────
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(undefined)
 
@@ -73,8 +70,6 @@ export const SidebarProvider = ({
   )
 }
 
-// ─── Sidebar wrapper ──────────────────────────────────
-
 export const Sidebar = ({
   children,
   open,
@@ -91,13 +86,9 @@ export const Sidebar = ({
   </SidebarProvider>
 )
 
-// ─── SidebarBody (desktop only — mobile handled by MobileTopNav) ──
-
 export const SidebarBody = (props: React.ComponentProps<typeof motion.div>) => (
   <DesktopSidebar {...props} />
 )
-
-// ─── Desktop sidebar (hover expand) ──────────────────
 
 export const DesktopSidebar = ({
   className,
@@ -122,8 +113,6 @@ export const DesktopSidebar = ({
   )
 }
 
-// ─── Mobile sidebar (slide-in drawer) ─────────────────
-
 export const MobileSidebar = ({
   className,
   children,
@@ -135,7 +124,6 @@ export const MobileSidebar = ({
       className="h-14 px-4 flex flex-row md:hidden items-center justify-between w-full bg-[#2c6851] border-b border-white/6"
       {...props}
     >
-      {/* Mobile brand */}
       <div className="flex items-center">
         <Image
           src="/logo-litsea-principal.png"
@@ -182,8 +170,6 @@ export const MobileSidebar = ({
   )
 }
 
-// ─── SidebarLink ──────────────────────────────────────
-
 export const SidebarLink = ({
   link,
   className,
@@ -229,8 +215,6 @@ export const SidebarLink = ({
   )
 }
 
-// ─── Section label ────────────────────────────────────
-
 function SectionLabel({ label }: { label: string }) {
   const { open, animate } = useSidebar()
   return (
@@ -245,8 +229,6 @@ function SectionLabel({ label }: { label: string }) {
     </motion.p>
   )
 }
-
-// ─── Brand ────────────────────────────────────────────
 
 function SidebarBrand() {
   const { open, animate } = useSidebar()
@@ -273,8 +255,6 @@ function SidebarBrand() {
   )
 }
 
-// ─── Nav sections per role ────────────────────────────
-
 function getNavSections(role: UserRole): NavSection[] {
   if (role === 'therapist') {
     return [
@@ -286,15 +266,21 @@ function getNavSections(role: UserRole): NavSection[] {
       {
         label: 'Mi cuenta',
         items: [
-          { label: 'Mi perfil', href: '/terapeuta/perfil', icon: <UserCircle size={16} /> },
-          { label: 'Mis certificados', href: '/terapeuta/certificados', icon: <Award size={16} /> },
+          { label: 'Mi perfil',        href: '/terapeuta/perfil',        icon: <UserCircle size={16} /> },
+          { label: 'Mis certificados', href: '/terapeuta/certificados',  icon: <Award size={16} /> },
         ],
       },
       {
         label: 'Trabajo',
         items: [
-          { label: 'Mis aplicaciones', href: '/terapeuta/aplicaciones', icon: <ClipboardList size={16} /> },
-          { label: 'Mensajes', href: '/terapeuta/mensajes', icon: <MessageCircle size={16} /> },
+          { label: 'Vacantes disponibles', href: '/terapeuta/vacantes',      icon: <Briefcase size={16} /> },
+          { label: 'Mis aplicaciones',     href: '/terapeuta/aplicaciones',  icon: <ClipboardList size={16} /> },
+          { label: 'Mensajes',             href: '/terapeuta/mensajes',      icon: <MessageCircle size={16} /> },
+        ],
+      },
+      {
+        items: [
+          { label: 'Configuración', href: '/terapeuta/configuracion', icon: <Settings size={16} /> },
         ],
       },
     ]
@@ -304,14 +290,14 @@ function getNavSections(role: UserRole): NavSection[] {
     return [
       {
         items: [
-          { label: 'Dashboard', href: '/empleador/dashboard', icon: <LayoutDashboard size={16} /> },
+          { label: 'Inicio', href: '/empleador/dashboard', icon: <LayoutDashboard size={16} /> },
         ],
       },
       {
         label: 'Contratación',
         items: [
-          { label: 'Mis vacantes', href: '/empleador/vacantes', icon: <Briefcase size={16} /> },
-          { label: 'Aplicaciones', href: '/empleador/aplicaciones', icon: <ClipboardList size={16} /> },
+          { label: 'Mis vacantes', href: '/empleador/vacantes',    icon: <Briefcase size={16} /> },
+          { label: 'Candidatos',   href: '/empleador/candidatos',  icon: <Users size={16} /> },
         ],
       },
       {
@@ -320,10 +306,14 @@ function getNavSections(role: UserRole): NavSection[] {
           { label: 'Mensajes', href: '/empleador/mensajes', icon: <MessageCircle size={16} /> },
         ],
       },
+      {
+        items: [
+          { label: 'Configuración', href: '/empleador/configuracion', icon: <Settings size={16} /> },
+        ],
+      },
     ]
   }
 
-  // admin
   return [
     {
       items: [
@@ -333,30 +323,29 @@ function getNavSections(role: UserRole): NavSection[] {
     {
       label: 'Usuarios',
       items: [
-        { label: 'Terapeutas', href: '/admin/terapeutas', icon: <Users size={16} /> },
+        { label: 'Terapeutas',  href: '/admin/terapeutas',  icon: <Users size={16} /> },
         { label: 'Empleadores', href: '/admin/empleadores', icon: <Building2 size={16} /> },
       ],
     },
     {
       label: 'Plataforma',
       items: [
-        { label: 'Vacantes', href: '/admin/vacantes', icon: <Briefcase size={16} /> },
-        { label: 'Aplicaciones', href: '/admin/aplicaciones', icon: <ClipboardList size={16} /> },
-        { label: 'Certificados', href: '/admin/certificados', icon: <Award size={16} /> },
-        { label: 'Mensajes', href: '/admin/mensajes', icon: <MessageCircle size={16} /> },
+        { label: 'Vacantes',      href: '/admin/vacantes',      icon: <Briefcase size={16} /> },
+        { label: 'Aplicaciones',  href: '/admin/aplicaciones',  icon: <ClipboardList size={16} /> },
+        { label: 'Certificados',  href: '/admin/certificados',  icon: <Award size={16} /> },
+        { label: 'Mensajes',      href: '/admin/mensajes',      icon: <MessageCircle size={16} /> },
+        { label: 'Opiniones',     href: '/admin/opiniones',     icon: <Star size={16} /> },
       ],
     },
     {
       label: 'Sistema',
       items: [
-        { label: 'Auditoría', href: '/admin/auditoria', icon: <History size={16} /> },
+        { label: 'Auditoría',     href: '/admin/auditoria',     icon: <History size={16} /> },
         { label: 'Configuración', href: '/admin/configuracion', icon: <Settings size={16} /> },
       ],
     },
   ]
 }
-
-// ─── SidebarContent ───────────────────────────────────
 
 function SidebarContent({
   role = 'therapist',
@@ -439,8 +428,6 @@ function SidebarContent({
   )
 }
 
-// ─── MobileTopNav ─────────────────────────────────────
-
 function MobileNavLink({ item, onClose }: { item: NavItem; onClose: () => void }) {
   const pathname = usePathname()
   const isActive =
@@ -492,7 +479,6 @@ export function MobileTopNav({
 
   return (
     <>
-      {/* Top bar */}
       <div className="h-14 px-4 flex items-center justify-between w-full bg-[#2c6851] border-b border-white/6 shrink-0">
         <Image
           src="/logo-litsea-principal.png"
@@ -511,7 +497,6 @@ export function MobileTopNav({
         </button>
       </div>
 
-      {/* Drawer */}
       <AnimatePresence>
         {open && (
           <motion.div
@@ -586,8 +571,6 @@ export function MobileTopNav({
     </>
   )
 }
-
-// ─── Default export ───────────────────────────────────
 
 export default function SidebarNavigation({
   role,

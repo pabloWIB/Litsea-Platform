@@ -39,7 +39,6 @@ export default function DashboardNav({ userEmail }: { userEmail: string }) {
 
   return (
     <aside className="w-56 shrink-0 bg-purple-950 text-white flex flex-col min-h-screen">
-      {/* Brand */}
       <div className="flex items-center gap-3 px-4 py-5 border-b border-purple-900/60">
         <div className="w-8 h-8 rounded-full bg-purple-700 flex items-center justify-center shrink-0">
           <Tent size={15} className="text-white" />
@@ -50,7 +49,6 @@ export default function DashboardNav({ userEmail }: { userEmail: string }) {
         </div>
       </div>
 
-      {/* Nav */}
       <nav className="flex-1 px-2 py-3 space-y-0.5">
         {NAV.map(({ href, label, icon: Icon }) => {
           const isActive =
@@ -75,7 +73,6 @@ export default function DashboardNav({ userEmail }: { userEmail: string }) {
         })}
       </nav>
 
-      {/* Footer */}
       <div className="px-4 py-4 border-t border-purple-900/60">
         <p className="text-purple-400 text-[10px] truncate mb-2">{userEmail}</p>
         <button

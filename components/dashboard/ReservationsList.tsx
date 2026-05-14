@@ -68,10 +68,8 @@ export default function ReservationsList({ reservations }: { reservations: Reser
   return (
     <div className="space-y-4">
 
-      {/* Filters */}
       <div className="bg-white rounded-xl border border-neutral-100 shadow-sm">
 
-        {/* Status tabs */}
         <div className="flex items-center gap-0.5 px-4 pt-3 border-b border-neutral-100 overflow-x-auto">
           {STATUS_TABS.map(({ key, label }) => {
             const count = key === 'all'
@@ -99,7 +97,6 @@ export default function ReservationsList({ reservations }: { reservations: Reser
           })}
         </div>
 
-        {/* Search + toggle */}
         <div className="flex items-center gap-3 px-4 py-3">
           <div className="relative flex-1 max-w-sm">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
@@ -129,7 +126,6 @@ export default function ReservationsList({ reservations }: { reservations: Reser
         </div>
       </div>
 
-      {/* Table */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-dashed border-neutral-200 p-12 text-center">
           <p className="text-sm font-medium text-neutral-500">No se encontraron reservas</p>
@@ -138,7 +134,6 @@ export default function ReservationsList({ reservations }: { reservations: Reser
       ) : (
         <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
 
-          {/* Desktop table */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -158,7 +153,6 @@ export default function ReservationsList({ reservations }: { reservations: Reser
                   return (
                     <tr key={r.id} className="hover:bg-neutral-50 transition-colors group">
 
-                      {/* Cliente */}
                       <td className="px-5 py-3.5">
                         <p className="text-sm font-medium text-neutral-900 group-hover:text-orange-600 transition-colors">
                           {r.client_name}
@@ -168,13 +162,11 @@ export default function ReservationsList({ reservations }: { reservations: Reser
                         )}
                       </td>
 
-                      {/* Plan */}
                       <td className="px-4 py-3.5">
                         <p className="text-sm text-neutral-700">{r.plan_name}</p>
                         <p className="text-xs text-neutral-400 mt-0.5">{r.nights} {r.nights === 1 ? 'noche' : 'noches'}</p>
                       </td>
 
-                      {/* Fechas */}
                       <td className="px-4 py-3.5">
                         <p className="text-sm text-neutral-700">
                           {format(new Date(r.check_in), 'd MMM', { locale: es })}
@@ -184,13 +176,11 @@ export default function ReservationsList({ reservations }: { reservations: Reser
                         </p>
                       </td>
 
-                      {/* Total */}
                       <td className="px-4 py-3.5 text-right">
                         <p className="text-sm font-semibold text-neutral-900">{fmt(r.total_amount)}</p>
                         <p className="text-xs text-neutral-400 mt-0.5">Pagado: {fmt(r.paid_amount)}</p>
                       </td>
 
-                      {/* Saldo */}
                       <td className="px-4 py-3.5 text-right">
                         {r.remaining_balance > 0 ? (
                           <span className="text-sm font-semibold text-amber-600">{fmt(r.remaining_balance)}</span>
@@ -199,14 +189,12 @@ export default function ReservationsList({ reservations }: { reservations: Reser
                         )}
                       </td>
 
-                      {/* Estado */}
                       <td className="px-4 py-3.5 text-center">
                         <span className={`inline-flex text-[11px] font-semibold px-2.5 py-1 rounded-full ${badge.className}`}>
                           {badge.label}
                         </span>
                       </td>
 
-                      {/* Acciones */}
                       <td className="px-4 py-3.5">
                         <div className="flex items-center justify-end gap-1">
                           {r.drive_folder_url && (
@@ -237,7 +225,6 @@ export default function ReservationsList({ reservations }: { reservations: Reser
             </table>
           </div>
 
-          {/* Mobile cards */}
           <div className="md:hidden divide-y divide-neutral-50">
             {filtered.map((r) => {
               const badge = STATUS_BADGE[r.status]

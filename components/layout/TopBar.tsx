@@ -27,7 +27,6 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
   const AUTH_PREFIXES = ['/login', '/registro-terapeuta', '/registro-empleador', '/reset-password', '/privacidad', '/terminos', '/cookies', '/terapeuta', '/empleador', '/admin']
   const isAuthRoute = AUTH_PREFIXES.some(p => pathname.startsWith(p))
 
-  // Skip banner + navbar entirely on auth pages
   if (isAuthRoute) {
     return (
       <BannerContext.Provider value={{ open: false, topbarHeight: 0 }}>
@@ -36,7 +35,6 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
     )
   }
 
-  // Measure the container height so MainWrapper can pad correctly
   useEffect(() => {
     const el = containerRef.current
     if (!el) return
@@ -46,7 +44,6 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
     return () => ro.disconnect()
   }, [])
 
-  // Scroll: banner hides >10px, navbar styles change >40px
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 40)
@@ -65,24 +62,21 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
     : 'bg-white/90 backdrop-blur-sm border-b border-neutral-100'
 
   const NAV_LINKS = [
-    { label: t('vacantes'),     href: '/#vacantes' },
-    { label: t('terapeutas'),   href: '/#terapeutas' },
-    { label: t('empleadores'),  href: '/#empleadores' },
-    { label: t('comoFunciona'), href: '/#como-funciona' },
+    { label: t('vacantes'),     href: '/vacantes' },
+    { label: t('terapeutas'),   href: '/terapeutas' },
+    { label: t('comoFunciona'), href: '/como-funciona' },
   ]
 
-  const isActive = (href: string) => pathname.startsWith(href)
+  const isActive = (href: string) =>
+    href.startsWith('/#') ? false : pathname === href || pathname.startsWith(href + '/')
 
-  // Desktop: hide on home while banner is open. Mobile: always visible.
   const showNavDesktop = !isHome || !bannerOpen
 
   return (
     <BannerContext.Provider value={{ open: bannerOpen, topbarHeight }}>
 
-      {/* Single fixed container — banner row + navbar row */}
       <div ref={containerRef} className="fixed inset-x-0 top-0 z-[200] flex flex-col overflow-hidden">
 
-        {/* Banner row — collapses to height:0 on scroll */}
         <AnimatePresence>
           {bannerOpen && (
             <motion.div
@@ -114,11 +108,9 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
 
-        {/* Navbar row — always visible on mobile, conditional on desktop */}
         <div className={`w-full transition-all duration-300 ${navBg}${!showNavDesktop ? ' md:hidden' : ''}`}>
               <div className="w-full max-w-[1400px] mx-auto px-4 lg:px-6">
 
-                {/* Desktop */}
                 <div className="hidden md:flex items-center justify-between py-3">
                   <Link href="/" className="shrink-0">
                     <Image src="/logo-litsea-principal-color.png" alt="Litsea Centro de Capacitación"
@@ -147,7 +139,6 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
                   </div>
                 </div>
 
-                {/* Mobile */}
                 <div className="md:hidden">
                   <div className="flex items-center justify-between py-3">
                     <Link href="/" className="shrink-0">
@@ -175,7 +166,6 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Mobile full-screen menu — outside overflow-hidden container so it covers the full viewport */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
@@ -219,7 +209,7 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
             <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
               <div className="flex items-center justify-between pb-1">
                 <LocaleSwitcher selectClassName="text-xs font-semibold bg-white/10 text-white border border-white/15 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:bg-white/15 transition-colors" />
-                <Link href="/login" onClick={() => setMobileOpen(false)}
+                <Link href="/login/terapeuta" onClick={() => setMobileOpen(false)}
                   className="text-sm text-white/50 hover:text-white transition-colors">
                   {t('ingresar')}
                 </Link>

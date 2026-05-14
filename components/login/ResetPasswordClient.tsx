@@ -58,7 +58,6 @@ export default function ResetPasswordClient() {
     }
   }
 
-  /* ── Sent ─────────────────────────────────────────────────────────── */
   if (sent) {
     return (
       <LoginPageShell>
@@ -92,7 +91,6 @@ export default function ResetPasswordClient() {
     )
   }
 
-  /* ── Form ─────────────────────────────────────────────────────────── */
   return (
     <LoginPageShell>
       <div className="mb-6">

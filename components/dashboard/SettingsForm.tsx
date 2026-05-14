@@ -61,7 +61,6 @@ export default function SettingsForm({
   const router   = useRouter()
   const supabase = createClient()
 
-  // ── Password ──────────────────────────────────────────────────
   const [newPassword,  setNewPassword]  = useState('')
   const [confirmPwd,   setConfirmPwd]   = useState('')
   const [showPwd,      setShowPwd]      = useState(false)
@@ -92,7 +91,6 @@ export default function SettingsForm({
     }
   }
 
-  // ── WhatsApp + contact settings ───────────────────────────────
   const [waNumber,   setWaNumber]   = useState(initial.whatsapp_number)
   const [waMessage,  setWaMessage]  = useState(initial.whatsapp_message)
   const [savingWa,   setSavingWa]   = useState(false)
@@ -118,7 +116,6 @@ export default function SettingsForm({
     }
   }
 
-  // ── Sign out ──────────────────────────────────────────────────
   const handleSignOut = async () => {
     await supabase.auth.signOut()
     router.push('/login')
@@ -133,7 +130,6 @@ export default function SettingsForm({
   return (
     <div className="space-y-4">
 
-      {/* Settings table banner */}
       {!tableExists && (
         <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
           <div className="flex items-start gap-3">
@@ -160,7 +156,6 @@ export default function SettingsForm({
         </div>
       )}
 
-      {/* ── Security ── */}
       <SectionCard icon={<Lock size={14} />} title="Seguridad">
         <div>
           <Label>Nueva contraseña</Label>
@@ -216,7 +211,6 @@ export default function SettingsForm({
         </button>
       </SectionCard>
 
-      {/* ── WhatsApp ── */}
       <SectionCard icon={<MessageCircle size={14} />} title="WhatsApp">
         <div>
           <Label>Número de WhatsApp</Label>
@@ -269,7 +263,6 @@ export default function SettingsForm({
         </div>
       </SectionCard>
 
-      {/* ── Contact ── */}
       <SectionCard icon={<Mail size={14} />} title="Contacto">
         <div>
           <Label>Email de contacto</Label>
@@ -295,7 +288,6 @@ export default function SettingsForm({
         </button>
       </SectionCard>
 
-      {/* ── Account ── */}
       <SectionCard icon={<User size={14} />} title="Cuenta">
         <div className="flex items-center justify-between">
           <div>

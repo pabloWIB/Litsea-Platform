@@ -93,7 +93,6 @@ export default function ResetPasswordConfirmClient() {
 
   const isLinkError = !done && !!error && !password && !passwordConfirm
 
-  /* ── Done ─────────────────────────────────────────────────────────── */
   if (done) {
     return (
       <LoginPageShell>
@@ -115,7 +114,6 @@ export default function ResetPasswordConfirmClient() {
     )
   }
 
-  /* ── Invalid link ─────────────────────────────────────────────────── */
   if (isLinkError) {
     return (
       <LoginPageShell>
@@ -140,7 +138,6 @@ export default function ResetPasswordConfirmClient() {
     )
   }
 
-  /* ── Form ─────────────────────────────────────────────────────────── */
   return (
     <LoginPageShell>
       <div className="mb-6">
@@ -159,7 +156,6 @@ export default function ResetPasswordConfirmClient() {
 
       <form onSubmit={handleUpdate} className="flex flex-col gap-4">
 
-        {/* New password */}
         <div>
           <label htmlFor="password" className={labelClass}>{t('newPasswordLabel')}</label>
           <div className="relative">
@@ -189,7 +185,6 @@ export default function ResetPasswordConfirmClient() {
           )}
         </div>
 
-        {/* Confirm password */}
         <div>
           <label htmlFor="passwordConfirm" className={labelClass}>{t('confirmPasswordLabel')}</label>
           <div className="relative">

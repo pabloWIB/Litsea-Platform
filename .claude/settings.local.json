@@ -27,7 +27,12 @@
       "Bash(findstr -i video)",
       "Bash(dir C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\[locale]\\\\\\(auth\\)\\\\login\\\\admin *)",
       "Bash(npx next *)",
-      "Bash(Write-Host \"Cache cleared\")"
+      "Bash(Write-Host \"Cache cleared\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\[locale]\\\\\\(dashboard\\)\\\\terapeuta\\\\configuracion\")",
+      "Bash(mkdir -p \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\[locale]\\\\\\(dashboard\\)\\\\empleador\\\\configuracion\")",
+      "Bash(grep -v \"^$\")",
+      "Bash(Get-ChildItem -Recurse \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\\\(auth\\)\")",
+      "Bash(grep -v \"//\")"
     ]
   }
 }

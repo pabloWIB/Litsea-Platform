@@ -53,7 +53,6 @@ function autoTimes(datePart: string, isFlat: boolean): { checkIn: string; checkO
   return { checkIn, checkOut: addHours(checkIn, duration) }
 }
 
-// ─── Shared input class ───────────────────────────────────────────
 const input = 'w-full px-3 py-2.5 text-sm border border-neutral-200 rounded-xl bg-white text-neutral-900 outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-400/15 transition-all placeholder:text-neutral-400'
 
 interface ReservationFormProps {
@@ -184,7 +183,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
     <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
       <form onSubmit={handleSubmit} className="p-5 sm:p-6 space-y-7">
 
-        {/* ── 1. Cliente ── */}
         <section>
           <Section title="Información del cliente" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -201,7 +199,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
           </div>
         </section>
 
-        {/* ── 2. Plan ── */}
         <section>
           <Section title="Plan y precio" />
           <div className="space-y-3">
@@ -246,7 +243,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
           </div>
         </section>
 
-        {/* ── 3. Fechas ── */}
         <section>
           <Section title="Fechas de estancia" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -270,7 +266,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
           )}
         </section>
 
-        {/* ── 4. Huéspedes ── */}
         <section>
           <Section title="Información de huéspedes" />
           <textarea name="datos" value={formData.datos} onChange={handleChange} rows={6}
@@ -278,7 +273,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
             placeholder={"Nombre completo:\nCelular:\nC.C:\nDirección:\nCorreo electrónico:"} />
         </section>
 
-        {/* ── 5. Servicios adicionales ── */}
         <section>
           <Section title="Servicios adicionales" />
           <div className="space-y-3">
@@ -334,14 +328,12 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
           </div>
         </section>
 
-        {/* ── 6. Notas ── */}
         <section>
           <Section title="Notas internas" />
           <textarea name="notes" value={formData.notes} onChange={handleChange} rows={3}
             className={`${input} resize-vertical`} placeholder="Notas adicionales para la reserva…" />
         </section>
 
-        {/* ── 7. Resumen de pago ── */}
         <section className="bg-neutral-50 border border-neutral-100 rounded-xl p-5 space-y-4">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-neutral-400">Resumen de pago</p>
 
@@ -394,7 +386,6 @@ export default function ReservationForm({ onSubmit, initialData }: ReservationFo
           </div>
         </section>
 
-        {/* Submit */}
         <button type="submit"
           className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-6 rounded-xl font-semibold text-sm transition-colors">
           Generar reserva →

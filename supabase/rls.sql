@@ -138,3 +138,17 @@ CREATE POLICY "settings: lectura pública"
 CREATE POLICY "settings: solo admin modifica"
   ON public.settings FOR ALL
   USING (public.current_user_role() = 'admin');
+
+ALTER TABLE public.opiniones ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "opiniones: lectura pública aprobadas"
+  ON public.opiniones FOR SELECT
+  USING (status = 'approved');
+
+CREATE POLICY "opiniones: inserción pública"
+  ON public.opiniones FOR INSERT
+  WITH CHECK (true);
+
+CREATE POLICY "opiniones: admin acceso total"
+  ON public.opiniones FOR ALL
+  USING (public.current_user_role() = 'admin');

@@ -37,9 +37,8 @@ function fmt(n: number) { return '$' + Math.round(n).toLocaleString('es-CO') }
 export default function ClientsList({ clients }: { clients: ClientRow[] }) {
   const [search,   setSearch]   = useState('')
   const [sort,     setSort]     = useState<SortKey>('recent')
-  const [selected, setSelected] = useState<Set<string>>(new Set()) // keys: `${name}|${phone}`
+  const [selected, setSelected] = useState<Set<string>>(new Set()) 
 
-  // Campaign compose state
   const [composing,   setComposing]   = useState(false)
   const [subject,     setSubject]     = useState('')
   const [message,     setMessage]     = useState('')
@@ -65,7 +64,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
     })
   }, [clients, search, sort])
 
-  // ── Selection helpers ───────────────────────────────────────
   const key = (c: ClientRow) => `${c.name}|${c.phone ?? ''}`
 
   const toggle = (c: ClientRow) => setSelected(prev => {
@@ -97,7 +95,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
   const selectedWithEmail = selectedClients.filter(c => c.email)
   const selectedNoEmail   = selectedClients.filter(c => !c.email)
 
-  // ── Send campaign ───────────────────────────────────────────
   async function sendCampaign() {
     if (!subject.trim() || !message.trim() || selectedWithEmail.length === 0) return
     setSending(true)
@@ -134,7 +131,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
   return (
     <div className="space-y-4">
 
-      {/* Summary stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="bg-white rounded-xl border border-neutral-100 shadow-sm p-4">
           <div className="flex items-center justify-between mb-2">
@@ -159,7 +155,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="bg-white rounded-xl border border-neutral-100 shadow-sm">
         <div className="flex flex-wrap items-center gap-3 px-4 py-3">
           <div className="relative flex-1 min-w-[180px] max-w-sm">
@@ -194,7 +189,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
         </div>
       </div>
 
-      {/* Table */}
       {filtered.length === 0 ? (
         <div className="bg-white rounded-xl border border-dashed border-neutral-200 p-12 text-center">
           <p className="text-sm font-medium text-neutral-500">No se encontraron clientes</p>
@@ -203,7 +197,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
       ) : (
         <div className="bg-white rounded-xl border border-neutral-100 shadow-sm overflow-hidden">
 
-          {/* Desktop */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
@@ -290,7 +283,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
             </table>
           </div>
 
-          {/* Mobile cards */}
           <div className="md:hidden divide-y divide-neutral-50">
             {filtered.map((c, i) => {
               const k = key(c)
@@ -333,7 +325,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
         </div>
       )}
 
-      {/* ── Floating action bar ─────────────────────────── */}
       <AnimatePresence>
         {selected.size > 0 && (
           <motion.div
@@ -366,7 +357,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
         )}
       </AnimatePresence>
 
-      {/* ── Campaign compose modal ──────────────────────── */}
       <AnimatePresence>
         {composing && (
           <motion.div
@@ -383,7 +373,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
               transition={{ duration: 0.2 }}
               className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
             >
-              {/* Header */}
               <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-100">
                 <div>
                   <h2 className="text-base font-bold text-neutral-900">Enviar email</h2>
@@ -418,7 +407,6 @@ export default function ClientsList({ clients }: { clients: ClientRow[] }) {
                   </button>
                 </div>
               ) : (
-                /* Compose form */
                 <div className="px-6 py-5 space-y-4">
                   <div>
                     <label className="block text-xs font-semibold uppercase tracking-wide text-neutral-500 mb-1.5">

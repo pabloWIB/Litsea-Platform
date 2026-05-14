@@ -105,7 +105,6 @@ export default function RegisterEmpleadorClient() {
     }
   }
 
-  /* ── Success ─────────────────────────────────────────────────────── */
   if (success) {
     return (
       <LoginPageShell>
@@ -135,11 +134,9 @@ export default function RegisterEmpleadorClient() {
     )
   }
 
-  /* ── Form ────────────────────────────────────────────────────────── */
   return (
     <LoginPageShell>
 
-      {/* Header */}
       <div className="mb-6">
         <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#2FB7A3] mb-1">
           {t('registerEmpleadorEyebrow')}
@@ -152,7 +149,6 @@ export default function RegisterEmpleadorClient() {
         </p>
       </div>
 
-      {/* Google */}
       <button
         type="button"
         onClick={handleGoogle}
@@ -173,17 +169,14 @@ export default function RegisterEmpleadorClient() {
         {t('signUpWithGoogle')}
       </button>
 
-      {/* Divider */}
       <div className="flex items-center gap-2.5 my-4">
         <div className="h-px flex-1 bg-[#e5e7eb]" />
         <span className="text-[12px] text-[#d1d5db]">{t('orDivider')}</span>
         <div className="h-px flex-1 bg-[#e5e7eb]" />
       </div>
 
-      {/* Error */}
       {error && <div className="mb-4"><ErrorAlert message={error} /></div>}
 
-      {/* Form */}
       <form onSubmit={handleRegister} className="flex flex-col gap-3.5">
 
         <div className="grid grid-cols-2 gap-3">
@@ -239,7 +232,6 @@ export default function RegisterEmpleadorClient() {
         </button>
       </form>
 
-      {/* Bottom links */}
       <div className="mt-5 flex flex-col gap-1.5 text-center">
         <p className="text-[13px] text-[#8a8a8a]">
           {t('alreadyHaveAccount')}{' '}

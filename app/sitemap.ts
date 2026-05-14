@@ -5,7 +5,6 @@ const BASE_URL = 'https://empleos.litseacc.edu.mx'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date()
 
-  // Static routes
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: BASE_URL,
@@ -51,8 +50,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ]
 
-  // Dynamic routes — vacantes and terapeutas from Supabase
-  // Only runs when the DB is configured; fails silently otherwise
   let vacantesRoutes: MetadataRoute.Sitemap = []
   let terapeutasRoutes: MetadataRoute.Sitemap = []
 
@@ -91,7 +88,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.7,
       }))
     } catch {
-      // DB not available — skip dynamic routes
     }
   }
 
