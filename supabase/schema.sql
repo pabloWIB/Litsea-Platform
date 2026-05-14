@@ -1,14 +1,4 @@
--- =====================================================
--- Litsea Empleos — Schema completo
--- Aplicar en Supabase SQL Editor
--- =====================================================
-
--- Extensiones
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-
--- =====================================================
--- ENUMS
--- =====================================================
 
 CREATE TYPE user_role AS ENUM ('therapist', 'employer', 'admin');
 
@@ -19,11 +9,6 @@ CREATE TYPE application_status AS ENUM (
   'hired',
   'rejected'
 );
-
--- =====================================================
--- TABLA: profiles
--- Extiende auth.users. Un usuario = un perfil.
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.profiles (
   id          UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
@@ -36,11 +21,6 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at  TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
--- =====================================================
--- TABLA: therapist_profiles
--- Datos adicionales del terapeuta
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.therapist_profiles (
   id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -56,11 +36,6 @@ CREATE TABLE IF NOT EXISTS public.therapist_profiles (
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =====================================================
--- TABLA: employer_profiles
--- Datos adicionales del empleador (hotel/spa)
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS public.employer_profiles (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id      UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE UNIQUE,
@@ -72,11 +47,6 @@ CREATE TABLE IF NOT EXISTS public.employer_profiles (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
--- =====================================================
--- TABLA: vacancies
--- Vacantes publicadas por empleadores
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.vacancies (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -93,11 +63,6 @@ CREATE TABLE IF NOT EXISTS public.vacancies (
   updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =====================================================
--- TABLA: applications
--- Aplicaciones de terapeutas a vacantes
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS public.applications (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   vacancy_id   UUID NOT NULL REFERENCES public.vacancies(id) ON DELETE CASCADE,
@@ -108,11 +73,6 @@ CREATE TABLE IF NOT EXISTS public.applications (
   updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   UNIQUE(vacancy_id, therapist_id)
 );
-
--- =====================================================
--- TABLA: certificates
--- Certificados subidos por los terapeutas
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.certificates (
   id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -125,11 +85,6 @@ CREATE TABLE IF NOT EXISTS public.certificates (
   created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =====================================================
--- TABLA: conversations
--- Una conversación por aplicación habilitada
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS public.conversations (
   id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   application_id UUID NOT NULL REFERENCES public.applications(id) ON DELETE CASCADE UNIQUE,
@@ -139,11 +94,6 @@ CREATE TABLE IF NOT EXISTS public.conversations (
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =====================================================
--- TABLA: messages
--- Mensajes dentro de conversaciones
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS public.messages (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   conversation_id UUID NOT NULL REFERENCES public.conversations(id) ON DELETE CASCADE,
@@ -152,11 +102,6 @@ CREATE TABLE IF NOT EXISTS public.messages (
   read_at         TIMESTAMPTZ,
   created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
--- =====================================================
--- TABLA: audit_logs
--- Historial de acciones del equipo admin
--- =====================================================
 
 CREATE TABLE IF NOT EXISTS public.audit_logs (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -168,11 +113,6 @@ CREATE TABLE IF NOT EXISTS public.audit_logs (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- =====================================================
--- TABLA: settings
--- Configuración dinámica del sitio
--- =====================================================
-
 CREATE TABLE IF NOT EXISTS public.settings (
   key        TEXT PRIMARY KEY,
   value      JSONB NOT NULL,
@@ -180,16 +120,11 @@ CREATE TABLE IF NOT EXISTS public.settings (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Valores iniciales de settings
 INSERT INTO public.settings (key, value) VALUES
   ('allow_registrations', 'true'),
   ('home_title',    '"Conectamos terapeutas con el lujo"'),
   ('home_subtitle', '"Encuentra tu lugar en los mejores spas y hoteles de la Riviera Maya"')
 ON CONFLICT (key) DO NOTHING;
-
--- =====================================================
--- ÍNDICES
--- =====================================================
 
 CREATE INDEX IF NOT EXISTS idx_vacancies_employer   ON public.vacancies(employer_id);
 CREATE INDEX IF NOT EXISTS idx_vacancies_active     ON public.vacancies(is_active, is_featured);
@@ -200,10 +135,6 @@ CREATE INDEX IF NOT EXISTS idx_certificates_therapist ON public.certificates(the
 CREATE INDEX IF NOT EXISTS idx_messages_conversation ON public.messages(conversation_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_admin      ON public.audit_logs(admin_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_therapist_verified    ON public.therapist_profiles(is_verified);
-
--- =====================================================
--- TRIGGER: updated_at automático
--- =====================================================
 
 CREATE OR REPLACE FUNCTION public.set_updated_at()
 RETURNS TRIGGER AS $$
@@ -233,10 +164,6 @@ CREATE OR REPLACE TRIGGER trg_applications_updated_at
   BEFORE UPDATE ON public.applications
   FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
--- =====================================================
--- TRIGGER: crear perfil al registrar usuario
--- =====================================================
-
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -248,13 +175,11 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'full_name', '')
   );
 
-  -- Si es terapeuta, crear therapist_profile vacío
   IF COALESCE(NEW.raw_user_meta_data->>'role', 'therapist') = 'therapist' THEN
     INSERT INTO public.therapist_profiles (user_id)
     VALUES (NEW.id);
   END IF;
 
-  -- Si es empleador, crear employer_profile con company_name si viene en metadata
   IF NEW.raw_user_meta_data->>'role' = 'employer' THEN
     INSERT INTO public.employer_profiles (user_id, company_name)
     VALUES (

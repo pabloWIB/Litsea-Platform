@@ -5,10 +5,6 @@ import { redirect } from 'next/navigation'
 import { routing } from '@/i18n/routing'
 import TopBar from '@/components/layout/TopBar'
 import WhatsAppChat from '@/components/ui/WhatsAppChat'
-import { Geist } from 'next/font/google'
-import '../globals.css'
-
-const geist = Geist({ subsets: ['latin'], variable: '--font-sans' })
 
 const APP_URL = 'https://empleos.litseacc.edu.mx'
 
@@ -111,15 +107,11 @@ export default async function LocaleLayout({
   const messages = await getMessages()
 
   return (
-    <html lang={locale} className={`${geist.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">
-        <NextIntlClientProvider messages={messages}>
-          <TopBar>
-            {children}
-            <WhatsAppChat />
-          </TopBar>
-        </NextIntlClientProvider>
-      </body>
-    </html>
+    <NextIntlClientProvider messages={messages}>
+      <TopBar>
+        {children}
+        <WhatsAppChat />
+      </TopBar>
+    </NextIntlClientProvider>
   )
 }

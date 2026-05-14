@@ -52,7 +52,13 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  const { data: { user } } = await supabase.auth.getUser()
+  let user = null
+  try {
+    const { data } = await supabase.auth.getUser()
+    user = data.user
+  } catch {
+    // Malformed or expired auth cookie — treat as unauthenticated
+  }
 
   if (isProtected && !user) {
     const url = request.nextUrl.clone()
@@ -71,6 +77,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon|api/|auth/callback|auth/signout|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|woff2?|ttf)).*)',
+    '/((?!_next/static|_next/image|favicon|api/|auth/callback|auth/signout|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|mp4|mp3|webm|woff2?|ttf|pdf|txt|xml|json)).*)',
   ],
 }

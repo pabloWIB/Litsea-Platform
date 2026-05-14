@@ -1,5 +1,5 @@
 # Plan de ejecución — Litsea Empleos
-**Fecha:** 2026-05-11 · Archivo por archivo, en orden de dependencia
+**Última actualización:** 2026-05-13 · Archivo por archivo, en orden de dependencia
 
 ---
 
@@ -7,16 +7,19 @@
 
 ```
 app/
-├── (auth)/                              # Sin header/footer — solo el form hero
-│   ├── login/page.tsx                   ✅ HECHO
+├── (auth)/                              # Sin header/footer — imagen + form
+│   ├── login/page.tsx                   ✅ HECHO — redirige a /login/terapeuta
+│   ├── login/terapeuta/page.tsx         ✅ HECHO
+│   ├── login/empleador/page.tsx         ✅ HECHO
+│   ├── login/admin/page.tsx             ✅ HECHO — sin Google, verifica role=admin
 │   ├── registro-terapeuta/page.tsx      ✅ HECHO
 │   ├── registro-empleador/page.tsx      ✅ HECHO
 │   └── reset-password/
-│       ├── page.tsx                     ✅ HECHO
-│       └── confirm/page.tsx             ✅ HECHO
+│       ├── page.tsx                     ✅ HECHO — i18n, light theme
+│       └── confirm/page.tsx             ✅ HECHO — i18n, strength bar
 │
-├── (public)/                            # Header + Footer público
-│   ├── layout.tsx                       🔲 PENDIENTE — Header + Footer
+├── (public)/                            # TopBar (navbar blanco) + Footer
+│   ├── layout.tsx                       🔲 PENDIENTE
 │   ├── vacantes/
 │   │   ├── page.tsx                     🔲 PENDIENTE
 │   │   └── [id]/page.tsx                🔲 PENDIENTE
@@ -25,8 +28,8 @@ app/
 │   │   └── [id]/page.tsx                🔲 PENDIENTE
 │   └── como-funciona/page.tsx           🔲 PENDIENTE
 │
-├── (dashboard)/                         # Sidebar + Topbar — protegido por auth
-│   ├── layout.tsx                       🔲 PENDIENTE — reescribir completo
+├── (dashboard)/                         # Sidebar + Topbar — protegido por proxy.ts
+│   ├── layout.tsx                       🔲 PENDIENTE
 │   ├── terapeuta/
 │   │   ├── dashboard/page.tsx           🔲 PENDIENTE
 │   │   ├── perfil/page.tsx              🔲 PENDIENTE
@@ -52,6 +55,10 @@ app/
 │       ├── auditoria/page.tsx           🔲 PENDIENTE
 │       └── configuracion/page.tsx       🔲 PENDIENTE
 │
+├── privacidad/page.tsx                  ✅ HECHO — ES/EN/FR completo
+├── terminos/page.tsx                    ✅ HECHO — ES/EN/FR completo (12 secciones)
+├── cookies/page.tsx                     ✅ HECHO — ES/EN/FR + cookie type cards
+│
 ├── api/
 │   ├── auth/callback/route.ts           ✅ HECHO
 │   ├── auth/signout/route.ts            ✅ HECHO
@@ -63,18 +70,25 @@ app/
 │   ├── mensajes/route.ts                🔲 PENDIENTE
 │   └── email/route.ts                   🔲 PENDIENTE (Resend)
 │
-├── privacidad/page.tsx                  🔲 PENDIENTE
-├── terminos/page.tsx                    🔲 PENDIENTE
-├── cookies/page.tsx                     🔲 PENDIENTE
 ├── page.tsx                             ✅ HECHO (home + hero + sections)
-├── layout.tsx                           ✅ HECHO (root — SEO, JSON-LD)
+├── layout.tsx                           ✅ HECHO (favicon, html/body, locale header)
 ├── robots.ts                            ✅ HECHO
 ├── sitemap.ts                           ✅ HECHO
-├── error.tsx                            ✅ HECHO
-└── not-found.tsx                        ✅ HECHO
+├── error.tsx                            ✅ HECHO — pill button, light theme
+└── not-found.tsx                        ✅ HECHO — i18n, pill button, light theme
 
 components/
-├── login/                               ✅ HECHO (LoginClient, Shell, Register*, ResetPassword*)
+├── login/
+│   ├── LoginPageShell.tsx               ✅ HECHO — imagen fija derecha, locale pill, back button
+│   ├── LoginClient.tsx                  ✅ HECHO — light theme, i18n, terapeuta + empleador variants
+│   ├── AdminLoginClient.tsx             ✅ HECHO — sin Google, verifica role=admin, sin locale switcher
+│   ├── RegisterTerapeutaClient.tsx      ✅ HECHO — light theme, strength bar, sin confirmar contraseña
+│   ├── RegisterEmpleadorClient.tsx      ✅ HECHO — light theme, sin confirmar contraseña
+│   ├── ResetPasswordClient.tsx          ✅ HECHO — i18n, light theme, hero button
+│   └── ResetPasswordConfirmClient.tsx   ✅ HECHO — i18n, strength bar, 3 estados
+├── legales/
+│   ├── LegalShell.tsx                   ✅ HECHO — wrapper #FDFAF5 + Footer
+│   └── LegalNavbar.tsx                  ✅ HECHO — fijo, blanco, logo + locale pill + back link
 ├── home/
 │   ├── HeroSection.tsx                  ✅ HECHO
 │   ├── HowItWorksSection.tsx            ✅ HECHO
@@ -82,177 +96,124 @@ components/
 │   ├── FeaturedVacanciesSection.tsx     🔲 PENDIENTE
 │   └── FeaturedTherapistsSection.tsx    🔲 PENDIENTE
 ├── layout/
-│   ├── Header.tsx                       🔲 PENDIENTE — Nav público (sticky)
-│   └── Footer.tsx                       🔲 PENDIENTE
+│   ├── TopBar.tsx                       ✅ HECHO — suprime en auth + legales
+│   ├── Navbar.tsx                       ✅ HECHO
+│   ├── Footer.tsx                       ✅ HECHO
+│   └── Header.tsx                       🔲 PENDIENTE
 ├── dashboard/
-│   ├── Sidebar.tsx                      🔲 PENDIENTE — Role-aware
+│   ├── Sidebar.tsx                      🔲 PENDIENTE — role-aware
 │   ├── Topbar.tsx                       🔲 PENDIENTE
 │   └── DashboardShell.tsx               🔲 PENDIENTE
-├── vacantes/
-│   ├── VacanteCard.tsx                  🔲 PENDIENTE
-│   ├── VacantesList.tsx                 🔲 PENDIENTE
-│   ├── VacanteFiltros.tsx               🔲 PENDIENTE
-│   └── VacanteForm.tsx                  🔲 PENDIENTE
-├── terapeutas/
-│   ├── TerapeutaCard.tsx                🔲 PENDIENTE
-│   ├── TerapeutasList.tsx               🔲 PENDIENTE
-│   └── TerapeutaPerfilForm.tsx          🔲 PENDIENTE
-├── aplicaciones/
-│   ├── AplicacionesList.tsx             🔲 PENDIENTE
-│   ├── AplicacionStatusBadge.tsx        🔲 PENDIENTE
-│   └── AplicacionActions.tsx            🔲 PENDIENTE
-├── certificados/
-│   ├── CertificadoCard.tsx              🔲 PENDIENTE
-│   ├── CertificadoUpload.tsx            🔲 PENDIENTE
-│   └── CertificadoVerificacion.tsx      🔲 PENDIENTE
-├── mensajes/
-│   ├── ChatWindow.tsx                   🔲 PENDIENTE
-│   ├── ConversacionesList.tsx           🔲 PENDIENTE
-│   └── MessageBubble.tsx                🔲 PENDIENTE
-├── admin/
-│   ├── MetricsCards.tsx                 🔲 PENDIENTE
-│   ├── TerapeutasTable.tsx              🔲 PENDIENTE
-│   ├── EmpleadoresTable.tsx             🔲 PENDIENTE
-│   ├── VacantesTable.tsx                🔲 PENDIENTE
-│   ├── AplicacionesTable.tsx            🔲 PENDIENTE
-│   ├── CertificadosReview.tsx           🔲 PENDIENTE
-│   ├── AuditoriaLog.tsx                 🔲 PENDIENTE
-│   └── SettingsForm.tsx                 🔲 PENDIENTE
-├── legales/
-│   └── LegalLayout.tsx                  🔲 PENDIENTE
+├── vacantes/                            🔲 PENDIENTE (4 componentes)
+├── terapeutas/                          🔲 PENDIENTE (3 componentes)
+├── aplicaciones/                        🔲 PENDIENTE (3 componentes)
+├── certificados/                        🔲 PENDIENTE (3 componentes)
+├── mensajes/                            🔲 PENDIENTE (3 componentes)
+├── admin/                               🔲 PENDIENTE (8 componentes)
 └── ui/                                  ✅ shadcn — completo
 
 lib/
 ├── supabase/client.ts                   ✅ HECHO
 ├── supabase/server.ts                   ✅ HECHO
 ├── supabase/service.ts                  ✅ HECHO
-├── audit.ts                             🔲 PENDIENTE — helper log acciones admin
+├── audit.ts                             🔲 PENDIENTE
 ├── email.ts                             🔲 PENDIENTE — Resend helpers
 └── utils.ts                             ✅ HECHO
 
-emails/ (React Email)
-├── WelcomeEmail.tsx                     🔲 PENDIENTE
-├── NewApplicationEmail.tsx              🔲 PENDIENTE
-├── ChatEnabledEmail.tsx                 🔲 PENDIENTE
-└── ApplicationStatusEmail.tsx           🔲 PENDIENTE
+emails/ (React Email)                    🔲 PENDIENTE (4 plantillas)
 
 types/
-└── database.ts                          🔲 PENDIENTE — tipos de Supabase
+└── database.ts                          🔲 PENDIENTE — tipos generados de Supabase
+
+public/
+├── tamplates/                           ✅ HECHO — 5 templates Supabase (Litsea brand)
+├── favicon/                             ✅ HECHO — ico, svg, png, webmanifest
+└── fondo-login-litsea-centro-capacitacion-bienestar.webp  ✅ HECHO — imagen panel derecho auth
+
+messages/
+├── es.json                              ✅ HECHO — 17 namespaces
+├── en.json                              ✅ HECHO — 17 namespaces
+└── fr.json                              ✅ HECHO — 17 namespaces
+
+proxy.ts                                 ✅ HECHO — i18n + auth guard + try-catch + matcher mp4
+.env.local                               ✅ HECHO — todas las vars incluyendo CRON_SECRET
+supabase/schema.sql                      ✅ HECHO (pendiente aplicar en Supabase)
+supabase/rls.sql                         ✅ HECHO (pendiente aplicar en Supabase)
+supabase/seed.sql                        ✅ HECHO
 ```
 
 ---
 
-## Orden de ejecución recomendado
+## Namespaces i18n — Estado actual
 
-### Bloque 1 — Fundación (sin esto nada funciona)
+| Namespace | Usado en | Keys |
+|---|---|---|
+| `nav` | TopBar, Navbar | 7 |
+| `banner` | TopBar | 3 |
+| `hero` | HeroSection | 8 |
+| `vacantesDestacadas` | Home | 4 |
+| `terapeutasDestacados` | Home | 5 |
+| `redEmpleadores` | Home | 4 |
+| `howItWorks` | HowItWorksSection | 13 |
+| `paraEmpleadores` | Home | 8 |
+| `ctaFinal` | CtaSectionHome | 11 |
+| `pageTitles` | Metadata de cada page | 11 |
+| `whatsapp` | WhatsAppChat | 4 |
+| `footer` | Footer | 14 |
+| `resetPassword` | ResetPasswordClient, ResetPasswordConfirmClient | 28 |
+| `auth` | LoginClient, RegisterTerapeutaClient, RegisterEmpleadorClient, AdminLoginClient | 66 |
+| `loginShell` | LoginPageShell | 4 |
+| `errors` | not-found.tsx | 5 |
+| `legal` | LegalNavbar, privacidad, terminos, cookies | 8 |
+
+---
+
+## Orden de ejecución — Siguiente bloque (Fase 3)
+
+### Bloque A — Fundación pública (sin esto las páginas públicas no tienen nav/layout)
 | # | Archivo | Por qué primero |
 |---|---|---|
-| 1 | `types/database.ts` | Tipos de DB usados en todos los componentes |
-| 2 | `components/dashboard/Sidebar.tsx` | Lo necesita el layout del dashboard |
-| 3 | `components/dashboard/Topbar.tsx` | Idem |
-| 4 | `app/(dashboard)/layout.tsx` | REESCRIBIR — base de los 14 screens de dashboard |
-| 5 | `components/layout/Header.tsx` | Nav público sticky — como el Hero del Glamping |
-| 6 | `components/layout/Footer.tsx` | Footer público |
-| 7 | `app/(public)/layout.tsx` | Ensambla Header + Footer |
+| 1 | `types/database.ts` | Tipos usados en TODOS los componentes con datos |
+| 2 | `components/layout/Header.tsx` | Nav público con links + locale switcher |
+| 3 | `app/(public)/layout.tsx` | Layout que ensambla TopBar (que ya incluye Header) + Footer |
 
-### Bloque 2 — Páginas públicas (SEO + flujo de entrada)
-| # | Archivo | Qué necesita |
+### Bloque B — Páginas públicas (en orden de valor)
+| # | Archivo | |
 |---|---|---|
-| 8  | `app/(public)/vacantes/page.tsx` | VacanteCard, VacanteFiltros |
-| 9  | `components/vacantes/VacanteCard.tsx` | Diseño de tarjeta |
-| 10 | `components/vacantes/VacanteFiltros.tsx` | Filtros zona/especialidad |
-| 11 | `app/(public)/vacantes/[id]/page.tsx` | Detalle + botón aplicar |
-| 12 | `app/(public)/terapeutas/page.tsx` | TerapeutaCard |
-| 13 | `components/terapeutas/TerapeutaCard.tsx` | — |
-| 14 | `app/(public)/terapeutas/[id]/page.tsx` | Perfil público |
-| 15 | `app/(public)/como-funciona/page.tsx` | Landing SEO |
+| 4 | `app/(public)/vacantes/page.tsx` | Alta prioridad SEO |
+| 5 | `components/vacantes/VacanteCard.tsx` | |
+| 6 | `components/vacantes/VacanteFiltros.tsx` | |
+| 7 | `app/(public)/vacantes/[id]/page.tsx` | JobPosting schema |
+| 8 | `app/(public)/terapeutas/page.tsx` | |
+| 9 | `components/terapeutas/TerapeutaCard.tsx` | |
+| 10 | `app/(public)/terapeutas/[id]/page.tsx` | Person schema |
+| 11 | `app/(public)/como-funciona/page.tsx` | SEO landing |
+| 12 | `FeaturedVacanciesSection.tsx` + `FeaturedTherapistsSection.tsx` | Home completo |
 
-### Bloque 3 — Dashboard terapeuta
-| # | Archivo | Qué hace |
+### Bloque C — Dashboard base (luego terapeuta, empleador, admin)
+| # | Archivo | |
 |---|---|---|
-| 16 | `app/(dashboard)/terapeuta/dashboard/page.tsx` | Resumen aplicaciones + mensajes |
-| 17 | `app/(dashboard)/terapeuta/perfil/page.tsx` | Editar bio, foto, especialidades, zonas |
-| 18 | `components/terapeutas/TerapeutaPerfilForm.tsx` | Form con Server Action |
-| 19 | `app/(dashboard)/terapeuta/aplicaciones/page.tsx` | Lista con status badges |
-| 20 | `components/aplicaciones/AplicacionStatusBadge.tsx` | Badge por estado |
-| 21 | `app/(dashboard)/terapeuta/certificados/page.tsx` | Upload a Supabase Storage |
-| 22 | `components/certificados/CertificadoUpload.tsx` | — |
-| 23 | `app/(dashboard)/terapeuta/mensajes/page.tsx` | Chat real-time |
-| 24 | `components/mensajes/ChatWindow.tsx` | Supabase Realtime |
-
-### Bloque 4 — Dashboard empleador
-| # | Archivo | Qué hace |
-|---|---|---|
-| 25 | `app/(dashboard)/empleador/dashboard/page.tsx` | Resumen vacantes + aplicaciones |
-| 26 | `app/(dashboard)/empleador/vacantes/page.tsx` | Lista de sus vacantes |
-| 27 | `app/(dashboard)/empleador/vacantes/nueva/page.tsx` | Form crear vacante |
-| 28 | `components/vacantes/VacanteForm.tsx` | Form reutilizable crear/editar |
-| 29 | `app/(dashboard)/empleador/vacantes/[id]/editar/page.tsx` | Form editar |
-| 30 | `app/(dashboard)/empleador/aplicaciones/page.tsx` | Ver quién aplicó |
-| 31 | `app/(dashboard)/empleador/mensajes/page.tsx` | Chat con terapeutas |
-
-### Bloque 5 — Panel admin
-| # | Archivo | Qué hace |
-|---|---|---|
-| 32 | `app/(dashboard)/admin/page.tsx` | Métricas globales (cards + charts) |
-| 33 | `components/admin/MetricsCards.tsx` | — |
-| 34 | `app/(dashboard)/admin/terapeutas/page.tsx` | Tabla + verificar/suspender |
-| 35 | `app/(dashboard)/admin/empleadores/page.tsx` | Tabla + suspender |
-| 36 | `app/(dashboard)/admin/vacantes/page.tsx` | Tabla + destacar/desactivar |
-| 37 | `app/(dashboard)/admin/aplicaciones/page.tsx` | Cambiar status + habilitar chat |
-| 38 | `app/(dashboard)/admin/certificados/page.tsx` | Revisar PDF + verificar |
-| 39 | `app/(dashboard)/admin/mensajes/page.tsx` | Vista lectura de conversaciones |
-| 40 | `app/(dashboard)/admin/auditoria/page.tsx` | Log de acciones admin |
-| 41 | `app/(dashboard)/admin/configuracion/page.tsx` | Settings del home |
-
-### Bloque 6 — API Routes
-| # | Archivo | Para qué |
-|---|---|---|
-| 42 | `api/vacantes/route.ts` | GET lista pública + POST crear (empleador) |
-| 43 | `api/vacantes/[id]/route.ts` | GET detalle + PATCH + DELETE |
-| 44 | `api/aplicaciones/route.ts` | POST aplicar a vacante |
-| 45 | `api/aplicaciones/[id]/route.ts` | PATCH cambiar estado (admin) |
-| 46 | `api/certificados/route.ts` | POST upload + GET lista |
-| 47 | `api/mensajes/route.ts` | GET conversaciones |
-| 48 | `api/email/route.ts` | POST enviar emails (Resend) |
-
-### Bloque 7 — Emails y legales
-| # | Archivo | — |
-|---|---|---|
-| 49 | `lib/email.ts` | Helpers Resend |
-| 50 | `emails/WelcomeEmail.tsx` | Bienvenida |
-| 51 | `emails/NewApplicationEmail.tsx` | Notif admin |
-| 52 | `emails/ChatEnabledEmail.tsx` | Chat habilitado |
-| 53 | `emails/ApplicationStatusEmail.tsx` | Cambio de estado |
-| 54 | `app/privacidad/page.tsx` | Texto legal |
-| 55 | `app/terminos/page.tsx` | Texto legal |
-| 56 | `app/cookies/page.tsx` | Texto legal |
+| 13 | `components/dashboard/Sidebar.tsx` | role-aware |
+| 14 | `components/dashboard/Topbar.tsx` | avatar, notificaciones |
+| 15 | `app/(dashboard)/layout.tsx` | auth guard + Sidebar + Topbar |
 
 ---
 
 ## Design system
 
-| Token | Valor | Uso |
-|---|---|---|
-| Background | `#071210` | Fondo principal — toda la app |
-| Accent | `#2FB7A3` | Teal — botones primarios, links, badges |
-| Accent hover | `#3ecfbb` | Hover sobre accent |
-| Card | `bg-white/5 border-white/10` | Cards oscuras |
-| Text primary | `text-white` | — |
-| Text muted | `text-white/50` | Subtítulos, labels |
-| Text faint | `text-white/25` | Placeholders, hints |
-| Error | `text-red-400 bg-red-500/8 border-red-500/20` | Errores |
-| Success | `text-[#2FB7A3] bg-[#2FB7A3]/10 border-[#2FB7A3]/20` | Confirmaciones |
-| Fuente | `Geist` (ya configurada en layout.tsx) | — |
-| Botón primario | `HoverBorderGradient backdropClassName="bg-[#2FB7A3]"` | — |
-| Botón secundario | `HoverBorderGradient border-white/20 backdropClassName="bg-white/8"` | — |
-| Animaciones | `framer-motion` — `EASE = [0.22,1,0.36,1]` | Consistente en todo |
-
----
-
-## Próximo paso inmediato
-
-**Bloque 1 — empezar por:**
-1. `types/database.ts` — tipos de la DB
-2. `app/(dashboard)/layout.tsx` — reescribir sidebar/topbar en Litsea dark
-3. `components/layout/Header.tsx` — nav público
+| Token | Valor |
+|---|---|
+| Background app | `#ffffff` (auth/público) · `#071210` (dashboard futuro) |
+| Background legal | `#FDFAF5` (crema cálido) |
+| Accent | `#2FB7A3` — botones primarios, links, badges |
+| Accent hover | `#239688` |
+| Input border | `#e5e7eb` |
+| Input bg | `#f9fafb` |
+| Text main | `#4a4a4a` |
+| Text dark | `#1a1a1a` (headings legales) |
+| Text body legal | `#5a5a5a` |
+| Text muted | `#8a8a8a` |
+| Error bg | `#fff2f2` / border `#fecaca` / text `#b91c1c` |
+| Fuente | `Geist` |
+| Botón primario | `rounded-full bg-[#2FB7A3] ring-offset-2 hover:ring-2 hover:ring-[#2FB7A3]` |
+| Input | `border 1.5px #e5e7eb, radius 10px, padding 11px 14px 11px 40px` |

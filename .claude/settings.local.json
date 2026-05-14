@@ -20,7 +20,14 @@
       "PowerShell(cd \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\"; npx tsc --noEmit 2>&1 | Where-Object { $_ -match \"^\\(app|components|i18n|lib|types|messages\\)\" } | Select-Object -First 30)",
       "PowerShell(Get-Content *)",
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\" -Recurse)",
-      "Bash(Remove-Item *)"
+      "Bash(Remove-Item *)",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\" -Recurse -Filter \"*.tsx\")",
+      "Bash(Select-Object -First 40 FullName)",
+      "PowerShell(-join \\(\\(65..90\\) + \\(97..122\\) + \\(48..57\\) | Get-Random -Count 48 | ForEach-Object { [char]$_ }\\))",
+      "Bash(findstr -i video)",
+      "Bash(dir C:\\\\Users\\\\pablo\\\\Desktop\\\\WIB\\\\aps\\\\Litseacc\\\\Litsea-Platform\\\\app\\\\[locale]\\\\\\(auth\\)\\\\login\\\\admin *)",
+      "Bash(npx next *)",
+      "Bash(Write-Host \"Cache cleared\")"
     ]
   }
 }

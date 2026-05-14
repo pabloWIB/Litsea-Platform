@@ -117,7 +117,7 @@ export default function HeroSection() {
             </motion.p>
 
             <motion.h1 {...fadeUp(0.65)}
-              className="font-black uppercase leading-[0.92] tracking-tight text-white text-[8vw] sm:text-[9vw] md:text-[7vw] lg:text-[5.5vw] xl:text-[4.8vw]">
+              className="font-black uppercase leading-[0.92] tracking-tight text-white text-[7vw] sm:text-[8vw] md:text-[6vw] lg:text-[5vw] xl:text-[4.2vw]">
               {th('title1')}<br />
               {th('title2')}<br />
               <span className="text-[#2FB7A3]">{th('title3')}</span>

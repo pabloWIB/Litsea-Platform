@@ -1,39 +1,56 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Eye, EyeOff, CheckCircle, ArrowLeft } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { useRouter, Link } from '@/i18n/navigation'
+import { useSearchParams } from 'next/navigation'
+import { Eye, EyeOff, CheckCircle, ArrowLeft, Lock } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+import { useTranslations } from 'next-intl'
 import { LoginPageShell } from './LoginPageShell'
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 
-const EASE = [0.22, 1, 0.36, 1] as const
-const fadeUp = (delay = 0) => ({
-  initial:    { opacity: 0, y: 16 },
-  animate:    { opacity: 1, y: 0 },
-  transition: { duration: 0.5, ease: EASE, delay },
-})
+const inputBase =
+  'w-full bg-[#f9fafb] text-[13.5px] text-[#4a4a4a] placeholder:text-[#c0c0c0] outline-none transition-all duration-200 focus:bg-white focus:border-[#2FB7A3] focus:ring-2 focus:ring-[#2FB7A3]/15'
+const inputStyle = { padding: '11px 14px 11px 40px', border: '1.5px solid #e5e7eb', borderRadius: 10 }
+const labelClass = 'block text-[13px] font-medium text-[#4a4a4a] mb-1.5'
+const iconClass  = 'absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[#c0c0c0] pointer-events-none'
 
-const inputClass =
-  'w-full rounded-xl border border-white/10 bg-white/6 px-3.5 py-2.5 text-sm text-white placeholder:text-white/25 outline-none focus:ring-2 focus:ring-[#2FB7A3]/40 focus:border-[#2FB7A3]/50 transition-all duration-200'
+function Spinner() {
+  return (
+    <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
+    </svg>
+  )
+}
+
+function ErrorAlert({ message }: { message: string }) {
+  return (
+    <div className="flex items-start gap-2.5 rounded-lg px-3.5 py-3"
+      style={{ background: '#fff2f2', border: '1px solid #fecaca' }}>
+      <svg className="mt-0.5 h-4 w-4 shrink-0 text-[#b91c1c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
+      </svg>
+      <p className="text-[13px] text-[#b91c1c] leading-relaxed">{message}</p>
+    </div>
+  )
+}
 
 export default function ResetPasswordConfirmClient() {
-  const [password, setPassword]           = useState('')
+  const t = useTranslations('resetPassword')
+  const [password,        setPassword]        = useState('')
   const [passwordConfirm, setPasswordConfirm] = useState('')
-  const [showPassword, setShowPassword]   = useState(false)
-  const [showConfirm, setShowConfirm]     = useState(false)
-  const [loading, setLoading]             = useState(false)
-  const [error, setError]                 = useState('')
-  const [done, setDone]                   = useState(false)
+  const [showPassword,    setShowPassword]    = useState(false)
+  const [showConfirm,     setShowConfirm]     = useState(false)
+  const [loading,         setLoading]         = useState(false)
+  const [error,           setError]           = useState('')
+  const [done,            setDone]            = useState(false)
   const router       = useRouter()
   const searchParams = useSearchParams()
   const supabase     = createClient()
 
   useEffect(() => {
-    const hash       = window.location.hash.substring(1)
-    const hashParams = new URLSearchParams(hash)
+    const hash         = window.location.hash.substring(1)
+    const hashParams   = new URLSearchParams(hash)
     const accessToken  = hashParams.get('access_token')
     const refreshToken = hashParams.get('refresh_token')
     const type         = hashParams.get('type')
@@ -41,21 +58,17 @@ export default function ResetPasswordConfirmClient() {
     if (accessToken && type === 'recovery') {
       supabase.auth
         .setSession({ access_token: accessToken, refresh_token: refreshToken ?? '' })
-        .then(({ error: sessionError }) => {
-          if (sessionError) setError('El enlace ha expirado. Solicita uno nuevo.')
-        })
+        .then(({ error: e }) => { if (e) setError(t('errorLinkExpired')) })
       return
     }
-    if (searchParams.get('error') === 'link_expired') {
-      setError('El enlace ha expirado. Solicita uno nuevo.')
-    }
+    if (searchParams.get('error') === 'link_expired') setError(t('errorLinkExpired'))
   }, [])
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    if (password.length < 8) { setError('La contraseña debe tener al menos 8 caracteres.'); return }
-    if (password !== passwordConfirm) { setError('Las contraseñas no coinciden.'); return }
+    if (password.length < 8)         { setError(t('errorTooShort')); return }
+    if (password !== passwordConfirm) { setError(t('errorMismatch')); return }
     setLoading(true)
     try {
       const { error: updateError } = await supabase.auth.updateUser({ password })
@@ -63,7 +76,7 @@ export default function ResetPasswordConfirmClient() {
       setDone(true)
       setTimeout(() => router.push('/login'), 3000)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Error al actualizar la contraseña.')
+      setError(err instanceof Error ? err.message : t('errorGenericUpdate'))
     } finally {
       setLoading(false)
     }
@@ -71,167 +84,154 @@ export default function ResetPasswordConfirmClient() {
 
   const strength = (() => {
     if (!password) return null
-    if (password.length < 6) return { label: 'Muy corta', color: 'bg-red-500', width: 'w-1/4' }
-    if (password.length < 8) return { label: 'Débil', color: 'bg-orange-400', width: 'w-2/4' }
-    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) return { label: 'Regular', color: 'bg-yellow-400', width: 'w-3/4' }
-    return { label: 'Fuerte', color: 'bg-[#2FB7A3]', width: 'w-full' }
+    if (password.length < 6)  return { label: t('strengthTooShort'), color: '#ef4444', bg: '#fee2e2', w: '25%' }
+    if (password.length < 8)  return { label: t('strengthWeak'),     color: '#f97316', bg: '#ffedd5', w: '50%' }
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password))
+                              return { label: t('strengthFair'),     color: '#eab308', bg: '#fef9c3', w: '75%' }
+    return                           { label: t('strengthStrong'),   color: '#2FB7A3', bg: '#ccfbf1', w: '100%' }
   })()
 
   const isLinkError = !done && !!error && !password && !passwordConfirm
 
+  /* ── Done ─────────────────────────────────────────────────────────── */
   if (done) {
     return (
       <LoginPageShell>
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, ease: EASE }}
-          className="flex flex-col items-center text-center gap-5"
-        >
-          <div className="w-14 h-14 rounded-full bg-[#2FB7A3]/15 border border-[#2FB7A3]/25 flex items-center justify-center">
+        <div className="flex flex-col items-center text-center gap-5">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center"
+            style={{ background: 'rgba(47,183,164,0.12)', border: '1px solid rgba(47,183,164,0.25)' }}>
             <CheckCircle className="h-7 w-7 text-[#2FB7A3]" />
           </div>
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-white">¡Contraseña actualizada!</h1>
-            <p className="mt-2 text-sm text-white/50">Redirigiendo al inicio de sesión...</p>
+            <h2 className="text-xl font-bold text-[#4a4a4a]">{t('successTitle')}</h2>
+            <p className="mt-2 text-[13.5px] text-[#8a8a8a]">{t('successMessage')}</p>
           </div>
-          <Link href="/login" className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors">
-            <ArrowLeft className="h-3.5 w-3.5" /> Ir ya
+          <Link href="/login"
+            className="flex items-center gap-1.5 text-[13px] text-[#8a8a8a] hover:text-[#2FB7A3] transition-colors">
+            <ArrowLeft className="h-3.5 w-3.5" /> {t('goToSignIn')}
           </Link>
-        </motion.div>
+        </div>
       </LoginPageShell>
     )
   }
 
+  /* ── Invalid link ─────────────────────────────────────────────────── */
   if (isLinkError) {
     return (
       <LoginPageShell>
-        <motion.div {...fadeUp(0.45)}>
-          <h1 className="text-[1.7rem] font-semibold tracking-tight text-white leading-tight">Enlace inválido</h1>
-        </motion.div>
-        <motion.div {...fadeUp(0.55)}
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-red-500/20 bg-red-500/8 px-3.5 py-2.5">
-          <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <p className="text-xs text-red-400 leading-relaxed">{error}</p>
-        </motion.div>
-        <motion.div {...fadeUp(0.65)} className="mt-5 flex flex-col gap-2">
-          <Link href="/reset-password">
-            <HoverBorderGradient
-              as="div"
-              containerClassName="w-full cursor-pointer"
-              backdropClassName="bg-[#2FB7A3]"
-              className="w-full flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white"
-            >
-              Solicitar nuevo enlace
-            </HoverBorderGradient>
+        <div className="mb-6">
+          <h2 className="text-[26px] font-bold text-[#4a4a4a] leading-tight mb-4">
+            {t('invalidLinkTitle')}
+          </h2>
+          <ErrorAlert message={error} />
+        </div>
+        <div className="flex flex-col gap-2 mt-5">
+          <Link href="/reset-password"
+            className="w-full flex items-center justify-center text-[14px] font-semibold text-white transition-all duration-150"
+            style={{ padding: 12, background: '#2FB7A3', borderRadius: 10 }}>
+            {t('requestNewLink')}
           </Link>
-          <Link href="/login" className="flex items-center justify-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors mt-1">
-            <ArrowLeft className="h-3.5 w-3.5" /> Volver al inicio de sesión
+          <Link href="/login"
+            className="flex items-center justify-center gap-1.5 text-[13px] text-[#8a8a8a] hover:text-[#2FB7A3] transition-colors mt-1">
+            <ArrowLeft className="h-3.5 w-3.5" /> {t('backToSignIn')}
           </Link>
-        </motion.div>
+        </div>
       </LoginPageShell>
     )
   }
 
+  /* ── Form ─────────────────────────────────────────────────────────── */
   return (
     <LoginPageShell>
-      <motion.div {...fadeUp(0.45)}>
-        <h1 className="text-[1.7rem] font-semibold tracking-tight text-white leading-tight">
-          Nueva contraseña
-        </h1>
-        <p className="mt-1.5 text-[0.88rem] text-white/45 leading-relaxed">
-          Ingresa y confirma tu nueva contraseña.
+      <div className="mb-6">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#2FB7A3] mb-1">
+          Seguridad
         </p>
-      </motion.div>
+        <h2 className="text-[26px] font-bold text-[#4a4a4a] leading-tight mb-1.5">
+          {t('confirmTitle')}
+        </h2>
+        <p className="text-[13.5px] text-[#8a8a8a] leading-snug">
+          {t('confirmSubtitle')}
+        </p>
+      </div>
 
-      {error && (
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
-          className="mt-5 flex items-start gap-2.5 rounded-xl border border-red-500/20 bg-red-500/8 px-3.5 py-2.5">
-          <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" />
-          </svg>
-          <p className="text-xs text-red-400 leading-relaxed">{error}</p>
-        </motion.div>
-      )}
+      {error && <div className="mb-4"><ErrorAlert message={error} /></div>}
 
-      <form onSubmit={handleUpdate} className="mt-7 flex flex-col gap-4">
-        <motion.div {...fadeUp(0.55)} className="flex flex-col gap-1.5">
-          <label htmlFor="password" className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
-            Nueva contraseña
-          </label>
+      <form onSubmit={handleUpdate} className="flex flex-col gap-4">
+
+        {/* New password */}
+        <div>
+          <label htmlFor="password" className={labelClass}>{t('newPasswordLabel')}</label>
           <div className="relative">
+            <Lock className={iconClass} />
             <input
               id="password"
               type={showPassword ? 'text' : 'password'}
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              required minLength={8} placeholder="Mínimo 8 caracteres" autoComplete="new-password"
-              className={`${inputClass} pr-10`}
+              value={password} onChange={e => setPassword(e.target.value)}
+              required minLength={8}
+              placeholder={t('newPasswordPlaceholder')} autoComplete="new-password"
+              className={`${inputBase} pr-10`} style={inputStyle}
             />
             <button type="button" onClick={() => setShowPassword(v => !v)}
-              className="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-white/25 hover:text-white/55 transition-colors outline-none">
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-colors"
+              style={{ color: '#c0c0c0' }}>
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           {strength && (
-            <div className="space-y-1">
-              <div className="h-0.5 w-full rounded-full bg-white/10 overflow-hidden">
-                <div className={`h-full rounded-full transition-all duration-300 ${strength.color} ${strength.width}`} />
+            <div className="mt-1.5 space-y-1">
+              <div className="h-[3px] w-full rounded-full overflow-hidden" style={{ background: '#e5e7eb' }}>
+                <div className="h-full rounded-full transition-all duration-300"
+                  style={{ width: strength.w, background: strength.color }} />
               </div>
-              <p className="text-[10px] text-white/30">{strength.label}</p>
+              <p className="text-[11px]" style={{ color: strength.color }}>{strength.label}</p>
             </div>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div {...fadeUp(0.63)} className="flex flex-col gap-1.5">
-          <label htmlFor="passwordConfirm" className="text-[10px] font-semibold uppercase tracking-widest text-white/35">
-            Confirmar contraseña
-          </label>
+        {/* Confirm password */}
+        <div>
+          <label htmlFor="passwordConfirm" className={labelClass}>{t('confirmPasswordLabel')}</label>
           <div className="relative">
+            <Lock className={iconClass} />
             <input
               id="passwordConfirm"
               type={showConfirm ? 'text' : 'password'}
-              value={passwordConfirm}
-              onChange={e => setPasswordConfirm(e.target.value)}
-              required placeholder="••••••••" autoComplete="new-password"
-              className={`${inputClass} pr-10 ${passwordConfirm && password !== passwordConfirm ? 'border-red-500/40' : ''}`}
+              value={passwordConfirm} onChange={e => setPasswordConfirm(e.target.value)}
+              required
+              placeholder={t('confirmPasswordPlaceholder')} autoComplete="new-password"
+              className={`${inputBase} pr-10`}
+              style={{
+                ...inputStyle,
+                borderColor: passwordConfirm && password !== passwordConfirm ? '#fca5a5' : '#e5e7eb',
+              }}
             />
             <button type="button" onClick={() => setShowConfirm(v => !v)}
-              className="absolute inset-y-0 right-0 flex items-center justify-center w-10 text-white/25 hover:text-white/55 transition-colors outline-none">
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 transition-colors"
+              style={{ color: '#c0c0c0' }}>
               {showConfirm ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
           {passwordConfirm && password !== passwordConfirm && (
-            <p className="text-[10px] text-red-400">Las contraseñas no coinciden.</p>
+            <p className="mt-1 text-[12px] text-[#b91c1c]">{t('passwordsNoMatch')}</p>
           )}
-        </motion.div>
+        </div>
 
-        <motion.div {...fadeUp(0.72)}>
-          <HoverBorderGradient
-            as="button" type="submit"
-            disabled={loading || !password || !passwordConfirm}
-            containerClassName="w-full cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
-            backdropClassName="bg-[#2FB7A3]"
-            className="w-full flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-semibold text-white"
-          >
-            {loading && (
-              <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
-              </svg>
-            )}
-            {loading ? 'Guardando...' : 'Guardar contraseña'}
-          </HoverBorderGradient>
-        </motion.div>
+        <button type="submit" disabled={loading || !password || !passwordConfirm}
+          className="mt-1 w-full inline-flex items-center justify-center gap-2 rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 ring-offset-white transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3] disabled:opacity-50 disabled:cursor-not-allowed disabled:ring-0">
+          {loading && <Spinner />}
+          {loading ? t('saving') : t('savePassword')}
+        </button>
       </form>
 
-      <motion.div {...fadeUp(0.8)} className="mt-6 text-center">
-        <Link href="/login" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition-colors">
-          <ArrowLeft className="h-3.5 w-3.5" /> Volver al inicio de sesión
-        </Link>
-      </motion.div>
+      <div className="flex items-center gap-2.5 my-5">
+        <div className="h-px flex-1 bg-[#e5e7eb]" />
+      </div>
+
+      <Link href="/login"
+        className="flex items-center justify-center gap-1.5 text-[13px] text-[#8a8a8a] hover:text-[#2FB7A3] transition-colors">
+        <ArrowLeft className="h-3.5 w-3.5" /> {t('backToSignIn')}
+      </Link>
     </LoginPageShell>
   )
 }

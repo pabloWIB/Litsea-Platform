@@ -24,6 +24,18 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
 
   const isHome = pathname === '/'
 
+  const AUTH_PREFIXES = ['/login', '/registro-terapeuta', '/registro-empleador', '/reset-password', '/privacidad', '/terminos', '/cookies', '/terapeuta', '/empleador', '/admin']
+  const isAuthRoute = AUTH_PREFIXES.some(p => pathname.startsWith(p))
+
+  // Skip banner + navbar entirely on auth pages
+  if (isAuthRoute) {
+    return (
+      <BannerContext.Provider value={{ open: false, topbarHeight: 0 }}>
+        {children}
+      </BannerContext.Provider>
+    )
+  }
+
   // Measure the container height so MainWrapper can pad correctly
   useEffect(() => {
     const el = containerRef.current

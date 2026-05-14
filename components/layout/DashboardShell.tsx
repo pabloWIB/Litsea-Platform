@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import SidebarNavigation from '@/components/layout/Sidebar'
+import SidebarNavigation, { MobileTopNav } from '@/components/layout/Sidebar'
 import { Header } from '@/components/layout/Header'
 import type { UserRole } from '@/types/database'
 
@@ -29,20 +29,35 @@ export default function DashboardShell({
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#071210]">
-      <SidebarNavigation
-        role={role}
-        userName={userName}
-        userEmail={userEmail}
-        onLogout={handleLogout}
-      />
-
-      <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
-        <Header userEmail={userEmail} />
-        <main className="flex-1 overflow-y-auto">
+    <>
+      {/* Mobile: topnav + full-width content */}
+      <div className="flex flex-col h-screen md:hidden">
+        <MobileTopNav
+          role={role}
+          userName={userName}
+          userEmail={userEmail}
+          onLogout={handleLogout}
+        />
+        <main className="flex-1 overflow-y-auto bg-[#FAF9F5]">
           {children}
         </main>
       </div>
-    </div>
+
+      {/* Desktop: sidebar + content */}
+      <div className="hidden md:flex h-screen overflow-hidden bg-[#071210]">
+        <SidebarNavigation
+          role={role}
+          userName={userName}
+          userEmail={userEmail}
+          onLogout={handleLogout}
+        />
+        <div className="flex flex-col flex-1 min-w-0 overflow-hidden bg-[#FAF9F5]">
+          <Header userEmail={userEmail} />
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </div>
+      </div>
+    </>
   )
 }

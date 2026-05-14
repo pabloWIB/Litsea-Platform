@@ -1,7 +1,7 @@
 # Plan de desarrollo — Litsea Bolsa de Trabajo
 
-**Última actualización:** 2026-05-11
-**Fuentes:** `docs/PRD-TECNICO.md` · `docs/PRD-CLIENTE.md` · `docs/GUIA.md`
+**Última actualización:** 2026-05-13
+**Fuentes:** `docs/PRD-TECNICO.md` · `docs/PRD-CLIENTE.md` · `docs/ejecucion.md`
 
 ---
 
@@ -11,12 +11,24 @@
 |---|---|
 | Scaffold Next.js 16 + Tailwind 4 + shadcn/ui | ✅ Listo |
 | Supabase client/server helpers (`lib/supabase/`) | ✅ Listo |
-| Auth: login, reset password, OAuth callback, signout | ✅ Listo |
+| Auth UI completo — login, registro, reset password | ✅ Listo |
+| Login admin (`/login/admin`) con verificación de rol | ✅ Listo |
+| `proxy.ts` — i18n + Supabase auth guard + error handling | ✅ Listo |
 | `schema.sql` + `rls.sql` + `seed.sql` en `/supabase` | ✅ Listo |
 | Páginas de error (`error.tsx`, `not-found.tsx`) | ✅ Listo |
-| Plantillas de email en `public/tamplates/` | ✅ Listo |
+| Plantillas email Supabase (`public/tamplates/`) | ✅ Listo |
+| Favicon completo (`public/favicon/`) | ✅ Listo |
+| `.env.local` con todas las variables | ✅ Listo |
+| Messages i18n — 17 namespaces (es/en/fr) | ✅ Listo |
+| Home page — hero + sections | ✅ Listo |
+| Páginas legales (privacidad, términos, cookies) — ES/EN/FR | ✅ Listo |
+| `LegalShell` + `LegalNavbar` | ✅ Listo |
+| README.md completo | ✅ Listo |
 | Todas las rutas del PRD (26 pantallas) | ❌ Pendiente |
-| Middleware de protección de rutas | ❌ Pendiente |
+| Header público | ❌ Pendiente |
+| `(public)/layout.tsx` | ❌ Pendiente |
+| Dashboard layout + Sidebar | ❌ Pendiente |
+| `types/database.ts` | ❌ Pendiente |
 | Integración Resend | ❌ Pendiente |
 | Chat en tiempo real (Supabase Realtime) | ❌ Pendiente |
 
@@ -25,197 +37,171 @@
 ## Fase 0 — Base de datos y entorno
 > Fuente: `docs/PRD-TECNICO.md` §4, §7, §9
 
-- [ ] **0.1** Verificar que `schema.sql` incluye las 9 tablas del PRD: `profiles`, `therapist_profiles`, `employer_profiles`, `vacancies`, `applications`, `certificates`, `conversations`, `messages`, `audit_logs`, `settings`
-- [ ] **0.2** Aplicar `schema.sql` y `rls.sql` en el proyecto de Supabase (ejecutar en el SQL editor o via Supabase CLI)
-- [ ] **0.3** Ejecutar `seed.sql` para datos de prueba iniciales
-- [ ] **0.4** Crear el trigger `handle_new_user()` (ver PRD-TECNICO §5) que inserta en `profiles` al registrarse
-- [ ] **0.5** Configurar Storage: bucket `certificates` (privado, signed URLs) y bucket `avatars` (público)
-- [ ] **0.6** Completar `.env.local` con todas las variables del PRD-TECNICO §9:
-  - `NEXT_PUBLIC_SUPABASE_URL`
-  - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-  - `SUPABASE_SERVICE_ROLE_KEY`
-  - `RESEND_API_KEY`
-  - `RESEND_FROM_EMAIL`
-  - `NEXT_PUBLIC_APP_URL`
+- [x] **0.1** Variables de entorno en `.env.local` completas
+- [ ] **0.2** Aplicar `schema.sql` y `rls.sql` en Supabase (SQL editor o CLI)
+- [ ] **0.3** Ejecutar `seed.sql` para datos de prueba
+- [ ] **0.4** Crear trigger `handle_new_user()` en Supabase
+- [ ] **0.5** Configurar Storage: bucket `certificates` (privado) y `avatars` (público)
+- [x] **0.6** Configurar Auth Settings en Supabase:
+  - Site URL: `https://empleos.litseacc.edu.mx`
+  - Redirect URLs: `localhost:3000/api/auth/callback` + producción
+- [x] **0.7** Configurar plantillas de email Supabase (usar `public/tamplates/`)
 
 ---
 
-## Fase 1 — Middleware y routing
-> Fuente: `docs/PRD-TECNICO.md` §5, §3
-
-- [ ] **1.1** Crear `middleware.ts` en la raíz del proyecto que:
-  - Proteja todas las rutas bajo `/(dashboard)/**`
-  - Lea la sesión de Supabase y redirija a `/auth/login` si no hay sesión
-  - Valide el `role` del perfil y redirija a la ruta correcta según rol (`therapist` → `/terapeuta/dashboard`, `employer` → `/empleador/dashboard`, `admin` → `/admin`)
-- [ ] **1.2** Reorganizar el grupo de rutas del App Router según PRD-TECNICO §3:
-  - `app/(public)/` — rutas sin auth
-  - `app/(dashboard)/terapeuta/` — área terapeuta
-  - `app/(dashboard)/empleador/` — área empleador
-  - `app/(dashboard)/admin/` — panel admin
-- [ ] **1.3** Crear `app/(public)/layout.tsx` con Header público + Footer
-- [ ] **1.4** Actualizar `app/(dashboard)/layout.tsx` con Sidebar que cambie según el rol del usuario
+## Fase 1 — Middleware y routing ✅ COMPLETA
+> `proxy.ts` implementado con:
+- i18n routing (next-intl, `localePrefix: as-needed`)
+- Supabase auth guard → protege `/(dashboard)/**`
+- Try-catch en `getUser()` → manejo seguro de cookies corruptas
+- Matcher actualizado → excluye mp4, mp3, webm, pdf, etc.
+- Skip automático si env vars no están (dev sin `.env`)
+- TopBar suprime banner/navbar en rutas auth y legales
 
 ---
 
-## Fase 2 — Registro y autenticación
-> Fuente: `docs/PRD-CLIENTE.md` §"Qué puede hacer cada uno" · `docs/PRD-TECNICO.md` §5
+## Fase 2 — Auth UI ✅ COMPLETA
 
-- [ ] **2.1** Crear página `app/(public)/auth/registro-terapeuta/page.tsx`
-  - Campos: nombre, email, contraseña, confirmar contraseña
-  - Al registrar: pasa `role: 'therapist'` en `raw_user_meta_data`
-  - Redirige a `/terapeuta/perfil` para completar perfil
-- [ ] **2.2** Crear página `app/(public)/auth/registro-empleador/page.tsx`
-  - Campos: nombre, empresa, email, contraseña
-  - Al registrar: pasa `role: 'employer'` en `raw_user_meta_data`
-  - Redirige a `/empleador/dashboard`
-- [ ] **2.3** Actualizar `app/auth/callback/route.ts` para:
-  - Leer el rol del perfil recién creado
-  - Redirigir a la ruta de dashboard correcta según el rol
-- [ ] **2.4** Agregar enlace a ambos registros desde la página de login existente
+- [x] `LoginPageShell` — imagen fija derecha (68%), form izquierda, locale pill ES/EN/FR, back button
+- [x] `LoginClient` — terapeuta + empleador variants, Google OAuth, light theme, fully i18n'd
+- [x] `AdminLoginClient` — sin Google, verifica `role === 'admin'`, sin selector de idioma
+- [x] `/login/admin` — acceso interno Litsea, `robots: noindex`
+- [x] `RegisterTerapeutaClient` — light theme, strength bar, sin campo de confirmación
+- [x] `RegisterEmpleadorClient` — light theme, sin campo de confirmación
+- [x] `ResetPasswordClient` — i18n `resetPassword` namespace, light theme
+- [x] `ResetPasswordConfirmClient` — i18n, strength bar, 3 estados
+- [x] `/login` redirige a `/login/terapeuta`
+- [x] Favicon wired en root layout
+- [x] Todos los componentes auth 100% i18n (namespace `auth`)
 
 ---
 
-## Fase 3 — Páginas públicas
-> Fuente: `docs/PRD-CLIENTE.md` §"Pantallas del sistema — Parte pública" · `docs/PRD-TECNICO.md` §8
+## Fase 2b — Páginas legales ✅ COMPLETA
 
-- [ ] **3.1** `app/(public)/page.tsx` — Landing / Home
-  - Hero con CTA para terapeutas y empleadores
-  - Sección de vacantes destacadas (`is_featured = true`)
-  - Sección de terapeutas verificados destacados
-  - Sección "Cómo funciona" (3 pasos del flujo)
-  - Textos dinámicos leídos desde tabla `settings` (`home_title`, `home_subtitle`)
-- [ ] **3.2** `app/(public)/vacantes/page.tsx` — Listado de vacantes
-  - Listar vacantes activas (`is_active = true`)
-  - Filtros por: zona, especialidad, tipo de contrato
-- [ ] **3.3** `app/(public)/vacantes/[id]/page.tsx` — Detalle de vacante
-  - Info completa de la vacante
-  - Botón "Aplicar" (redirige a login si no hay sesión, o ejecuta Server Action si está autenticado)
-- [ ] **3.4** `app/(public)/terapeutas/page.tsx` — Directorio de terapeutas
-  - Listar terapeutas verificados (`is_verified = true`)
-  - Filtros por especialidad y zona
-- [ ] **3.5** `app/(public)/terapeutas/[id]/page.tsx` — Perfil público de terapeuta
-  - Foto, nombre, bio, especialidades, certificaciones verificadas
+- [x] `components/legales/LegalShell.tsx` — wrapper con `#FDFAF5` bg + Footer
+- [x] `components/legales/LegalNavbar.tsx` — fijo, blanco, logo + locale pill + back link
+- [x] `app/(locale)/privacidad/page.tsx` — contenido ES/EN/FR completo
+- [x] `app/(locale)/terminos/page.tsx` — contenido ES/EN/FR completo (12 secciones)
+- [x] `app/(locale)/cookies/page.tsx` — contenido ES/EN/FR completo + cookie type cards
+- [x] `generateMetadata` con `getTranslations` en las 3 páginas
+- [x] Footer link "Admin" → `/login/admin`
+
+---
+
+## Fase 3 — Páginas públicas ← SIGUIENTE BLOQUE
+> Fuente: `docs/PRD-CLIENTE.md` §"Pantallas del sistema — Parte pública"
+
+- [ ] **3.1** `components/layout/Header.tsx` — nav público sticky, logo color, links, locale switcher
+- [ ] **3.2** `app/(public)/layout.tsx` — ensambla Header + Footer
+- [ ] **3.3** `app/(public)/vacantes/page.tsx` — listado con filtros (zona, especialidad)
+- [ ] **3.4** `components/vacantes/VacanteCard.tsx`
+- [ ] **3.5** `components/vacantes/VacanteFiltros.tsx`
+- [ ] **3.6** `app/(public)/vacantes/[id]/page.tsx` — detalle + botón aplicar
+- [ ] **3.7** `app/(public)/terapeutas/page.tsx` — directorio verificados
+- [ ] **3.8** `components/terapeutas/TerapeutaCard.tsx`
+- [ ] **3.9** `app/(public)/terapeutas/[id]/page.tsx` — perfil público
+- [ ] **3.10** `app/(public)/como-funciona/page.tsx` — landing SEO
+- [ ] **3.11** Completar home — `FeaturedVacanciesSection` + `FeaturedTherapistsSection`
 
 ---
 
 ## Fase 4 — Dashboard terapeuta
-> Fuente: `docs/PRD-CLIENTE.md` §"Área del terapeuta" · `docs/PRD-TECNICO.md` §8
 
-- [ ] **4.1** `app/(dashboard)/terapeuta/dashboard/page.tsx`
-  - Cards: aplicaciones activas, mensajes nuevos
-  - Alerta si el perfil está incompleto
-- [ ] **4.2** `app/(dashboard)/terapeuta/perfil/page.tsx`
-  - Editar: nombre, foto (upload a Storage), bio, especialidades (multi-select), zonas, años de experiencia
-  - Server Action para guardar en `therapist_profiles`
-- [ ] **4.3** `app/(dashboard)/terapeuta/aplicaciones/page.tsx`
-  - Tabla con vacantes a las que aplicó y su estado (`new`, `reviewing`, `chat_enabled`, `hired`, `rejected`)
-  - Badge de color por estado
-- [ ] **4.4** `app/(dashboard)/terapeuta/certificados/page.tsx`
-  - Listar certificados subidos con estado de verificación
-  - Formulario para subir nuevo certificado (PDF/imagen) a Storage
-- [ ] **4.5** `app/(dashboard)/terapeuta/mensajes/page.tsx`
-  - Lista de conversaciones habilitadas por admin
-  - Vista de chat dentro de cada conversación
-  - Suscripción a Supabase Realtime para mensajes nuevos
+- [ ] **4.1** `types/database.ts` — tipos generados de Supabase (bloqueante para todo el dashboard)
+- [ ] **4.2** `components/dashboard/Sidebar.tsx` — role-aware, dark theme
+- [ ] **4.3** `components/dashboard/Topbar.tsx` — avatar, notificaciones
+- [ ] **4.4** `app/(dashboard)/layout.tsx` — Sidebar + Topbar + auth guard
+- [ ] **4.5** `app/(dashboard)/terapeuta/dashboard/page.tsx` — cards + alerta perfil incompleto
+- [ ] **4.6** `app/(dashboard)/terapeuta/perfil/page.tsx` — bio, foto, especialidades, zonas
+- [ ] **4.7** `components/terapeutas/TerapeutaPerfilForm.tsx`
+- [ ] **4.8** `app/(dashboard)/terapeuta/aplicaciones/page.tsx` — lista con status badges
+- [ ] **4.9** `app/(dashboard)/terapeuta/certificados/page.tsx` — upload a Storage
+- [ ] **4.10** `app/(dashboard)/terapeuta/mensajes/page.tsx` — chat Realtime
 
 ---
 
 ## Fase 5 — Dashboard empleador
-> Fuente: `docs/PRD-CLIENTE.md` §"Área del empleador" · `docs/PRD-TECNICO.md` §8
 
 - [ ] **5.1** `app/(dashboard)/empleador/dashboard/page.tsx`
-  - Cards: vacantes activas, aplicaciones nuevas recibidas hoy
 - [ ] **5.2** `app/(dashboard)/empleador/vacantes/page.tsx`
-  - Lista de vacantes propias con estado (activa/inactiva)
-  - Botón para crear nueva vacante
 - [ ] **5.3** `app/(dashboard)/empleador/vacantes/nueva/page.tsx`
-  - Formulario: título, descripción, ubicación, tipo de posición, tipo de contrato, especialidades requeridas
-  - Server Action que inserta en `vacancies`
-- [ ] **5.4** `app/(dashboard)/empleador/vacantes/[id]/editar/page.tsx`
-  - Mismo formulario pre-cargado con datos existentes
-- [ ] **5.5** `app/(dashboard)/empleador/aplicaciones/page.tsx`
-  - Ver terapeutas que aplicaron a cada vacante
-  - Ver perfil resumido de cada terapeuta aplicante
-- [ ] **5.6** `app/(dashboard)/empleador/mensajes/page.tsx`
-  - Idéntico al chat del terapeuta, misma lógica de Realtime
+- [ ] **5.4** `components/vacantes/VacanteForm.tsx`
+- [ ] **5.5** `app/(dashboard)/empleador/vacantes/[id]/editar/page.tsx`
+- [ ] **5.6** `app/(dashboard)/empleador/aplicaciones/page.tsx`
+- [ ] **5.7** `app/(dashboard)/empleador/mensajes/page.tsx`
 
 ---
 
 ## Fase 6 — Panel admin
-> Fuente: `docs/PRD-CLIENTE.md` §"Panel admin" · `docs/PRD-TECNICO.md` §8
 
-- [ ] **6.1** `app/(dashboard)/admin/page.tsx` — Dashboard con métricas
-  - Contadores: total terapeutas, empleadores, vacantes activas, aplicaciones por estado
-- [ ] **6.2** `app/(dashboard)/admin/terapeutas/page.tsx`
-  - Tabla de todos los terapeutas
-  - Acciones: verificar (`is_verified`), suspender (`is_active`), ver perfil completo
-- [ ] **6.3** `app/(dashboard)/admin/empleadores/page.tsx`
-  - Tabla de empleadores con acciones: suspender, editar
-- [ ] **6.4** `app/(dashboard)/admin/vacantes/page.tsx`
-  - Tabla de todas las vacantes
-  - Acciones: destacar (`is_featured`), desactivar (`is_active`), eliminar
-- [ ] **6.5** `app/(dashboard)/admin/aplicaciones/page.tsx`
-  - Tabla de todas las aplicaciones con selector de estado
-  - Acción "Habilitar chat": cambia status a `chat_enabled`, crea fila en `conversations` con `is_active: true`
-- [ ] **6.6** `app/(dashboard)/admin/certificados/page.tsx`
-  - Lista de certificados pendientes de verificación
-  - Botón verificar/rechazar con preview del archivo (signed URL)
-- [ ] **6.7** `app/(dashboard)/admin/mensajes/page.tsx`
-  - Vista de todas las conversaciones activas (modo lectura)
-- [ ] **6.8** `app/(dashboard)/admin/auditoria/page.tsx`
-  - Tabla de `audit_logs` con filtros por módulo, acción y fecha
-- [ ] **6.9** `app/(dashboard)/admin/configuracion/page.tsx`
-  - Toggle para `allow_registrations`
-  - Campos para `home_title` y `home_subtitle`
-  - Server Action que hace upsert en `settings` y registra en `audit_logs`
+- [ ] **6.1** `app/(dashboard)/admin/page.tsx` — métricas globales
+- [ ] **6.2** `components/admin/MetricsCards.tsx`
+- [ ] **6.3** `app/(dashboard)/admin/terapeutas/page.tsx` — verificar/suspender
+- [ ] **6.4** `app/(dashboard)/admin/empleadores/page.tsx`
+- [ ] **6.5** `app/(dashboard)/admin/vacantes/page.tsx` — destacar/desactivar
+- [ ] **6.6** `app/(dashboard)/admin/aplicaciones/page.tsx` — habilitar chat
+- [ ] **6.7** `app/(dashboard)/admin/certificados/page.tsx` — verificar PDFs
+- [ ] **6.8** `app/(dashboard)/admin/mensajes/page.tsx` — lectura
+- [ ] **6.9** `app/(dashboard)/admin/auditoria/page.tsx`
+- [ ] **6.10** `app/(dashboard)/admin/configuracion/page.tsx`
 
 ---
 
-## Fase 7 — Emails transaccionales
-> Fuente: `docs/PRD-TECNICO.md` §6 · `docs/PRD-CLIENTE.md` §"Emails automáticos"
+## Fase 7 — API Routes
 
-- [ ] **7.1** Instalar `resend` y `@react-email/components`
-- [ ] **7.2** Crear plantillas React Email en `emails/`:
-  - `WelcomeEmail.tsx` — bienvenida al registrarse
-  - `NewApplicationEmail.tsx` — notificación al admin cuando llega aplicación
-  - `ChatEnabledEmail.tsx` — notificación a terapeuta y empleador cuando se habilita chat
-  - `ApplicationStatusEmail.tsx` — notificación al terapeuta cuando cambia estado
-- [ ] **7.3** Crear `app/api/emails/route.ts` o integrar envíos en Server Actions
-- [ ] **7.4** Disparar email de bienvenida desde el trigger post-registro o Server Action de registro
-- [ ] **7.5** Disparar email al admin al insertar en `applications`
-- [ ] **7.6** Disparar emails de chat habilitado cuando admin cambia status a `chat_enabled`
+- [ ] **7.1** `api/vacantes/route.ts` — GET público + POST empleador
+- [ ] **7.2** `api/vacantes/[id]/route.ts` — GET + PATCH + DELETE
+- [ ] **7.3** `api/aplicaciones/route.ts` — POST terapeuta
+- [ ] **7.4** `api/aplicaciones/[id]/route.ts` — PATCH estado (admin)
+- [ ] **7.5** `api/certificados/route.ts` — POST upload + GET lista
+- [ ] **7.6** `api/mensajes/route.ts` — GET conversaciones
+- [ ] **7.7** `api/email/route.ts` — POST Resend
 
 ---
 
-## Fase 8 — Audit logs
-> Fuente: `docs/PRD-TECNICO.md` §4.1 tabla `audit_logs`
+## Fase 8 — Emails Resend
 
-- [ ] **8.1** Crear helper `lib/audit.ts` con función `logAudit(adminId, action, module, recordId, details)`
-- [ ] **8.2** Llamar `logAudit` en cada acción crítica del panel admin:
-  - Verificar terapeuta, suspender cuenta, cambiar estado de aplicación, habilitar chat, verificar certificado, destacar vacante, eliminar vacante, cambiar settings
-
----
-
-## Fase 9 — Pulido y deploy
-> Fuente: `docs/PRD-TECNICO.md` §10 · `docs/GUIA.md`
-
-- [ ] **9.1** Revisar RLS: confirmar que ninguna tabla expone datos sin la política correcta
-- [ ] **9.2** Validar que `SUPABASE_SERVICE_ROLE_KEY` solo se usa en Server Actions/Route Handlers, nunca en cliente
-- [ ] **9.3** Agregar rate limiting en endpoints de registro (o verificar config de Supabase Auth)
-- [ ] **9.4** Pruebas de flujo completo: registro terapeuta → aplicar → admin habilita chat → chat funciona
-- [ ] **9.5** Pruebas de roles: verificar que terapeuta no puede acceder a rutas de empleador/admin
-- [ ] **9.6** Configurar variables de entorno en Vercel (producción)
-- [ ] **9.7** Deploy a producción con `vercel --prod`
+- [ ] **8.1** Instalar `resend` + `@react-email/components`
+- [ ] **8.2** `lib/email.ts` — helpers Resend
+- [ ] **8.3** `emails/WelcomeEmail.tsx` — bienvenida terapeuta/empleador
+- [ ] **8.4** `emails/NewApplicationEmail.tsx` — notif admin
+- [ ] **8.5** `emails/ChatEnabledEmail.tsx` — chat habilitado
+- [ ] **8.6** `emails/ApplicationStatusEmail.tsx` — cambio de estado
 
 ---
 
-## Decisiones pendientes (del PRD)
-> Fuente: `docs/PRD-TECNICO.md` §12 · `docs/PRD-CLIENTE.md` §"Preguntas"
+## Fase 9 — Audit + Legales
 
-- [ ] ¿Los empleadores se registran solos o solo el admin los crea?
-- [ ] ¿Límite de vacantes por empleador?
-- [ ] ¿Terapeuta puede aplicar a múltiples vacantes del mismo empleador?
-- [ ] ¿Chat con Supabase Realtime o polling?
-- [ ] ¿Notificaciones push además de email?
-- [ ] ¿Búsqueda con `pg_trgm` o simple `ILIKE`?
-- [ ] ¿Los emails de admin van a `empleos@litseacc.edu.mx`?
+- [x] **9.1** Páginas legales completas (privacidad, términos, cookies) — ES/EN/FR
+- [ ] **9.2** `lib/audit.ts` — helper `logAudit(adminId, action, module, recordId)`
+- [ ] **9.3** Llamar `logAudit` en cada acción crítica del panel admin
+
+---
+
+## Fase 10 — Deploy y pulido
+
+- [ ] **10.1** Revisar RLS: ninguna tabla expone datos sin política
+- [ ] **10.2** `SUPABASE_SERVICE_ROLE_KEY` solo en Server Actions/Route Handlers
+- [ ] **10.3** Pruebas flujo completo: registro → aplicar → admin habilita chat → chat funciona
+- [ ] **10.4** Pruebas de roles: terapeuta no accede a rutas empleador/admin
+- [ ] **10.5** Configurar variables de entorno en Easypanel
+- [ ] **10.6** Deploy a producción
+
+---
+
+## Decisiones tomadas
+
+| Decisión | Resolución |
+|---|---|
+| ¿Un login o páginas separadas? | 3 páginas separadas (/login/terapeuta, /login/empleador, /login/admin) |
+| ¿Admin se registra solo? | No — solo vía Supabase dashboard |
+| ¿Google OAuth para admin? | No — solo email + password |
+| ¿Reset compartido o separado? | Compartido con i18n |
+| ¿Selector de login? | Eliminado — /login redirige directo a /terapeuta |
+| ¿Middleware o proxy? | proxy.ts (Next.js 16 convención) |
+| ¿Video o imagen en auth? | Imagen estática (`fondo-login-litsea-centro-capacitacion-bienestar`) |
+| ¿Chat Realtime o polling? | Pendiente decisión |
+| ¿Empleadores se registran solos? | Pendiente decisión |
+| ¿Confirmar contraseña en registro? | No — eliminado de ambos formularios |
+| ¿Páginas legales traducidas? | Sí — contenido completo ES/EN/FR en las 3 páginas |
+| ¿Navbar en páginas legales? | Sí — LegalNavbar propio (sin banner, solo logo + locale + back) |

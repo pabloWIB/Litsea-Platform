@@ -132,7 +132,7 @@ export default function Footer() {
               </React.Fragment>
             ))}
             <span className="text-neutral-300">|</span>
-            <Link href="/login?role=admin" className="hover:text-neutral-900 transition-colors">
+            <Link href="/login/admin" className="hover:text-neutral-900 transition-colors">
               {t('adminLogin')}
             </Link>
           </div>

@@ -3,7 +3,6 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect } from "react"
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
 
 export default function Error({ error }: { error: Error; reset: () => void }) {
   useEffect(() => {
@@ -28,15 +27,11 @@ export default function Error({ error }: { error: Error; reset: () => void }) {
             encontrada.
           </h1>
           <div className="mt-10">
-            <Link href="/">
-              <HoverBorderGradient
-                as="div"
-                containerClassName="cursor-pointer"
-                backdropClassName="bg-[#2FB7A3]"
-                className="px-7 py-3 text-sm font-semibold text-white"
-              >
-                Volver al inicio
-              </HoverBorderGradient>
+            <Link
+              href="/"
+              className="inline-flex items-center px-5 py-2 rounded-full text-[13px] font-medium border border-[#00372c]/25 text-[#00372c] hover:bg-[#00372c]/8 transition-colors duration-150"
+            >
+              Volver al inicio
             </Link>
           </div>
         </div>
