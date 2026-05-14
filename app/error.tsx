@@ -23,9 +23,9 @@ export default function Error({ error }: { error: Error; reset: () => void }) {
           <p className="text-[11px] uppercase tracking-[0.25em] text-[#4A7C59] font-bold mb-5">
             Error 500
           </p>
-          <h1 className="font-black uppercase leading-[0.92] tracking-tight text-[#00372c] text-[13vw] sm:text-[10vw] lg:text-[5.5vw] xl:text-[5vw]">
-            Algo salió<br />
-            mal.
+          <h1 className="font-black uppercase leading-[0.92] tracking-tight text-[#00372c] text-[8.5vw] sm:text-[6.5vw] lg:text-[3.6vw] xl:text-[3.25vw]">
+            Página no<br />
+            encontrada.
           </h1>
           <div className="mt-10">
             <Link href="/">

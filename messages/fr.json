@@ -2,10 +2,11 @@
   "nav": {
     "vacantes": "Offres",
     "terapeutas": "Thérapeutes",
+    "empleadores": "Employeurs",
     "comoFunciona": "Comment ça marche",
     "ingresar": "Connexion",
     "soTerapeuta": "Je suis thérapeute",
-    "soEmpleador": "Je suis employeur"
+    "soEmpleador": "Trouver du talent"
   },
   "banner": {
     "text": "La bourse d'emploi officielle de Litsea est maintenant en ligne.",
@@ -18,7 +19,7 @@
     "title2": "les thérapeutes",
     "title3": "avec le luxe.",
     "subtitle": "La plateforme d'emploi officielle de Litsea Centro de Capacitación. Thérapeutes vérifiés pour hôtels et spas de luxe à Cancún, Playa del Carmen et Tulum.",
-    "ctaVacantes": "Voir les offres",
+    "ctaVacantes": "Je suis thérapeute",
     "ctaEmpleador": "Je suis employeur"
   },
   "vacantesDestacadas": {
@@ -125,6 +126,7 @@
     "copyright": "© {year} Litsea Centro de Capacitación · Riviera Maya, Quintana Roo, Mexique",
     "privacidad": "Confidentialité",
     "terminos": "Conditions",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "adminLogin": "Admin"
   }
 }

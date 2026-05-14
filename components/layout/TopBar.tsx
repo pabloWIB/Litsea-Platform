@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import Image from 'next/image'
 import { Link, usePathname } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
@@ -54,8 +53,9 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
     : 'bg-white/90 backdrop-blur-sm border-b border-neutral-100'
 
   const NAV_LINKS = [
-    { label: t('vacantes'),     href: '/vacantes' },
-    { label: t('terapeutas'),   href: '/terapeutas' },
+    { label: t('vacantes'),     href: '/#vacantes' },
+    { label: t('terapeutas'),   href: '/#terapeutas' },
+    { label: t('empleadores'),  href: '/#empleadores' },
     { label: t('comoFunciona'), href: '/#como-funciona' },
   ]
 
@@ -128,13 +128,9 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
 
                   <div className="flex items-center gap-3">
                     <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
-                    <Link href="/registro-empleador">
-                      <HoverBorderGradient as="div"
-                        containerClassName="cursor-pointer"
-                        backdropClassName="bg-[#2FB7A3]"
-                        className="px-5 py-2 text-sm font-semibold text-white">
-                        {t('soEmpleador')}
-                      </HoverBorderGradient>
+                    <Link href="/registro-empleador"
+                      className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-5 py-2 text-sm font-semibold text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
+                      {t('soEmpleador')}
                     </Link>
                   </div>
                 </div>
@@ -209,22 +205,22 @@ export default function TopBar({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
-              <div className="flex justify-start py-2">
-                <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
+              <div className="flex items-center justify-between pb-1">
+                <LocaleSwitcher selectClassName="text-xs font-semibold bg-white/10 text-white border border-white/15 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:bg-white/15 transition-colors" />
+                <Link href="/login" onClick={() => setMobileOpen(false)}
+                  className="text-sm text-white/50 hover:text-white transition-colors">
+                  {t('ingresar')}
+                </Link>
               </div>
-              <Link href="/vacantes" onClick={() => setMobileOpen(false)}>
-                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
-                  backdropClassName="bg-[#2FB7A3]"
-                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
-                  {t('vacantes')}
-                </HoverBorderGradient>
+
+              <Link href="/registro-terapeuta" onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center rounded-full bg-[#2FB7A3] px-7 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-[#3ecfbb] active:scale-[0.97]">
+                {t('soTerapeuta')}
               </Link>
-              <Link href="/registro-empleador" onClick={() => setMobileOpen(false)}>
-                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
-                  backdropClassName="bg-[#2FB7A3]"
-                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
-                  {t('soEmpleador')}
-                </HoverBorderGradient>
+
+              <Link href="/registro-empleador" onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-center rounded-full border border-white/20 bg-white/8 px-7 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:bg-white/12 active:scale-[0.97]">
+                {t('soEmpleador')}
               </Link>
             </div>
           </motion.div>

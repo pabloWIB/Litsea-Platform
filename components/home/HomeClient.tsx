@@ -10,6 +10,10 @@ export default function HomeClient() {
   return (
     <main className="bg-[#FDFAF5]" style={{ paddingTop: topbarHeight }}>
       <HeroSection />
+      <section id="vacantes" />
+      <section id="terapeutas" />
+      <section id="empleadores" />
+      <section id="como-funciona" />
       <Footer />
     </main>
   )

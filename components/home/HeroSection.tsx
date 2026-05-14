@@ -1,141 +1,30 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
-import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import LocaleSwitcher from '@/components/ui/LocaleSwitcher'
+import { useBannerOpen } from '@/context/BannerContext'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
-const fadeUp  = (delay = 0) => ({ initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay } })
-const fadeDown = (delay = 0) => ({ initial: { opacity: 0, y: -16 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.5, ease: EASE, delay } })
+const fadeUp = (delay = 0) => ({ initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.6, ease: EASE, delay } })
 
 export default function HeroSection() {
   const t  = useTranslations('nav')
   const th = useTranslations('hero')
-  const [open, setOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const bannerOpen = useBannerOpen()
 
   const NAV_LINKS = [
-    { label: t('vacantes'),      href: '/vacantes' },
-    { label: t('terapeutas'),    href: '/terapeutas' },
-    { label: t('comoFunciona'),  href: '/#como-funciona' },
+    { label: t('vacantes'),     href: '/#vacantes' },
+    { label: t('terapeutas'),   href: '/#terapeutas' },
+    { label: t('empleadores'),  href: '/#empleadores' },
+    { label: t('comoFunciona'), href: '/#como-funciona' },
   ]
 
   return (
-    <>
-      {/* Sticky navbar — appears after scrolling past hero nav */}
-      <AnimatePresence>
-        {scrolled && (
-          <motion.header
-            initial={{ y: -64, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -64, opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE }}
-            className="fixed top-0 left-0 right-0 z-[300] bg-[#071210]/90 backdrop-blur-md border-b border-white/10"
-          >
-            <div className="flex items-center justify-between px-6 md:px-10 py-3 max-w-[1400px] mx-auto">
-              <Link href="/">
-                <Image
-                  src="/logo-litsea-principal.png"
-                  alt="Litsea Centro de Capacitación"
-                  width={100}
-                  height={38}
-                  className="h-9 w-auto object-contain"
-                />
-              </Link>
-
-              <div className="hidden md:flex items-center gap-0.5">
-                {NAV_LINKS.map((link) => (
-                  <Link key={link.href} href={link.href}
-                    className="text-sm text-white/65 hover:text-white font-medium px-4 py-2 rounded-lg hover:bg-white/10 transition-all">
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="hidden md:block">
-                  <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
-                </div>
-                <Link href="/registro-empleador"
-                  className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-5 py-2 text-sm font-semibold text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
-                  {t('soEmpleador')}
-                </Link>
-              </div>
-            </div>
-          </motion.header>
-        )}
-      </AnimatePresence>
-
     <section className="bg-[#FDFAF5] min-h-[95vh] flex flex-col items-center p-4 md:p-6">
-
-      {/* Mobile menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="menu"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[210] bg-[#071210]/97 backdrop-blur-sm flex flex-col"
-          >
-            <div className="flex items-center justify-between px-6 py-5">
-              <Link href="/" onClick={() => setOpen(false)}>
-                <Image
-                  src="/logo-litsea-principal.png"
-                  alt="Litsea Centro de Capacitación"
-                  width={120}
-                  height={46}
-                  className="h-10 w-auto object-contain"
-                  priority
-                />
-              </Link>
-              <button onClick={() => setOpen(false)} aria-label="Cerrar menú"
-                className="flex items-center justify-center size-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white">
-                <X className="size-5" />
-              </button>
-            </div>
-
-            <div className="flex flex-col gap-1 px-4 mt-4">
-              {NAV_LINKS.map((link, i) => (
-                <motion.div key={link.href}
-                  initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.07, duration: 0.3 }}>
-                  <Link href={link.href} onClick={() => setOpen(false)}
-                    className="block text-2xl font-bold text-white hover:text-[#2FB7A3] transition-colors py-3 px-2 border-b border-white/10">
-                    {link.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="mt-auto px-6 pb-10 flex flex-col gap-3">
-              <div className="flex justify-start py-2">
-                <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-3 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
-              </div>
-              <Link href="/login" onClick={() => setOpen(false)}>
-                <HoverBorderGradient as="div" containerClassName="w-full cursor-pointer"
-                  backdropClassName="bg-[#2FB7A3]"
-                  className="w-full flex items-center justify-center px-7 py-3 text-sm font-semibold text-white">
-                  {t('ingresar')}
-                </HoverBorderGradient>
-              </Link>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Hero card */}
       <motion.div
@@ -151,7 +40,7 @@ export default function HeroSection() {
           <Image
             src="/spa-wellness-terapeuta-ilustracion-vectorial-minimalista.png"
             alt="Terapeuta certificada Litsea — Riviera Maya"
-            fill priority className="object-cover object-center"
+            fill priority className="object-cover object-left md:object-center"
           />
         </motion.div>
 
@@ -162,8 +51,16 @@ export default function HeroSection() {
 
         <div className="absolute inset-0 z-10 flex flex-col">
 
-          {/* Nav */}
-          <motion.nav className="hidden md:flex items-center justify-between px-6 md:px-10 py-5 md:py-6" {...fadeDown(0.3)}>
+          {/* Desktop nav — only while TopBar is not showing its own nav */}
+          <AnimatePresence>
+          {bannerOpen && (
+          <motion.nav
+            key="hero-nav"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="hidden lg:flex items-center justify-between px-6 lg:px-10 py-5 lg:py-6">
             <Link href="/" className="shrink-0">
               <Image
                 src="/logo-litsea-principal.png"
@@ -177,8 +74,7 @@ export default function HeroSection() {
               />
             </Link>
 
-            {/* Desktop links */}
-            <div className="hidden md:flex items-center gap-0.5">
+            <div className="flex items-center gap-0.5">
               {NAV_LINKS.map((link, i) => (
                 <motion.div key={link.href}
                   initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }}
@@ -192,27 +88,24 @@ export default function HeroSection() {
             </div>
 
             <div className="flex items-center gap-3">
-              <motion.div className="hidden md:flex items-center gap-2"
+              <motion.div className="flex items-center gap-2"
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.55, ease: 'backOut' }}>
                 <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
               </motion.div>
 
-              <motion.div className="hidden md:block"
+              <motion.div
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.62, ease: 'backOut' }}>
                 <Link href="/registro-empleador"
-                  className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
+                  className="inline-flex items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-[#071210] ring-offset-2 ring-offset-[#5E5B57] transition duration-200 hover:ring-2 hover:ring-white focus-visible:ring-2 focus-visible:ring-white">
                   {t('soEmpleador')}
                 </Link>
               </motion.div>
-
-              <button onClick={() => setOpen(true)} aria-label="Abrir menú"
-                className="hidden flex items-center justify-center size-10 rounded-xl bg-white/10 hover:bg-white/20 transition-colors text-white">
-                <Menu className="size-5" />
-              </button>
             </div>
           </motion.nav>
+          )}
+          </AnimatePresence>
 
           <div className="flex-1" />
 
@@ -236,18 +129,14 @@ export default function HeroSection() {
             </motion.p>
 
             <motion.div {...fadeUp(0.9)} className="flex flex-wrap gap-3">
-              <Link href="/vacantes">
-                <HoverBorderGradient as="div" containerClassName="cursor-pointer"
-                  backdropClassName="bg-[#2FB7A3]"
-                  className="px-7 py-3 text-sm font-semibold text-white">
-                  {th('ctaVacantes')}
-                </HoverBorderGradient>
+              <Link href="/registro-terapeuta"
+                className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 ring-offset-black transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
+                {th('ctaVacantes')}
               </Link>
             </motion.div>
           </div>
         </div>
       </motion.div>
     </section>
-    </>
   )
 }

@@ -37,12 +37,14 @@ const SOCIAL = [
 ]
 
 export default function Footer() {
-  const t = useTranslations('footer')
+  const t  = useTranslations('footer')
+  const tn = useTranslations('nav')
 
   const NAV_LINKS = [
-    { label: t('verVacantes'),          href: '/vacantes' },
-    { label: t('directorioTerapeutas'), href: '/terapeutas' },
-    { label: t('comoFunciona'),         href: '/como-funciona' },
+    { label: tn('vacantes'),    href: '/#vacantes' },
+    { label: tn('terapeutas'),  href: '/#terapeutas' },
+    { label: tn('empleadores'), href: '/#empleadores' },
+    { label: tn('comoFunciona'), href: '/#como-funciona' },
   ]
 
   const LEGAL = [
@@ -129,6 +131,10 @@ export default function Footer() {
                 )}
               </React.Fragment>
             ))}
+            <span className="text-neutral-300">|</span>
+            <Link href="/login?role=admin" className="hover:text-neutral-900 transition-colors">
+              {t('adminLogin')}
+            </Link>
           </div>
         </div>
 
