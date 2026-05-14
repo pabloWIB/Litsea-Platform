@@ -2,13 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { Link, useRouter } from '@/i18n/navigation'
+import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient'
 import LocaleSwitcher from '@/components/ui/LocaleSwitcher'
-import { Button as StatefulButton } from '@/components/ui/stateful-button'
 
 const EASE = [0.22, 1, 0.36, 1] as const
 
@@ -20,7 +19,6 @@ export default function HeroSection() {
   const th = useTranslations('hero')
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const router = useRouter()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 80)
@@ -70,12 +68,10 @@ export default function HeroSection() {
                 <div className="hidden md:block">
                   <LocaleSwitcher selectClassName="text-xs font-semibold bg-white text-neutral-700 border border-neutral-200 rounded-lg px-2 py-1.5 outline-none cursor-pointer appearance-none hover:border-neutral-400 transition-colors" />
                 </div>
-                <StatefulButton
-                  className="bg-[#ffffff] text-[#071210] hover:ring-[#ffffff] min-w-fit px-5 py-2 text-sm font-semibold"
-                  onClick={async () => { router.push('/registro-empleador') }}
-                >
+                <Link href="/registro-empleador"
+                  className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-5 py-2 text-sm font-semibold text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
                   {t('soEmpleador')}
-                </StatefulButton>
+                </Link>
               </div>
             </div>
           </motion.header>
@@ -205,12 +201,10 @@ export default function HeroSection() {
               <motion.div className="hidden md:block"
                 initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: 0.62, ease: 'backOut' }}>
-                <StatefulButton
-                  className="bg-[#ffffff] text-[#071210] hover:ring-[#ffffff] min-w-fit px-7 py-3 text-sm font-semibold"
-                  onClick={async () => { router.push('/registro-empleador') }}
-                >
+                <Link href="/registro-empleador"
+                  className="inline-flex items-center justify-center rounded-full bg-[#2FB7A3] px-7 py-3 text-sm font-semibold text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-[#2FB7A3] focus-visible:ring-2 focus-visible:ring-[#2FB7A3]">
                   {t('soEmpleador')}
-                </StatefulButton>
+                </Link>
               </motion.div>
 
               <button onClick={() => setOpen(true)} aria-label="Abrir menú"
